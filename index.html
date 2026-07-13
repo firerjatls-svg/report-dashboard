@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기업분석 리포트 시리즈 — 대시보드</title>
+<style>
+:root{
+  --ink:#14202B; --muted:#66707A; --faint:#9AA3AB;
+  --paper:#FAFAF8; --card:#FFFFFF; --line:#E4E7E2; --soft:#F1F3EF;
+  --up:#C0392B; --down:#1D5FA0; --warn:#B45309; --warnbg:#FEF3E2;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px}
+body{
+  font-family:'Pretendard Variable',Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  background:var(--paper); color:var(--ink); line-height:1.55; padding:34px 20px 70px;
+}
+.wrap{max-width:1180px;margin:0 auto}
+.figures{font-variant-numeric:tabular-nums}
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:8px}
+.eyebrow{font-size:.72rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+h1{font-size:1.9rem;font-weight:800;letter-spacing:-.02em}
+h1 small{font-size:.95rem;font-weight:500;color:var(--muted);margin-left:10px}
+.basis{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.badge{font-size:.72rem;padding:3px 9px;border:1px solid var(--line);border-radius:3px;background:var(--card);color:var(--muted)}
+.badge b{color:var(--ink);font-weight:600}
+.badge.warn{background:var(--warnbg);border-color:#F3D9AE;color:var(--warn)}
+
+.controls{position:sticky;top:0;z-index:10;background:var(--paper);padding:14px 0 12px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.viewtabs{display:flex;gap:0;margin-bottom:12px;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden;width:fit-content}
+.viewtabs button{font:inherit;font-size:.85rem;font-weight:600;padding:7px 18px;border:none;background:var(--card);color:var(--muted);cursor:pointer}
+.viewtabs button.on{background:var(--ink);color:#fff}
+.searchrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#q{flex:1;min-width:230px;font:inherit;font-size:.95rem;padding:9px 14px;border:1.5px solid var(--line);border-radius:6px;background:var(--card);outline:none}
+#q:focus{border-color:var(--ink)}
+.count{font-size:.8rem;color:var(--muted);white-space:nowrap}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.chip{font:inherit;font-size:.8rem;padding:5px 12px;border:1px solid var(--line);border-radius:20px;background:var(--card);color:var(--muted);cursor:pointer}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip .n{opacity:.55;margin-left:4px;font-size:.72rem}
+
+.sector{margin-bottom:34px}
+.sechead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--ink);padding-bottom:8px;margin-bottom:14px}
+.sechead h2{font-size:1.12rem;font-weight:750}
+.sechead .factor{font-size:.78rem;color:var(--muted)}
+.sechead .ret{margin-left:auto;font-size:.82rem;font-weight:700;padding:3px 11px;border-radius:4px;background:var(--soft)}
+.sechead .ret span{font-weight:400;color:var(--muted);font-size:.72rem;margin-right:6px}
+.up{color:var(--up)} .down{color:var(--down)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(266px,1fr));gap:13px}
+.co{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:15px 16px 13px 19px;position:relative;overflow:hidden;transition:box-shadow .15s}
+.co:hover{box-shadow:0 4px 16px rgba(20,32,43,.09)}
+.co::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--ac)}
+.co .top{display:flex;align-items:baseline;gap:8px}
+.co h3{font-size:1.04rem;font-weight:750}
+.co .tick{font-size:.7rem;color:var(--faint)}
+.co .fresh{margin-left:auto;font-size:.62rem;padding:2px 7px;border-radius:3px;background:var(--warnbg);color:var(--warn);font-weight:600;white-space:nowrap}
+.co .ep{font-size:.68rem;color:var(--ac);font-weight:650;letter-spacing:.05em;margin:2px 0 6px}
+.frameline{display:flex;gap:10px;font-size:.68rem;color:var(--muted);margin-bottom:8px}
+.frameline b{color:var(--ink);font-weight:650}
+.frameline .stars{color:var(--ac);letter-spacing:1px}
+.co .desc{font-size:.76rem;color:var(--muted);line-height:1.5;min-height:2.9em;margin-bottom:10px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.stat .k{font-size:.62rem;color:var(--faint);margin-bottom:1px}
+.stat .v{font-size:.9rem;font-weight:700}
+.stat .v.est{color:var(--faint);font-weight:500}
+.stat .v small{font-size:.65rem;font-weight:400;color:var(--faint)}
+.band{margin-bottom:9px}
+.band .lab{display:flex;justify-content:space-between;font-size:.62rem;color:var(--faint);margin-bottom:3px}
+.band .bar{height:6px;border-radius:3px;background:linear-gradient(90deg,#DDE4DC,#C8D2CB);position:relative}
+.band .fill{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--ac);opacity:.28}
+.band .pin{position:absolute;top:-3px;width:3px;height:12px;border-radius:2px;background:var(--ac);transform:translateX(-50%)}
+.band .pos{font-size:.66rem;color:var(--muted);margin-top:3px}
+.band .pos b{color:var(--ac)}
+.cata{font-size:.68rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:7px;margin-bottom:9px}
+.cata b{color:var(--ink);font-weight:650}
+.co a.open{display:inline-block;font-size:.74rem;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:4px;padding:4px 11px}
+.co a.open:hover{background:var(--ink);color:#fff}
+
+/* 스코어보드 */
+.scorewrap{overflow-x:auto}
+table.score{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);font-size:.84rem}
+.score th{font-size:.7rem;letter-spacing:.05em;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:2px solid var(--ink);white-space:nowrap}
+.score td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.score tr:hover td{background:var(--soft)}
+.score .dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;vertical-align:baseline}
+.score .stars{letter-spacing:1.5px;font-weight:700}
+.pill{font-size:.7rem;padding:2px 9px;border-radius:10px;font-weight:600;white-space:nowrap}
+.pill.g1{background:#E7F0E4;color:#166534}.pill.g2{background:#F3EFDF;color:#8a6d1a}.pill.g3{background:#F7E5E1;color:#9F1239}
+.scorenote{font-size:.73rem;color:var(--muted);margin:10px 2px 0}
+
+/* 캘린더 */
+.month{margin-bottom:26px}
+.month h2{font-size:1rem;font-weight:750;border-bottom:1px solid var(--ink);padding-bottom:6px;margin-bottom:10px}
+.ev{display:flex;gap:14px;align-items:baseline;padding:9px 4px;border-bottom:1px dashed var(--line)}
+.ev .d{font-size:.8rem;font-weight:700;min-width:78px}
+.ev .dday{font-size:.66rem;font-weight:700;min-width:44px;color:var(--warn)}
+.ev .who{font-size:.84rem;font-weight:650;min-width:130px}
+.ev .who i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;font-style:normal}
+.ev .what{font-size:.8rem;color:var(--muted)}
+.ev.past{opacity:.42}
+
+.hide{display:none}
+.empty{padding:50px 0;text-align:center;color:var(--faint);font-size:.9rem}
+footer{margin-top:44px;border-top:1px solid var(--line);padding-top:16px;font-size:.74rem;color:var(--muted);line-height:1.7}
+footer b{color:var(--ink)}
+@media (max-width:640px){html{font-size:14px}.sechead .ret{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Equity Research Series · Dashboard</div>
+  <h1 id="title">기업분석 리포트 시리즈<small id="subtitle"></small></h1>
+  <div class="basis" id="basis"></div>
+</header>
+
+<div class="controls">
+  <div class="viewtabs" id="tabs">
+    <button data-v="board" class="on">보드</button>
+    <button data-v="score">3질문 스코어보드</button>
+    <button data-v="cal">촉매 캘린더</button>
+  </div>
+  <div id="boardCtl">
+    <div class="searchrow">
+      <input id="q" type="search" placeholder="종목명 · 코드 · 키워드 검색 (예: 식각액, MSB, LNG, LTSA…)" autocomplete="off">
+      <div class="count" id="cnt"></div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</div>
+
+<div id="vBoard"></div>
+<div id="vScore" class="hide"></div>
+<div id="vCal" class="hide"></div>
+<div class="empty hide" id="empty">검색 결과가 없습니다.</div>
+<div class="empty" id="loading">데이터를 불러오는 중…</div>
+
+<footer>
+  <b>자료 성격</b> — 시가총액·종가·등락·52주 밴드는 KRX(marcap) 확정치이며 매 평일 아침 자동 갱신됩니다(원천 T+1~2일 지연 → "전일"은 최근 거래일 기준).
+  12F PER는 리포트 작성 시점 기준치로 주가 변동 미반영, 미기재는 "—". 3질문 스코어의 강도·변수는 각 리포트 결론에서 추출한 <b>초안(추정)</b>,
+  룸은 52주 밴드 위치에서 자동 산출한 프록시입니다. 촉매 일정 중 (추정) 표기는 확정 공시가 아닙니다.
+  섹터 등락률은 구성 종목 동일가중 평균. 본 페이지는 정리 자료이며 투자 권유가 아닙니다.
+</footer>
+
+</div>
+
+<script>
+/* ── 순수 로직 (DOM 무관) ── */
+function bandPos(c){ return c.w52hi>c.w52lo ? Math.round((c.close-c.w52lo)/(c.w52hi-c.w52lo)*100) : 50; }
+function roomOf(pos){ return pos<33 ? {t:'큼',g:1} : pos<=66 ? {t:'중간',g:2} : {t:'얇음',g:3}; }
+function varsOf(v){ return v===1 ? {t:'적음',g:1} : v===2 ? {t:'중간',g:2} : {t:'많음',g:3}; }
+function secAvg(codes, quotes){
+  const xs = codes.map(c=>quotes[c]?.chg).filter(x=>x!=null);
+  return xs.length ? xs.reduce((a,b)=>a+b,0)/xs.length : null;
+}
+function daysBetween(a,b){ return Math.round((b-a)/86400000); }
+function mcapStr(m){ return m>=10000 ? (m/10000).toFixed(1).replace(/\.0$/,'')+'조' : m.toLocaleString('ko-KR')+'억'; }
+function scoreSort(a,b){
+  return (b.frame.intensity-a.frame.intensity) || (a.frame.variables-b.frame.variables) || (a.pos-b.pos);
+}
+/* ==DOM== 이후는 브라우저 전용 */
+const fmt = n => n.toLocaleString('ko-KR');
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+let M=null, Q=null, secFilter='all', view='board';
+const TODAY = new Date();
+
+async function boot(){
+  try{
+    const [m,q] = await Promise.all([
+      fetch('./data/master.json').then(r=>{if(!r.ok)throw 0;return r.json()}),
+      fetch('./data/quotes.json').then(r=>{if(!r.ok)throw 0;return r.json()}),
+    ]);
+    M=m; Q=q;
+  }catch(e){
+    $('loading').textContent = '데이터 로드 실패 — data/master.json·quotes.json 확인 (로컬에서는 python -m http.server 로 열어야 합니다)';
+    return;
+  }
+  $('loading').classList.add('hide');
+  // 파생값 부착
+  M.companies.forEach(c=>{
+    c.q = Q.quotes[c.code] || null;
+    c.pos = c.q ? bandPos(c.q) : 50;
+    c.next = (c.catalysts||[]).map(x=>({...x, dd:daysBetween(TODAY,new Date(x.date))}))
+             .filter(x=>x.dd>=0).sort((a,b)=>a.dd-b.dd)[0] || null;
+    c.staleDays = daysBetween(new Date(c.report.date), TODAY);
+  });
+  $('subtitle').textContent = `${M.companies.length}편 · ${M.sectors.length}개 섹터`;
+  const genDate = Q.generated ? Q.generated.slice(0,10) : Q.asof;
+  const quoteAge = daysBetween(new Date(Q.asof), TODAY);
+  $('basis').innerHTML = `
+    <div class="badge">시세 기준일 <b>${esc(Q.asof)} 종가</b> (KRX 확정 · 자동 갱신 ${esc(genDate)})</div>
+    <div class="badge">3질문 스코어 <b>리포트 결론 초안 + 룸=밴드 프록시</b></div>
+    ${quoteAge>5 ? `<div class="badge warn">시세가 ${quoteAge}일 경과 — Actions 실행 확인 필요</div>` : ''}`;
+  buildChips(); render();
+}
+
+function buildChips(){
+  const el = $('chips');
+  [{id:'all',name:'전체'},...M.sectors].forEach(s=>{
+    const n = s.id==='all' ? M.companies.length : M.companies.filter(c=>c.sector===s.id).length;
+    const b = document.createElement('button');
+    b.className = 'chip'+(s.id==='all'?' on':'');
+    b.innerHTML = `${esc(s.name)}<span class="n figures">${n}</span>`;
+    b.onclick = ()=>{ secFilter=s.id; el.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); b.classList.add('on'); render(); };
+    el.appendChild(b);
+  });
+  $('q').addEventListener('input', render);
+  $('tabs').querySelectorAll('button').forEach(b=>{
+    b.onclick = ()=>{ view=b.dataset.v; $('tabs').querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); render(); };
+  });
+}
+
+function render(){
+  $('vBoard').classList.toggle('hide', view!=='board');
+  $('vScore').classList.toggle('hide', view!=='score');
+  $('vCal').classList.toggle('hide', view!=='cal');
+  $('boardCtl').classList.toggle('hide', view!=='board');
+  $('empty').classList.add('hide');
+  if(view==='board') renderBoard();
+  else if(view==='score') renderScore();
+  else renderCal();
+}
+
+function chgHTML(v){
+  if(v==null) return '<span class="v est">—</span>';
+  return `<span class="v figures ${v>0?'up':v<0?'down':''}">${v>0?'+':''}${v.toFixed(2)}%</span>`;
+}
+
+function renderBoard(){
+  const root = $('vBoard'); root.innerHTML='';
+  const q = $('q').value.trim().toLowerCase();
+  let shown=0;
+  M.sectors.forEach(s=>{
+    if(secFilter!=='all' && secFilter!==s.id) return;
+    const all = M.companies.filter(c=>c.sector===s.id);
+    const rows = all.filter(c=> !q || (c.name+c.code+c.desc+c.tags).toLowerCase().includes(q));
+    if(!rows.length) return;
+    const avg = secAvg(all.map(c=>c.code), Q.quotes);
+    const sec = document.createElement('div'); sec.className='sector';
+    sec.innerHTML = `<div class="sechead"><h2>${esc(s.name)}</h2><div class="factor">${esc(s.factor)}</div>
+      <div class="ret figures ${avg>0?'up':'down'}"><span>전일 섹터 (동일가중 ${all.length})</span>${avg==null?'—':(avg>0?'+':'')+avg.toFixed(2)+'%'}</div></div>
+      <div class="grid"></div>`;
+    const grid = sec.querySelector('.grid');
+    rows.sort((a,b)=>a.seq-b.seq).forEach(c=>{
+      shown++;
+      const room = roomOf(c.pos), vv = varsOf(c.frame.variables);
+      const per = c.per ? `<div class="v figures">${c.per.v}<small>배 · ${esc(c.per.asof)}</small></div>` : '<div class="v est">— <small>미확인</small></div>';
+      const card = document.createElement('div'); card.className='co'; card.style.setProperty('--ac', c.ac);
+      card.innerHTML = `
+        <div class="top"><h3>${esc(c.name)}</h3><span class="tick figures">${c.code}</span>
+          ${c.auto ? `<span class="fresh">자동 등록 · 검수 필요</span>` : c.staleDays>60 ? `<span class="fresh">리포트 ${c.staleDays}일 경과</span>`:''}</div>
+        <div class="ep">SERIES ${String(c.seq).padStart(2,'0')} · 리포트 ${esc(c.report.date)}</div>
+        <div class="frameline"><span>강도 <b class="stars">${'★'.repeat(c.frame.intensity)}${'☆'.repeat(3-c.frame.intensity)}</b></span>
+          <span>룸 <b>${room.t}</b></span><span>변수 <b>${vv.t}</b></span></div>
+        <div class="desc">${esc(c.desc)}</div>
+        <div class="stats">
+          <div class="stat"><div class="k">시가총액</div><div class="v figures">${c.q?mcapStr(c.q.mcap):'—'}</div></div>
+          <div class="stat"><div class="k">전일 등락</div>${chgHTML(c.q?.chg)}</div>
+          <div class="stat"><div class="k">12F PER</div>${per}</div>
+        </div>
+        ${c.q?`<div class="band"><div class="lab"><span class="figures">52주 ${fmt(c.q.w52lo)}</span><span class="figures">${fmt(c.q.w52hi)}</span></div>
+          <div class="bar"><div class="fill" style="width:${c.pos}%"></div><div class="pin" style="left:${c.pos}%"></div></div>
+          <div class="pos">현재가 <b class="figures">${fmt(c.q.close)}원</b> · 하단에서 <b class="figures">${c.pos}%</b></div></div>`:''}
+        <div class="cata">다음 촉매 — ${c.next?`<b>D-${c.next.dd} · ${esc(c.next.date)}</b> ${esc(c.next.label)}`:'등록된 일정 없음'}</div>
+        <a class="open" href="./reports/${encodeURIComponent(c.report.file)}">리포트 열기 →</a>`;
+      grid.appendChild(card);
+    });
+    root.appendChild(sec);
+  });
+  $('cnt').textContent = `${shown} / ${M.companies.length} 종목`;
+  $('empty').classList.toggle('hide', shown>0);
+}
+
+function renderScore(){
+  const root = $('vScore');
+  const rows = [...M.companies].sort(scoreSort).map(c=>{
+    const room = roomOf(c.pos), vv = varsOf(c.frame.variables);
+    return `<tr>
+      <td><span class="dot" style="background:${c.ac}"></span><b>${esc(c.name)}</b> <span class="figures" style="color:var(--faint);font-size:.7rem">${c.code}</span></td>
+      <td class="stars" style="color:${c.ac}">${'★'.repeat(c.frame.intensity)}${'☆'.repeat(3-c.frame.intensity)}</td>
+      <td><span class="pill g${room.g}">${room.t}</span> <span class="figures" style="color:var(--faint);font-size:.72rem">밴드 ${c.pos}%</span></td>
+      <td><span class="pill g${vv.g}">${vv.t}</span></td>
+      <td style="color:var(--muted);font-size:.78rem">${esc(c.frame.note||'')}</td>
+      <td style="font-size:.76rem">${c.next?`<b class="figures">D-${c.next.dd}</b> ${esc(c.next.label)}`:'—'}</td></tr>`;
+  }).join('');
+  root.innerHTML = `<div class="scorewrap"><table class="score">
+    <thead><tr><th>종목</th><th>① 증익 강도</th><th>② 가격 반영 룸</th><th>③ 경로 변수</th><th>비고</th><th>다음 촉매</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
+    <div class="scorenote">정렬: 강도 내림차순 → 변수 오름차순 → 밴드 위치. ①③은 리포트 결론에서 추출한 <b>초안</b>(master.json에서 수정),
+    ②는 52주 밴드 위치의 자동 프록시(하단일수록 룸 큼)로 <b>절대적 밸류에이션 판단을 대체하지 않음</b>.</div>`;
+}
+
+function renderCal(){
+  const root = $('vCal');
+  const evs = M.companies.flatMap(c=>(c.catalysts||[]).map(x=>({...x, c, dd:daysBetween(TODAY,new Date(x.date))})))
+              .sort((a,b)=>a.date<b.date?-1:1);
+  const byMonth = {};
+  evs.forEach(e=>{ const k=e.date.slice(0,7); (byMonth[k]=byMonth[k]||[]).push(e); });
+  root.innerHTML = Object.keys(byMonth).sort().map(mo=>`
+    <div class="month"><h2>${mo.replace('-','년 ')}월</h2>
+    ${byMonth[mo].map(e=>`<div class="ev ${e.dd<0?'past':''}">
+      <span class="d figures">${esc(e.date.slice(5))}</span>
+      <span class="dday figures">${e.dd<0?'경과':e.dd===0?'오늘':'D-'+e.dd}</span>
+      <span class="who"><i style="background:${e.c.ac}"></i>${esc(e.c.name)}</span>
+      <span class="what">${esc(e.label)}</span></div>`).join('')}</div>`).join('')
+    || '<div class="empty">등록된 촉매 일정이 없습니다.</div>';
+}
+
+boot();
+</script>
+</body>
+</html>
