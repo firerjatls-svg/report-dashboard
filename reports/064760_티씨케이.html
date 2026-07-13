@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>티씨케이 (064760) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#9F1239; --accent-soft:#FBE7EC; --accent-deep:#7A0E2E;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(159,18,57,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#F2A9BC;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#F5B8C8;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#F2A9BC;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 반도체 부품 · 시리즈 6 — 부품 2부: 쿼츠의 대체자</div>
+  <h1>티씨케이<span class="ticker">KOSDAQ 064760</span></h1>
+  <div class="sub">낸드 식각의 지표 종목 — SiC 링 원조 특허권자의 점유율 회복전, 그리고 목표가에 이미 도달한 주가</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 05</b></div>
+    <div>주가 (4/18)<b class="figures">305,500원 (52주 81,400→312,000)</b></div>
+    <div>목표가 컨센<b class="figures">평균 30.2만 (20만~40만)</b></div>
+    <div>2025년 확정<b class="figures">매출 3,014억 · OP 839억 (OPM 27.8%)</b></div>
+    <div>지배구조<b class="figures">日 도카이카본 합작사 ('96 설립)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 티씨케이는 원익QnC 리포트에서 「SiC 대체 리스크」의 주체로 등장했던 그 회사다.
+  식각 챔버에서 웨이퍼를 잡아주는 포커스 링을 Si·쿼츠보다 수명 1.5배+ 긴 <b>CVD-SiC로 세계 최초 양산</b>했고,
+  매출의 99%가 메모리, 그중 <b>낸드가 ~70%</b>라 「낸드 식각 강도」의 순수 프록시다. 주 판매 채널은 칩메이커가 아니라
+  <b>램리서치(비포마켓)</b> — 장비사의 점유율이 곧 이 회사의 운명이다. 스토리는 세 겹: ① 낸드 고단화·9세대 전환의 SiC 소모 증가,
+  ② 특허 승소('25.1)에 기반한 점유율 탈환, ③ GAA·4F2발 파운드리 SAM 확장. 문제는 <b>주가가 이 세 겹을 이미 다 샀다는 것</b> —
+  저점 대비 3.8배, 컨센 목표가 평균에 도달한 상태다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">1996년 일본 도카이카본과 국내 기업 합작으로 설립(한국도카이카본), 2003년 코스닥 상장. 안성 일괄생산기지에서
+  가공→고순화→CVD SiC 코팅까지 국내 최초 일괄공정 보유.</div>
+
+  <h3>매출 구성 (2025년 기준)</h3>
+  <div class="stackbar">
+    <div style="flex:78;background:#9F1239">Solid SiC (포커스 링 중심) ~78%</div>
+    <div style="flex:13;background:#C4607B">그라파이트 ~13%</div>
+    <div style="flex:9;background:#E8B7C4">서셉터·기타 ~9%</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#9F1239">SiC 포커스 링: 식각 챔버에서 웨이퍼 고정·플라즈마 균일도 유지 — 공정 중 함께 마모되는 소모품</span>
+    <span style="--c:#C4607B">고순도 흑연 부품 (창업 사업)</span>
+    <span style="--c:#E8B7C4">디스플레이 서셉터류 등 (~8.5%)</span>
+  </div>
+  <p class="note">1Q25 기준 Solid SiC 77.6%. 전방 노출: <b>메모리 ~99%, 그중 낸드 ~70%</b> (신영) — 시리즈 6종 중 단일 전방 편중이 가장 극단적.
+  중국 고객(YMTC 등) 매출 비중 2Q25 20% → 3Q25 25%+로 확대 중.</p>
+
+  <h3>비포마켓 — 이 회사를 읽는 열쇠</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">판매 구조</div>
+      <h4>장비사 경유 (비포마켓) <span class="pill up">램리서치가 주고객</span></h4>
+      <ul>
+        <li>구조 <b>칩메이커 직납이 아니라 램리서치·AMEC·TEL·AMAT 경유</b></li>
+        <li>함의 <b>업황보다 「장비 고객사의 점유율」이 실적을 좌우</b> (신영)</li>
+        <li>대비 <b>원익QnC는 직납+경유 혼합 (애프터+비포)</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">제품의 물리학</div>
+      <h4>SiC 링 = 고급 소모품 <span class="pill up">수명 1.5배+</span></h4>
+      <ul>
+        <li>역할 <b>플라즈마 식각 중 웨이퍼 지지 — 링도 같이 갈려나감</b></li>
+        <li>우위 <b>Si·쿼츠 대비 수명 길고 파티클 적음 → 수율 직결</b></li>
+        <li>승수 <b>고단화 → 식각 강도·시간↑ → SiC 채택 확대 + 소모 가속</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">해자와 신무기</div>
+      <h4>특허 + TaC <span class="pill warn">회복전 진행 중</span></h4>
+      <ul>
+        <li>특허 <b>SiC 원료가스 순차 사용 방식 세계 최초 — 와이엠씨·와이컴 상대 4년 소송 승소('25.1)</b></li>
+        <li>진행 <b>디에스테크노 상대 소송 계속 중 — 점유율 탈환이 스토리</b></li>
+        <li>신규 <b>TaC(탄탈륨카바이드): SiC 에피 공정용, 국내 유일, 1~2년 내 유의미 실적 전망</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">시리즈 6종 중 최고 마진 (OPM 28~30%, 피크 40%) — 원천은 특허가 만든 가격 결정력이다.</div>
+
+  <div class="formula">매출     = 낸드 식각 물량 × (SiC 채택률 × 링 소모 속도) — 램리서치 경유
+영업이익 = 매출 − 원재료(흑연·가스) − 고정비(CVD 설비)
+OPM 궤적: <b>39.7%('22 준독점기)</b> → 29.4%('23 경쟁 진입) → 29.3%('24) → 27.8%('25)
+⇒ 경쟁 진입이 마진을 10%p 깎았지만, 여전히 원익QnC(6~10%)의 3~4배 — <b>부품에서도 「특허」는 「독점 소재」와 같은 힘</b></div>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 변수·약점 (−)</th></tr>
+    <tr>
+      <td>① 특허 기반 기술 해자 — 소송 승소로 재확인, 진입장벽 복원 중<br>
+      ② 소모품 반복 매출 — 팹이 돌면 링은 갈려나간다 (10년 연속 매출 증가의 원천)<br>
+      ③ 고단화 승수 — 단수↑ = 식각 강도↑ = 링 소모↑ (물량 없이도 성장)<br>
+      ④ 안성 일괄생산의 원가 통제 + 자사주 500억 신탁('25.1~'26.1)</td>
+      <td>① 경쟁 잔존 — 하나머티리얼즈·디에스테크노 등, 소송 결과에도 점유율 회복은 미검증<br>
+      ② 원/달러 환율 — 수출 비중 높아 원화 강세 시 마진 직격 (2Q25 실증)<br>
+      ③ 중국 매출 확대의 이면 — 단가·규제(램리서치 중국 매출 $7억 규제 영향권)<br>
+      ④ 연말 성과급 등 4Q 일회성 패턴 (4Q25 실증 — 한솔과 동일한 함정)</td>
+    </tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 잘하고 있는가</h2>
+  <div class="lead">2022년 준독점 피크 → 2023년 이중 타격(다운사이클×경쟁 진입) → 2024~25년 회복. 단, 2025년 회복 속도는 완만했다.</div>
+
+  <h3>연간 실적 (별도, 억원)</h3>
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>매출</th><th>YoY</th><th>영업이익</th><th>YoY</th><th>OPM</th><th>해설</th></tr>
+    <tr><td>2022</td><td class="num">3,195억</td><td class="num">피크</td><td class="num">1,270억</td><td class="num">피크</td><td class="num"><b>39.7%</b></td><td>준독점 시대의 마진</td></tr>
+    <tr><td>2023</td><td class="num">2,267억</td><td class="num" style="color:var(--down)"><b>−29.1%</b></td><td class="num">667억</td><td class="num" style="color:var(--down)"><b>−47.5%</b></td><td class="num">29.4%</td><td>낸드 감산 직격 + 경쟁사 진입 — 이중 타격</td></tr>
+    <tr><td>2024</td><td class="num">2,757억</td><td class="num">+21.7%</td><td class="num">807억</td><td class="num">+21.1%</td><td class="num">29.3%</td><td>회복 원년 — 그러나 마진은 30% 벽에 막힘</td></tr>
+    <tr class="hl"><td>2025 (확정)</td><td class="num">3,014억</td><td class="num">+9.3%</td><td class="num">839억</td><td class="num">+3.9%</td><td class="num">27.8%</td><td>매출은 '22 피크 근접, <b>이익 회복은 완만 — 순익은 −2.9%</b></td></tr>
+    <tr><td>2026E</td><td class="num">—</td><td class="num">—</td><td class="num">1Q 236억 (+32% QoQ) 전망</td><td class="num">턴어라운드</td><td class="num">—</td><td>9세대 낸드 SiC 사용량 증가가 모멘텀 (키움)</td></tr>
+  </table></div>
+
+  <h3>2025년 분기 흐름 — 상고하저의 이유</h3>
+  <div class="scrollx"><table>
+    <tr><th>분기</th><th>매출</th><th>영업이익</th><th>OPM</th><th>비고</th></tr>
+    <tr><td>1Q25</td><td class="num">784억 (+32.9%)</td><td class="num">235억 (+35.1%)</td><td class="num">30.0%</td><td>사상 최대 분기 매출 — 중국 SiC 링 + V8 마이그레이션</td></tr>
+    <tr><td>2Q25</td><td class="num">727억 (−7% QoQ)</td><td class="num">195억 (−17% QoQ)</td><td class="num">26.8%</td><td>중국 재고조정 + 원화 강세 + 고정비 — 컨센 하회</td></tr>
+    <tr><td>3Q25</td><td class="num">~776억</td><td class="num">~220억</td><td class="num">~28%</td><td>중국 비중 25%+로 반등</td></tr>
+    <tr><td>4Q25</td><td class="num">~717~727억</td><td class="num">~180~189억</td><td class="num">~25%</td><td><b>중국·장비사 연말 재고조정 + 성과급 일회성</b> (키움 프리뷰)</td></tr>
+    <tr class="hl"><td>1Q26E</td><td class="num">—</td><td class="num">236억 (+32% QoQ)</td><td class="num">—</td><td>재고조정 종료 + 9세대 낸드 — 확정치 미확인</td></tr>
+  </table></div>
+  <p><b>평가:</b> 매출은 2022년 피크를 사실상 회복했는데 영업이익은 839억으로 피크(1,270억)의 66%에 그친다 —
+  <b>경쟁 진입이 깎아간 마진 10%p가 아직 안 돌아왔다는 뜻</b>이다. 그래서 이 종목의 2026~27년 스토리는 단순한 물량 성장이 아니라
+  「특허 승소 → 점유율·단가 회복 → 마진 30%대 복원」의 증명이고, 주가 3.8배 랠리는 그 증명을 선반영한 것이다.
+  분기 패턴도 기억할 것: 중국·장비사 재고조정이 분기 변동성을 만들고(2Q·4Q 실증), 4Q엔 성과급 일회성까지 겹친다.</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 무엇이 실적을 결정하는가</h2>
+  <div class="lead">비포마켓이므로 사슬의 중간에 항상 「램리서치」가 낀다 — 이 회사의 전방은 반도체이기 전에 장비사다.</div>
+
+  <h3>사슬 A · 낸드 고단화 → SiC 소모 증가 <span class="pill up">본진 · 매출 70%</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">낸드 100단대 → 256단+ → <b>9세대(V9·321단급) 전환 본격화</b> — 전환 사이클은 2028년까지 (300단+ 기준)</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">고단화 = 채널홀 식각 강도·시간 급증 → 링 마모 가속 + Si·쿼츠 대비 SiC 채택 확대</div></div>
+    <div class="step"><div class="n"><i>3</i></div><div class="body">램리서치 식각 장비 물량 증가 (낸드 업그레이드 수요가 램 실적의 성장 배경)</div></div>
+    <div class="step final"><div class="n"><i>4</i></div><div class="body"><b>티씨케이 SiC 링 수요 = 낸드 식각 강도의 순수 프록시</b> — 9세대 공정 내 SiC 사용량 증가가 '26년 모멘텀 (키움).
+    솔브레인 인산계(습식)와 같은 이벤트의 건식 버전</div></div>
+  </div>
+
+  <h3>사슬 B · 중국 낸드 (YMTC 등) <span class="pill warn">고성장 · 규제 리스크 동반</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">중국 낸드 증설 + 제품 다변화 → 중국 고객 매출 비중 20% → 25%+ 확대</div></div>
+    <div class="step final"><div class="n"><i>2</i></div><div class="body">양날: 국내 2사 외 고객 다변화(+) vs 미 수출규제의 사정권(−) — 램리서치 중국 매출 약 $7억이 규제 영향권으로 추정된 전례.
+    <b>시리즈 다른 종목엔 없는 「YMTC 직접 베타」</b> — 솔브레인 리포트에서 YMTC를 위협으로 분류했던 것과 정반대 포지션</div></div>
+  </div>
+
+  <h3>사슬 C · 파운드리 SAM 확장 <span class="pill up">리레이팅의 근거</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">무어의 법칙 한계 → 구조 혁신: <b>파운드리 2나노 GAA, 디램 4F2, 3D 구조</b> — 전 영역에서 식각 강도 증가</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">램리서치 Akara(GAA 대응 식각 장비) 출시 — 램의 SAM이 장비 시장의 30% 후반으로 확장 전망</div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">낸드 외 영역의 SiC 링 채택 확대 → <b>「낸드 사이클 주식」에서 「식각 강도 구조 성장주」로 재정의</b> —
+    실제 멀티플이 12~13배에서 급팽창한 논리적 배경</div></div>
+  </div>
+
+  <h3>사슬 D · TaC — 다음 옵션</h3>
+  <p style="font-size:14px">SiC보다 가혹한 환경을 견디는 탄탈륨카바이드 — SiC 전력반도체 에피 공정용으로 국내 유일 공급, 중국·유럽향 진행 중,
+  1~2년 내 유의미한 실적 전망. 아직 숫자는 작지만 「소재 물성의 사다리를 한 칸씩 올라가는」 이 회사의 성장 문법을 보여주는 사업.</p>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 무엇을 언제 보는가</h2>
+  <div class="lead">매크로는 시리즈 공통 대시보드 공유. 티씨케이 고유 지표는 「램리서치·낸드 전환·특허·중국」 네 축이다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 중요한가</th><th>확인처 · 주기</th><th>현재 상태 (2026.7월 초)</th></tr>
+    <tr><td><span class="dot g"></span><b>램리서치 실적·가이던스</b></td><td>비포마켓의 전방은 장비사 — 램의 낸드·중국 발언이 곧 티씨케이 프리뷰</td><td>분기 실적발표 (미국)</td><td>낸드 업그레이드 수요를 성장 배경으로 제시 중</td></tr>
+    <tr><td><span class="dot g"></span><b>낸드 전환투자 일정 (V9·321단)</b></td><td>식각 강도 = SiC 소모의 직접 함수</td><td>디일렉 등 · 수시</td><td>V9 2Q26 착수 — 9세대 SiC 사용량 증가가 '26년 모멘텀</td></tr>
+    <tr><td><span class="dot y"></span><b>디에스테크노 소송 판결</b></td><td>점유율 탈환 스토리의 두 번째 관문</td><td>공시·법원 뉴스 · 수시</td><td>진행 중 — 와이엠씨·와이컴 승소('25.1)로 확률 상승 평가</td></tr>
+    <tr><td><span class="dot y"></span><b>중국·장비사 재고 사이클</b></td><td>분기 변동성의 주범 (2Q·4Q25 실증)</td><td>램 컨콜 재고 발언 · 분기</td><td>4Q25 재고조정 → 1Q26 정상화 국면</td></tr>
+    <tr><td><span class="dot y"></span>미 대중 수출규제</td><td>중국 매출 25%+의 정책 리스크</td><td>미 상무부 발표 · 수시</td><td>램 중국 매출 $7억 규제 영향권 전례 — 확대 여부 감시</td></tr>
+    <tr><td><span class="dot y"></span>원/달러 환율</td><td>수출 비중 높아 원화 강세 = 마진 하락 (2Q25 실증)</td><td>일간</td><td>—</td></tr>
+    <tr><td><span class="dot g"></span>경쟁사 실적 (하나머티리얼즈 등)</td><td>점유율 회복의 교차 검증 — 원익QnC와 같은 방법론</td><td>DART · 분기</td><td>티씨케이 성장률과 상대 비교 필요</td></tr>
+    <tr><td><span class="dot g"></span>메모리 현물가·CapEx (공통)</td><td>사이클 최선행</td><td>트렌드포스 · 일간</td><td>낸드 고정가 급등 지속 — 공통 녹색</td></tr>
+  </table></div>
+
+  <h3>실전 체크 리듬</h3>
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>메모리 현물가 (공통 1차 경보)</li><li>낸드 전환투자·V9 양산 기사</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>고정거래가 + 반도체 수출 (공통)</li><li>대중 수출규제 뉴스 점검</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY</div>
+      <ul><li><b>램리서치 컨콜 정독 (낸드·중국·재고 발언)</b></li><li>분기 OPM 28%+ 유지 + 중국 비중 추이</li><li>경쟁사 성장률 대비 + 소송 진행 확인</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 실적으로 검증</h2>
+  <div class="lead">고정비형 CVD 설비 사업이라 레버리지는 크다 — 문제는 2023년에 그것이 역방향으로, 2025년엔 경쟁·환율에 눌려 작동했다는 것.</div>
+
+  <h3>실증: Incremental Margin (Δ영업이익 ÷ Δ매출)</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>Δ매출</th><th>Δ영업이익</th><th>Inc. Margin</th><th>판정</th></tr>
+    <tr class="hl"><td>2022→2023 (다운)</td><td class="num">−928억</td><td class="num" style="color:var(--down)">−603억</td><td class="num" style="color:var(--down)"><b>65%</b></td><td>시리즈 최강의 역레버리지 — 고정비 + 단가 하락(경쟁 진입) 동시 타격</td></tr>
+    <tr><td>2023→2024 (회복)</td><td class="num">+491억</td><td class="num">+140억</td><td class="num">28.6%</td><td>물량 회복분의 정상 레버리지</td></tr>
+    <tr><td>2024→2025</td><td class="num">+257억</td><td class="num" style="color:var(--warn)">+31억</td><td class="num" style="color:var(--warn)"><b>12%</b></td><td>레버리지 실종 — 원화 강세·중국 믹스·고정비 증가가 흡수</td></tr>
+    <tr><td>1Q26E (QoQ)</td><td class="num">—</td><td class="num">+~50억 (189→236억)</td><td class="num">—</td><td>재고조정 종료발 턴어라운드 (키움 전망)</td></tr>
+  </table></div>
+
+  <div class="formula">구조적 레버리지: 공헌이익률 ~55~65% (2023년 역방향 실측) ÷ OPM 28% ⇒ 잠재 <b>~2배+</b>
+그러나 실현 레버리지는 「단가」에 좌우된다:
+  경쟁·환율이 단가를 누르면 → '25년처럼 12%로 실종
+  특허 승소 → 점유율·단가 회복되면 → 물량 레버리지에 <b>마진 복원(27.8% → 30%대)이 가산</b>
+
+시나리오 (2025년 베이스: 매출 3,014억 · OP 839억)
+  물량 +15% (V9 전환)                    → OP +25~30%
+  물량 +15% + OPM 30% 복원 (점유율 탈환)  → OP <b>+40~45%</b> ← 강세론의 숫자
+  물량 +15% + 환율·경쟁 압박 지속          → OP +15~20% ← '25년의 연장</div>
+
+  <p><b>핵심 통찰:</b> 티씨케이의 레버리지는 물량이 아니라 <b>「단가의 방향」이 스위치</b>다. 2022~23년의 극단적 진폭(±50~65%)은
+  준독점 단가가 경쟁 단가로 무너지는 과정이 물량 사이클과 겹친 결과였고, 지금의 강세 시나리오는 그 역과정 —
+  특허 승소로 단가·점유율이 복원되는 — 에 베팅하는 것이다. 그래서 분기 실적에서 매출 성장률보다
+  <b>OPM이 28% 벽을 뚫고 30%대로 올라서는지</b>가 스토리 검증의 단일 지표다.</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+  <div class="lead">이 종목의 1번 리스크는 업황도 경쟁도 아니라 「가격표」다.</div>
+
+  <div class="risk r1">
+    <span class="impact r1i">멀티플 디레이팅 −30~50%</span>
+    <h4>① 밸류에이션 — 주가가 목표가에 먼저 도착했다 <span class="pill down">현재 점등</span></h4>
+    <p>주가는 52주 저점 81,400원에서 4월 312,000원까지 <b>3.8배</b> 올라 컨센 목표가 평균(30.2만)에 도달했다.
+    2025년 실적 기준 트레일링 PER은 50배 안팎 — 역사 밴드(12~18배, 2021년 프리미엄기 35배)의 상단을 뚫은 자리다.
+    이 가격은 ① 9세대 낸드 소모 증가 ② 점유율 탈환 ③ 파운드리 SAM 확장을 전부 선반영한 것으로,
+    2025년 실적(OP +3.9%)과의 갭이 크다. 실적이 꿈을 따라잡지 못하는 분기가 나오면 — 특히 OPM이 28%에 계속 막히면 —
+    이익이 늘어도 주가가 빠지는 디레이팅 구간이 온다.</p>
+    <div class="alarm"><b>경보</b> — 분기 OPM 28% 하회 지속 · 목표가 상향 랠리 종료 (컨센 정체) · 1Q26 확정치가 키움 전망(236억) 하회</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">이익 임팩트 −40~60%</span>
+    <h4>② 낸드 편중 70% — 시리즈에서 가장 좁은 전방</h4>
+    <p>솔브레인(디램+낸드+파운드리), 한솔(파운드리 40%)과 달리 티씨케이는 낸드 단일 사이클에 70%가 걸려 있다.
+    낸드는 이번 사이클에서 가장 늦게 회복했고, 꺾일 때도 가장 깊게 꺾이는 시장 — 2023년 매출 −29%·이익 −48%가 실측치다.
+    파운드리 SAM 확장(사슬 C)이 이 편중을 희석하는 게 리레이팅의 논리인데, GAA향 매출은 아직 숫자로 검증되지 않았다.
+    여기에 재고 채찍(중국·장비사, 2Q·4Q25 실증)이 분기 진폭을 키운다.</p>
+    <div class="alarm"><b>경보</b> — 낸드 현물가 하락 전환 (공통) · 램리서치 낸드 수주 둔화 발언 · 중국 고객 재고조정 재개</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">스토리 훼손 + 마진 재하락</span>
+    <h4>③ 점유율 탈환 미이행 — 승소가 곧 회복은 아니다</h4>
+    <p>와이엠씨·와이컴 승소는 법적 승리이지 상업적 승리가 아직 아니다. 고객(장비사·칩메이커)은 이미 이원화된 공급망을
+    쉽게 되돌리지 않고, 디에스테크노 소송은 진행 중이며, 하나머티리얼즈라는 대형 경쟁자는 소송 대상도 아니다.
+    항소·라이선스 합의로 경쟁 구도가 사실상 유지될 수도 있다. 점유율·단가 회복이 지연되면 마진 30% 복원 시나리오가 무너지고,
+    리스크 ①(밸류에이션)과 결합해 이중으로 작동한다. 도카이카본 지배구조(배당·이전가격)도 장기 디스카운트 요인.</p>
+    <div class="alarm"><b>경보</b> — 디에스테크노 판결 패소·합의 종결 · 경쟁사 SiC 매출 성장률 &gt; 티씨케이 · OPM 30% 복원 실패 지속</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (2026년 4월 기준)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:10%"><div class="tick"></div><div class="price">81,400원</div><div class="lbl">52주 저점<br>PER 12~13배 시대</div></div>
+      <div class="mk" style="left:40%"><div class="tick"></div><div class="price">165,200</div><div class="lbl">1월 중순<br>(키움 목표 22만 시점)</div></div>
+      <div class="mk" style="left:76%"><div class="tick"></div><div class="price">305,500</div><div class="lbl">4/18 현재<br>트레일링 PER ~50배</div></div>
+      <div class="mk" style="left:92%"><div class="tick"></div><div class="price">30.2만</div><div class="lbl">목표 컨센 평균<br>(20만~40만)</div></div>
+    </div>
+  </div>
+  <p class="note">주가가 목표 컨센 평균과 사실상 일치 — 시리즈 6종 중 유일하게 「상승 여력이 소진된 가격」이다 (Investing.com 기준 −1.25%).
+  지금부터의 수익은 목표가 상향(= 파운드리·점유율 스토리의 숫자 증명)에서만 나온다. 7월 현재가는 미확인 — 재확인 필요.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>3.8배 오른 주가는 무엇을 샀고, 그중 무엇이 아직 숫자가 아닌가?</h4>
+    <p>산 것: ① 9세대 낸드의 SiC 소모 증가 (2Q26부터 숫자로 검증 가능), ② 특허 승소발 점유율·마진 복원 (미검증 —
+    OPM은 아직 27.8%), ③ GAA·4F2 파운드리 SAM 확장 (미검증 — 매출 미발생), ④ TaC (1~2년 뒤).
+    즉 <b>네 겹 중 한 겹만 임박했고 세 겹은 아직 약속</b>인데 가격은 네 겹 값이다.</p>
+    <p>판정법: 단 하나의 숫자 — <b>분기 OPM</b>. 30%대 복원이 확인되면 ②가 증명되며 목표가 상향 사이클이 재개되고,
+    28% 벽에 계속 막히면 ①의 물량 성장만으로는 현 멀티플을 지탱할 수 없다.</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>원익QnC와 티씨케이, 부품 2종은 어떻게 다루나?</h4>
+    <p>둘은 같은 식각 챔버 안에서 싸우는 관계다 — 티씨케이의 SiC가 원익QnC의 쿼츠·Si 영토를 잠식하는 구도.
+    마진(28% vs 6%)과 밸류(PER 50배 vs 14.6배)가 그 구도의 가격표다. 성장의 방향을 사려면 티씨케이,
+    가격의 안전마진을 사려면 원익QnC — 단 지금 시점엔 티씨케이의 안전마진이 소진된 상태라는 게 결정적 차이.</p>
+    <p>이탈 규율: 공통 경보(낸드 현물가) + 티씨케이 고유 —
+    <b style="color:#F2A9BC">OPM 28% 하회 2분기 연속(단가 스토리 훼손), 램리서치 낸드 발언 톤 변화, 목표가 컨센 정체.</b>
+    이 종목은 실적 악화 전에 멀티플이 먼저 꺾이는 유형임을 기억할 것.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>비포마켓의 전방은 장비사</h4>
+      <ul><li>실적 프리뷰 = <b>램리서치 컨콜</b> — 국내 공시보다 먼저, 더 자세히 나온다</li><li>낸드·중국·재고 발언이 티씨케이 분기의 예고편</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>레버리지의 스위치는 「단가」</h4>
+      <ul><li>'22~23년 ±50~65%의 진폭 = 준독점 단가의 붕괴 과정</li><li>강세론 = 그 역과정 베팅 → 검증 지표는 <b>OPM 30% 복원</b> 단 하나</li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>시리즈 유일의 「가격 소진」 종목</h4>
+      <ul><li>주가 = 목표 컨센 평균, 트레일링 PER ~50배</li><li>지금 사는 것은 실적이 아니라 <b>목표가 상향의 지속</b></li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ 부록: 부품 2사 직접 비교 + 시리즈 지도 ═══════════ -->
+<section>
+  <div class="eyebrow">APPENDIX · PARTS HEAD-TO-HEAD</div>
+  <h2>부품 2사 정면 비교 — 같은 챔버, 다른 운명</h2>
+  <div class="scrollx"><table>
+    <tr><th></th><th>원익QnC (쿼츠 — 수성)</th><th>티씨케이 (SiC — 공성)</th></tr>
+    <tr><td>제품 물성</td><td>석영 — 범용, 확산·CVD 튜브 등 영토 넓음</td><td>CVD-SiC — 수명 1.5배+, 식각 파츠에서 쿼츠·Si 잠식 중</td></tr>
+    <tr><td>'25년 매출 / OPM</td><td class="num">9,436억 / 6.3%</td><td class="num">3,014억 / <b>27.8%</b></td></tr>
+    <tr><td>채널</td><td>직납(삼성·하이닉스·TSMC) + 장비사 혼합</td><td><b>비포마켓 순수형 (램리서치 중심)</b></td></tr>
+    <tr><td>전방 편중</td><td>메모리+파운드리+차량·조명(모멘티브)</td><td>메모리 99% · <b>낸드 70%</b> — 최협소</td></tr>
+    <tr><td>해자</td><td>규모·수직계열화 (원재료 과점)</td><td><b>특허 (소송 승소로 재확인)</b></td></tr>
+    <tr><td>밸류에이션</td><td class="num">2026F PER 14.6배 — 할인 상태</td><td class="num">트레일링 ~50배 — <b>목표가 도달</b></td></tr>
+    <tr><td>'26년 스토리</td><td>모멘티브 정상화 + 가동률 (절반 기저)</td><td>V9 소모 증가 + 점유율 탈환 + SAM 확장 (3겹 중 2겹 미검증)</td></tr>
+    <tr><td>고유 경보</td><td>장비사 재고 축소 · 모멘티브 적자</td><td>OPM 28% 벽 · 디에스테크노 판결 · 램 낸드 발언</td></tr>
+    <tr class="hl"><td><b>상호 관계</b></td><td colspan="2" style="text-align:center"><b>티씨케이의 성공(SiC 채택 확대)이 곧 원익QnC의 식각 파츠 잠식 — 한쪽의 사슬 C가 다른 쪽의 리스크 ③</b></td></tr>
+  </table></div>
+  <p class="note">시리즈 7종 지도에서의 자리: 티씨케이 = 「낸드 식각 강도」의 최고 순도 프록시이자 최고 마진 부품사, 그러나 현시점 유일한 가격 소진 종목.
+  포트폴리오 관점에서는 낸드 사이클 초입에 사서 OPM 30% 복원 확인 시 보유, 목표가 정체 + OPM 28% 벽 확인 시 차익 실현이 정합적 플레이북이다.
+  참고: 원익QnC 리포트의 리스크 ③(SiC 대체)과 이 리포트의 사슬 A~C는 같은 현상의 양면이므로 두 리포트를 겹쳐 읽기를 권한다.</p>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·증권사 리포트(키움·유안타·신영·IBK·흥국)·언론 보도 기반의 정리 자료이며 투자 권유가 아닙니다.
+  2025년 연간은 확정치이나 3Q·4Q25 분기 분해는 추정 혼재, 1Q26은 키움 전망치로 확정 공시 미확인입니다.
+  매출 구성(Solid SiC ~78%)은 1Q25 공시(77.6%) 기준이며, 트레일링 PER은 4/18 주가와 2025년 순이익(699억)으로 산출한 근사치입니다.
+  주가·목표가는 2026년 1~4월 기준으로 현재와 다를 수 있습니다. 기준일: 2026년 7월 5일.
+  자매 리포트: 솔브레인 · 이엔에프테크놀로지 · 동진쎄미켐 · 한솔케미칼 · 원익QnC.
+</footer>
+
+</div>
+</body>
+</html>

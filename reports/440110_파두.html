@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파두 (440110) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#4338CA; --accent-soft:#EAE8FB; --accent-deep:#312E81;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(67,56,202,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#B7B3F0;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#C3BFF4;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#B7B3F0;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 팹리스 (SSD 컨트롤러) · 시리즈 8 — 새로운 팩터: 글로벌 eSSD</div>
+  <h1>파두<span class="ticker">KOSDAQ 440110</span></h1>
+  <div class="sub">디자인윈을 파는 회사 — 하한 0의 불연속 구조, 문턱 직후의 극단 레버리지, 그리고 신뢰 복원의 가격</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 07</b></div>
+    <div>주가 (5/11)<b class="figures">100,400원 (1년 +841%)</b></div>
+    <div>목표주가<b class="figures">125,000원 (CGS)</b></div>
+    <div>1Q26 확정<b class="figures">매출 595억 · OP 77억 (첫 흑자전환)</b></div>
+    <div>'26년 공시 수주<b class="figures">누적 ~2,163억 (5월 초)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 파두는 시리즈 7종과 팩터 자체가 다르다. 소재·부품이 「국내 팹 CapEx·가동률」을 탄다면,
+  파두는 <b>「글로벌 eSSD 출하 비트」의 순수 프록시</b>이며, 솔브레인 낸드 사슬의 하류에서 같은 강을 반 발 먼저 탄다
+  (컨트롤러는 SSD 조립 전 발주). 사업의 본질은 디자인윈 장사 — <b>매출 = 디자인윈 × 고객사 SSD 출하 × 단가</b>이고,
+  하한이 0인 불연속 구조다 (2023년 분기 매출 3.2억 실증). 손익은 분기 고정비 ~160~170억의 문턱을 가진 팹리스 구조로,
+  1Q26에 그 문턱을 처음 넘으며 <b>레버리지 3~4배 — 시리즈 최강 배율</b>이 확인됐다.
+  주가는 실적이 아니라 「신뢰 복원 + 2027~28년의 그림」을 사고 있으며, 리스크는 디자인윈 상실·아키텍처 뉴스·
+  재판/CB 희석이라는 비영업 삼중고다. 결론은 종목 선택이 아니라 <b>포지션 사이징의 문제</b>다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">데이터센터용 eSSD 컨트롤러(SSD의 두뇌 SoC)를 설계하는 팹리스. 공장 없이 설계만 하고 생산은 파운드리에 맡긴다 —
+  소재·부품과 달리 「팹이 돌면 소모되는 것」이 아니라 <b>「설계 채택(디자인윈)」을 파는 회사</b>.</div>
+
+  <h3>매출 구성 — 컨트롤러 비중이 곧 수익성의 궤적</h3>
+  <div class="stackbar">
+    <div style="flex:80;background:#4338CA">SSD 컨트롤러 80% (1Q26)</div>
+    <div style="flex:17;background:#8B86E0">SSD 완제품 ~17%</div>
+    <div style="flex:3;background:#D5D2F5"></div>
+  </div>
+  <div class="legend">
+    <span style="--c:#4338CA">컨트롤러: 고마진 주력 — 비중 '24년 55% → '25년 70% → <b>1Q26 80%</b> (CGS: '27년 84% → '28년 87%)</span>
+    <span style="--c:#8B86E0">완제품: 자사 컨트롤러 탑재 SSD — 낸드 매입 원가로 저마진, 의도적 축소 중</span>
+    <span style="--c:#D5D2F5">PMIC(SSD용 전력칩) 2종 양산 — '26년 램프업 개시</span>
+  </div>
+
+  <h3>2단 판매 구조 — 직접 고객과 최종 수요가 다르다</h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">파두 컨트롤러 → <b>낸드 제조사 (SK하이닉스·샌디스크로 알려짐)</b>가 직접 고객</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">낸드사가 파두 칩을 탑재해 eSSD 조립 → <b>메타·구글 등 하이퍼스케일러</b>로 납품 (통상 3년 안팎 다년 계약)</div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">별도 트랙: 완제품 → 대만 마크니카(470억)·글로벌 우주항공(305억) / '27년부터 하이퍼스케일러 <b>직접 공급</b> 개시 전망 (CGS)</div></div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><div class="k">진입장벽</div><h4>빅테크 퀄의 관문 <span class="pill up">통과 완료</span></h4>
+      <ul><li>eSSD 컨트롤러는 <b>빅테크 신뢰성 검증을 통과한 소수 기업만</b> 공급 가능</li><li>Gen5 양산 → <b>Gen6 퀄 통과, 2H26 매출 개시</b> (읽기 28.5GB/s, 690만 IOPS)</li></ul></div>
+    <div class="card"><div class="k">차별화</div><h4>전성비 (전력 대비 성능)</h4>
+      <ul><li>DC 고객은 SSD당 전력 한도 내 최고 성능 요구 — <b>전력 = TCO 직결</b></li><li>전용 하드웨어 가속기로 CPU 의존 최소화 아키텍처 (회사 설명)</li></ul></div>
+    <div class="card"><div class="k">전과 (前科)</div><h4>신뢰의 흠집 <span class="pill down">재판 진행 중</span></h4>
+      <ul><li>2023년 상장 직후 분기 매출 3.2억 쇼크 — <b>'IPO 뻥튀기' 사태</b></li><li>양 대표 자본시장법 위반 기소 ('26.2월 첫 공판) · 거래정지 2개월 후 재개 · 집단소송 계류</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">팹리스의 손익 공식은 소재·부품과 완전히 다르다 — 고정비의 실체가 설비가 아니라 「사람과 설계」다.</div>
+
+  <div class="formula">매출     = 디자인윈 × 고객사 SSD 출하량 × 칩 단가
+매출원가 = 파운드리 웨이퍼 + 패키징·테스트 (변동비) + [완제품] 낸드 매입 (크고 저마진)
+영업이익 = 매출총이익 − <b>R&D·인건비 (거대한 고정비: '24~25년 합계 1,348억 ≈ 같은 기간 매출 1,359억)</b>
+
+⇒ 분기 고정비 <b>~160~170억의 문턱</b> 구조 — 문턱 아래면 적자, 넘는 순간 증분이 그대로 이익
+   1Q26 검산: 매출 595 × GPM ~40% ≈ 240 − 판관비 ~160 = OP 77억 ✓</div>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 변수·약점 (−)</th></tr>
+    <tr>
+      <td>① 빅테크 퀄 진입장벽 — 전 세계 소수 기업의 과점적 시장<br>
+      ② 전성비 차별화의 단가 프리미엄 + 세대 전환마다 신제품 프리미엄으로 단가 리셋<br>
+      ③ 컨트롤러 믹스 상승 (55→70→80%) = 전사 마진 개선의 축<br>
+      ④ Gen6 마지막 개발비 110억 4Q25 집행 완료 — <b>"판관비 증가 없이 매출 증가" 구간 진입</b><br>
+      ⑤ Gen7 개발비 고객 분담 검토 — 성사 시 사업모델 최대 약점의 구조적 완화 + 락인 신호</td>
+      <td>① 완제품의 낸드 원가 역풍 — 낸드 18개월 연속 상승 국면에서 판가 전가 시차<br>
+      ② Gen7 개발비 재개 — 분담 협상 결렬 시 고정비 문턱 재상승 (동진의 R&D 스위치 극단판)<br>
+      ③ 낸드사 2곳 집중의 협상력 열위 — 단가 인하 요구에 취약한 을(乙) 포지션<br>
+      ④ 세대 전환 패배 시 해당 세대 R&D 전액 매몰</td>
+    </tr>
+  </table></div>
+  <p class="note">낸드 가격 급등의 역설: 완제품 원가엔 마이너스, 낸드사의 eSSD 증산 의욕(=컨트롤러 수요)엔 플러스 —
+  그리고 회사는 마이너스 쪽 사업을 줄이는 중이라 순효과는 갈수록 플러스로 기운다.</p>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 실적 그래프가 아니라 신뢰 그래프</h2>
+  <div class="lead">2022년 564억 → 2023년 3분기 3.2억의 진폭은 업황이 아니라 단일 고객 의존의 붕괴였다. 회복의 평가 기준은 「얼마나 컸나」가 아니라 「같은 구조인가」다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>매출</th><th>YoY</th><th>영업이익</th><th>해설</th></tr>
+    <tr><td>2022</td><td class="num">564억</td><td class="num">급증</td><td class="num">~−15억 (BEP 근접)</td><td>SK하이닉스향 Gen4 대량 공급 — IPO의 근거</td></tr>
+    <tr><td>2023</td><td class="num">224억</td><td class="num" style="color:var(--down)"><b>−60%</b></td><td class="num">대규모 적자</td><td><b>3Q23 매출 3.2억</b> — 주 고객 발주 중단, 뻥튀기 사태</td></tr>
+    <tr><td>2024</td><td class="num">434억</td><td class="num">+93%</td><td class="num" style="color:var(--down)">−950억</td><td>Gen5·Gen6 <b>동시 개발</b> 투자의 해 — 손실 확대는 투자 결정</td></tr>
+    <tr><td>2025</td><td class="num">924억</td><td class="num" style="color:var(--up)"><b>+113%</b></td><td class="num">−617억 (−35% 개선)</td><td>창사 최대 · 4Q에 Gen6 마지막 개발비 110억 집행</td></tr>
+    <tr class="hl"><td>1Q26</td><td class="num"><b>595억 (분기)</b></td><td class="num">—</td><td class="num" style="color:var(--up)"><b>+77억 (OPM 13%)</b></td><td>첫 의미 있는 흑자 — 분기 매출이 '24년 연간의 1.4배</td></tr>
+    <tr><td>2026E (CGS)</td><td class="num">3,040억</td><td class="num">+229%</td><td class="num">442억</td><td>첫 연간 흑자 후보 — 수주 잔고+공시 수주가 기반</td></tr>
+  </table></div>
+
+  <h3>구조가 달라졌다는 세 가지 증거 — 그리고 남은 흠집</h3>
+  <div class="cards">
+    <div class="card"><div class="k">증거 ①·②</div><h4>고객과 믹스</h4>
+      <ul><li>단일 낸드사 → <b>복수 낸드사 + 하이퍼스케일러·우주항공·대만 유통</b></li><li>컨트롤러 55→80% 고마진 재편 — 2023년형 붕괴는 이제 여러 고객이 동시에 끊어야 재연</li></ul></div>
+    <div class="card"><div class="k">증거 ③</div><h4>공시로 찍히는 가시성</h4>
+      <ul><li>'25년말 수주잔고 $70M (~1,060억)</li><li>'26년 공시 수주 누적 ~2,163억 (1월 컨트롤러 203억+완제품 470억, 2월 우주항공 305억, 5월 낸드사 500억)</li></ul></div>
+    <div class="card"><div class="k">흠집</div><h4>아직 검증 안 된 것들</h4>
+      <ul><li><b>연간 흑자 전무</b> ('26년이 첫 후보) · 흑자는 아직 1개 분기</li><li>CB 7건 누적 — 잠재 희석 · 다운사이클 생존력 미검증</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 어떤 강을 타는가</h2>
+  <div class="lead">직접 변수는 낸드 「가격」도 「웨이퍼 투입」도 아닌 <b>「낸드사들의 eSSD 조립·출하 계획」</b>이다. 컨트롤러는 조립 전 발주 — eSSD 출하를 수개월 선행하는 자리.</div>
+
+  <h3>사슬 A · AI 추론 → 스토리지 병목 → eSSD <span class="pill up">핵심 사슬 · 진행 중</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">AI가 학습→추론으로 이동, LLM 콘텍스트 폭증 → <b>엔비디아 ICMS 제시</b> — "콘텍스트가 새 병목"</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">HDD 부족 + 니어라인 대체 → 하이퍼스케일러 eSSD/QLC 주문 폭증 ('26년 4사 AI 지출 $6,000억 중 스토리지 30%+)</div></div>
+    <div class="step"><div class="n"><i>3</i></div><div class="body">낸드사(SK하이닉스·샌디스크)의 eSSD 출하 계획 확대 — 샌디스크 DC 매출 QoQ +233%</div></div>
+    <div class="step final"><div class="n"><i>4</i></div><div class="body">SSD 한 대당 컨트롤러 1개 — <b>조립 전 선행 발주 → 파두 수주 공시 → 분기 매출</b> (1Q26 흑자의 원천)</div></div>
+  </div>
+
+  <h3>사슬 B · Gen5→Gen6 세대 전환 <span class="pill up">2H26 개시</span> / 사슬 C · 낸드 웨이퍼 램프 <span class="pill neutral">2027</span> / 사슬 D · 고객 확장 <span class="pill warn">'26~27 검증</span></h3>
+  <div class="scrollx"><table>
+    <tr><th>사슬</th><th>내용</th><th>성격 · 시점</th></tr>
+    <tr><td>B. 세대 전환</td><td>서버 플랫폼의 PCIe Gen6 채택 → 컨트롤러 전량 교체 + 신제품 프리미엄. 파두 Gen6 퀄 완료 → 2H26 매출</td><td>구조적 (사이클 독립) — 단 전환기마다 디자인윈 경쟁 리셋의 양날</td></tr>
+    <tr><td>C. 웨이퍼 램프</td><td>낸드 신규 캐파 2027년 이후 → 비트 물량의 천장 확장. <b>솔브레인 인산계와 같은 강의 상·하류</b> — 파두가 반 발 빠름</td><td>2027년 — 시리즈와의 유일한 접점</td></tr>
+    <tr><td>D. 고객 확장</td><td>하이퍼스케일러 2곳+낸드사 1곳 추가 가능(연내), '27년 직접 공급 (CGS) + PMIC 램프</td><td>성장 기여 이상으로 <b>리스크 구조(고객 집중)를 바꾸는 의미</b></td></tr>
+  </table></div>
+  <p class="note"><b>팩터 선언</b>: 파두는 「국내 메모리 CapEx」가 아니라 「글로벌 eSSD 출하 비트」의 순수 프록시 — 시리즈 7종과 상관이 낮아
+  분산 가치가 있고, 대신 팹리스 특유의 진폭(하한 0)이 대가다. 같은 팩터의 동승자는 국내가 아니라 샌디스크·키옥시아·실리콘모션이다 (부록 참조).</p>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 미국 이벤트 캘린더 중심으로</h2>
+  <div class="lead">이 종목의 프리뷰는 국내에 없다 — 샌디스크 실적이 파두 분기의 예고편이고, 엔비디아 플랫폼 발언이 최대 뇌관이다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처 · 주기</th><th>현재 상태 (2026.7월 초)</th></tr>
+    <tr><td><span class="dot g"></span><b>파두 수주 공시</b></td><td>매출의 직접 예고편 (조립 전 발주)</td><td>DART · 수시 · 무료</td><td class="num">누적 ~2,163억 (5월) — '25년 매출의 2.3배</td></tr>
+    <tr><td><span class="dot g"></span><b>샌디스크 분기 실적·DC 매출</b></td><td>직접 고객의 eSSD 출하 = 컨트롤러 소요 프리뷰</td><td>미국 실적발표 · 분기 · 무료</td><td class="num">DC $14.7억 (QoQ +233%) · 가이던스 최대 $82.5억 · GPM 78.4%</td></tr>
+    <tr><td><span class="dot g"></span>eSSD 계약가격</td><td>낸드사의 증산·조립 의욕</td><td>트렌드포스 보도 · 분기</td><td class="num">1Q26 +33~38% QoQ · 3Q26 +30% 전망 (MS)</td></tr>
+    <tr><td><span class="dot g"></span>SK하이닉스 컨콜 낸드·eSSD 발언</td><td>또 하나의 직접 고객</td><td>분기 · 무료</td><td>낸드 가동률 ~98%, eSSD 중심 운영</td></tr>
+    <tr><td><span class="dot y"></span><b>엔비디아 플랫폼·스토리지 발언</b></td><td>최종 수요의 최선행이자 <b>양방향 뇌관</b></td><td>CES·GTC·컨콜 · 수시</td><td>ICMS로 리레이팅 주도 — 단 6월 Rubin 루머 하나에 샌디스크 −11%</td></tr>
+    <tr><td><span class="dot g"></span>하이퍼스케일러 CapEx (스토리지 배분)</td><td>수요의 원천</td><td>빅테크 컨콜 · 분기</td><td class="num">'26년 $6,000억 · 스토리지 30%+</td></tr>
+    <tr><td><span class="dot g"></span>파두 분기보고서 (컨트롤러 비중·판관비)</td><td>믹스·문턱의 실측 (섹션 6)</td><td>DART · 분기</td><td class="num">컨트롤러 80% · OPM 13%</td></tr>
+    <tr><td><span class="dot y"></span><b>CB 전환청구·재판 공시</b></td><td>희석·거버넌스의 조기 신호</td><td>DART · 수시</td><td>재판 진행 중 ('26.2 첫 공판) · CB 7건 — 전환 현황 추적 필요</td></tr>
+  </table></div>
+
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>DART 파두 공시 알림 (수주=호재 / 전환·소송=악재, 같은 창)</li><li>샌디스크·엔비디아 뉴스 플로우 (샌디스크 = 파두의 실시간 프록시)</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>낸드 고정가 (월말) · eSSD 시황</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY — 한 세트</div>
+      <ul><li>① 샌디스크 실적 (예고편) → ② SK하이닉스 컨콜 → ③ 파두 분기보고서 (비중·판관비 검증)</li></ul></div>
+  </div>
+  <p class="note">종합 판독: 수요 지표는 전부 녹색을 넘어 과열 (신규 낸드 캐파 2027년 이후 · 공급부족 지속 전망).
+  단 「좋은가」의 국면은 지났고 <b>「기대만큼 좋은가」의 국면</b> — 지표 악화가 아닌 기대 미달만으로도 주가가 크게 반응하는 위치다.</p>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 문턱 직후, 시리즈 최강 배율</h2>
+  <div class="lead">팹리스의 「가동률·CAPA」 자리에는 R&D 사이클이 들어간다. 지금은 문턱(분기 고정비 ~170억)을 갓 넘은, 배율이 가장 극단적인 구간이다.</div>
+
+  <h3>분기 레버리지 실측 (일부 역산 추정 포함)</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>매출</th><th>영업이익</th><th>Δ매출</th><th>ΔOP</th><th>Inc. Margin</th></tr>
+    <tr><td>3Q24 (확정)</td><td class="num">101억</td><td class="num" style="color:var(--down)">−305억</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+    <tr><td>3Q25 (확정)</td><td class="num">256억</td><td class="num">−114억</td><td class="num">+155억 (YoY)</td><td class="num">+191억</td><td class="num">123% (비용 축소 동반 — 왜곡)</td></tr>
+    <tr><td>4Q25 (역산)</td><td class="num">~285억</td><td class="num">~−170억</td><td class="num">+29억</td><td class="num">−56억</td><td class="num">Gen6 개발비 110억 오염</td></tr>
+    <tr class="hl"><td><b>1Q26 (확정)</b></td><td class="num"><b>595억</b></td><td class="num" style="color:var(--up)"><b>+77억</b></td><td class="num">+310억 (QoQ)</td><td class="num">+247억</td><td class="num"><b>~80% (일회성 제거 시 ~45%)</b></td></tr>
+    <tr><td>'25→'26E (CGS)</td><td class="num">924→3,040억</td><td class="num">−617→+442억</td><td class="num">+2,116억</td><td class="num">+1,059억</td><td class="num"><b>50%</b></td></tr>
+  </table></div>
+
+  <div class="formula">검증 결과: incremental margin <b>45~50%</b> — 소재 4사(24~35%)의 1.5~2배, 시리즈 최고
+현재 OPM 13% ⇒ 레버리지 배율(GPM÷OPM) <b>3~4배</b> — 문턱 직후가 배율의 극대점 (OPM 상승과 함께 자연 감소)
+
+시나리오 (1Q26 연환산: 매출 ~2,380억 · OP ~310억)
+  매출 +10% → 영업이익 <b>+35~50%</b>
+  매출 +20% → 영업이익 <b>+70~100%</b>
+  CGS '26E 경로 (+229%) → 적자→442억 (사실상 무한대 증익)</div>
+
+  <p><b>조건 두 가지 (분기보고서 두 줄로 검증):</b> ① <b>컨트롤러 믹스 유지</b> — 저마진 완제품 수주(마크니카 470억 등)가 몰리는
+  분기엔 매출이 커도 incremental margin이 30%대로 출렁일 수 있다. 분기 체크는 매출 서프라이즈보다 컨트롤러 비중이 먼저다.
+  ② <b>R&D 문턱 동결</b> — Gen6 개발비 종료로 "판관비 증가 없는 매출 성장" 구간이나, Gen7 단독 부담 회귀 시 문턱이 계단식으로
+  오른다 (NH도 단기 비용 부담 지속 가능성 지적). 물리적 제약은 자사가 아니라 공급망 — 파운드리 슬롯과 완제품용 낸드 조달(쇼티지 국면).
+  요약: <b>레버리지 스토리로서의 파두는 지금부터 4~6개 분기가 절정이다.</b></p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 불연속 구조의 세 시나리오</h2>
+  <div class="lead">소재·부품의 하방이 「가동률 하락」이라는 연속 변수라면, 팹리스의 하방은 「디자인윈 상실」이라는 불연속 변수다 — 매출이 서서히 줄지 않고 계단으로 꺼진다.</div>
+
+  <div class="risk r1">
+    <span class="impact r1i">매출 계단식 붕괴 (하한 0)</span>
+    <h4>① 고객 이탈·디자인윈 상실 — 2023년의 재연</h4>
+    <p>세 경로: 낸드사의 <b>인하우스 회귀</b> (물량이 클수록 내재화 유인 증가), 마벨·실리콘모션 등으로의 <b>이원화</b>,
+    <b>세대 전환 패배</b> (해당 세대 물량 통째 상실 + R&D 매몰). 하한이 0임은 이 회사 자신이 2023년(3.2억)에 증명했다.
+    현재는 미발동 — 오히려 고객이 늘어나는 국면이며, 고객 확장(사슬 D)의 속도가 이 리스크의 완화 속도다.</p>
+    <div class="alarm"><b>경보</b> — <b>분기 내 신규 수주 공시의 공백 (1급)</b> · 주요 고객 비중 급변 · 경쟁 팹리스의 낸드사향 수주 발표 · 낸드사 컨콜의 "자체 솔루션" 언급</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">−40~60% + 레버리지 역방향</span>
+    <h4>② eSSD 사이클·아키텍처 반전 — 예고가 짧은 하방</h4>
+    <p>사이클 갈래: 하이퍼스케일러 CapEx 둔화 또는 '27~28년 낸드 신규 캐파발 과잉 시 컨트롤러 발주가 먼저 잘린다
+    (선행 발주 = 하강도 반 발 먼저). 아키텍처 갈래가 더 예측 불가 — 6월 엔비디아 Rubin 루머 하나에 샌디스크가 하루 −11%.
+    파두는 이 팩터의 레버리지 3~4배 버전이라 같은 뉴스에 더 크게 반응한다.</p>
+    <div class="alarm"><b>경보</b> — 샌디스크 가이던스 하향 (파두의 프리뷰) · eSSD 계약가 상승률 둔화→하락 전환 · 엔비디아 스토리지 계층 변경 신호 · 하이퍼스케일러 CapEx 하향</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">실적 무관 −30~50% · 부분 점등</span>
+    <h4>③ 재판·희석·밸류에이션 — 비영업 삼중고</h4>
+    <p><b>재판</b>: 양 대표 자본시장법 위반 기소, '26.2월 첫 공판 — 유죄 시 경영 공백·집단소송 배상 리스크.
+    <b>희석</b>: CB 7건 누적 + 주가 +841%로 전환 유인 극대화 — 전환 청구 러시 시 물량·EPS 이중 부담.
+    <b>밸류</b>: 시총(약 4.9조 추정 — 주식수 확인 필요, 확실하지 않음)은 CGS '26E OP 442억의 100배+ —
+    현 주가는 '26년이 아니라 <b>'27~28년(컨트롤러 87%·직접 공급)을 당겨 산 가격</b>이며, 어느 고리든 지연되면
+    티씨케이형 「이익이 늘어도 멀티플이 깎이는」 디레이팅이 온다.</p>
+    <div class="alarm"><b>경보</b> — 재판 기일·판결 공시 · 전환청구 개시와 규모 · 목표가 상향 랠리 정체 · 대주주·초기투자자 블록딜</div>
+  </div>
+
+  <p class="note"><b>관리 방식의 전환</b>: 세 시나리오의 경보가 전부 공시·뉴스 이벤트형 — 소재·부품이 「지표의 추세」 감시라면
+  파두는 <b>「이벤트 캘린더」 관리</b>다. 재판 기일·샌디스크 실적일·수주 공시 주기를 달력에 박아둘 것.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>이 주가는 실적을 사는가, 신뢰의 복원을 사는가 — 답: 후자다</h4>
+    <p>주가 10만원은 '26년 흑자가 아니라 '27~28년의 그림(컨트롤러 87%, 직접 공급, 세대 연승)에
+    「상폐 위기 → 정상 기업」 디스카운트 해소분을 얹은 가격이다. 그래서 분기 체크는 서프라이즈 크기가 아니라 <b>신뢰의 축적 속도</b>를 잰다.</p>
+    <p>검증 순서: ① 2Q26 연속 흑자 (한 분기는 우연일 수 있다) → ② 컨트롤러 비중 75%+ 유지 → ③ 수주 공시 리듬 유지 →
+    ④ 2H26 Gen6 첫 매출 → ⑤ 재판의 무난한 경과. 다섯이 순서대로 쌓이면 '27년 그림이 컨센으로 승격되고,
+    ③·⑤가 삐끗하면 선반영분이 먼저 빠진다. <b>티씨케이와 같은 「가격이 증명을 앞서간」 유형 — 단 증명 목록에 '전과 극복'까지 있다.</b></p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>포트폴리오에서 올바른 크기는 — 종목 선택이 아니라 사이징의 문제</h4>
+    <p>세 질문 프레임 대입: 강도 <b>최상</b> (3~4배, 문턱 직후) / 룸 <b>판단 곤란</b> (이익 폭발 vs 선반영) / 변수 <b>최다</b>
+    (디자인윈·아키텍처·재판·희석) — 한솔케미칼의 정반대 극. 이런 프로파일의 정답은 「틀려도 포트폴리오가 안 아픈 크기」의 새틀라이트다.
+    소재·부품 코어와 팩터 상관이 낮아 분산 가치는 있다 (동승자는 샌디스크·키옥시아 쪽).</p>
+    <p>이탈 규율 (이벤트형): <b style="color:#B7B3F0">수주 공시 1분기 공백 = 경계 · 샌디스크 가이던스 하향 = 축소 ·
+    재판 유죄/대량 전환청구 = 실적 무관 이탈.</b> 반대로 완제품 인식 분기의 마진 착시, 아키텍처 루머발 동반 급락은 사슬이 멀쩡하면 검토 기회.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>팹리스의 하한은 0이다</h4>
+      <ul><li>디자인윈을 잃으면 매출이 계단으로 꺼진다 — 2023년 3.2억은 사고가 아니라 <b>사업모델의 물성</b></li><li>이기면 세대 수명(2~4년)만큼 물량이 잠긴다</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>문턱 직후가 레버리지의 극대점</h4>
+      <ul><li>분기 고정비 ~170억을 1Q26에 갓 넘어 배율 3~4배 — 시리즈 최강</li><li><b>지금부터 4~6개 분기가 레버리지 스토리의 절정</b></li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>프리뷰는 국내에 없다</h4>
+      <ul><li>샌디스크 실적 = 파두 분기의 예고편 · 엔비디아 발언 = 뇌관</li><li>대시보드를 <b>미국 이벤트 캘린더 중심</b>으로 짜야 하는 유일한 종목</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ 부록: 같은 팩터의 좌석 배치도 ═══════════ -->
+<section>
+  <div class="eyebrow">APPENDIX · GLOBAL PEERS</div>
+  <h2>같은 강, 다른 좌석 — 글로벌 eSSD 팩터의 배치도</h2>
+  <div class="lead">파두의 비교군은 국내 소재·부품이 아니라 이 표다. 좌석은 셋 — 비트를 소유한 자(낸드사), 칩을 파는 자(팹리스), 그 중간(모듈 하이브리드).</div>
+
+  <div class="scrollx"><table>
+    <tr><th></th><th>샌디스크 (낸드사)</th><th>파이슨 (컨트롤러+모듈)</th><th>실리콘모션 (컨트롤러·클라이언트 중심)</th><th class="hl-col"><b>파두 (컨트롤러·엔터프라이즈 순수)</b></th></tr>
+    <tr><td>최근 분기 매출</td><td class="num">$59.5억 (+251% YoY)</td><td class="num">1Q26 NT$410억 (+196%) 사상 최대</td><td class="num">~$3.4억 (2Q 가이드 +15~20%)</td><td class="num">595억원 · 첫 흑자</td></tr>
+    <tr><td>수익성</td><td class="num"><b>GPM 78.4% · OPM 70.9%</b></td><td class="num">모듈 포함으로 희석</td><td class="num">GPM ~49% · OPM 21~22%</td><td class="num">OPM 13% (문턱 직후)</td></tr>
+    <tr><td>eSSD/DC 노출</td><td class="num">DC 25% · QoQ +233%</td><td class="num">확장 중 (aiDAPTIV)</td><td class="num">MonTitan '26년 5~10% 목표</td><td class="num"><b>~100% 전업</b></td></tr>
+    <tr><td>낸드 가격 레버리지</td><td><b>직접 소유</b> (eSSD향 칩 +100%)</td><td>부분 (모듈 재고이익 — 착시 주의)</td><td>없음 — 수량×믹스만</td><td>없음 — 수량×디자인윈만</td></tr>
+    <tr><td>쇼티지의 작용</td><td>순풍의 본체</td><td>소비자 조달 리스크 병존</td><td><b>클라이언트 역풍</b> ("리테일 SSD 소멸") vs 고가 믹스 방어</td><td><b>재배분의 순수 수혜 지대</b></td></tr>
+    <tr><td>주가·밸류</td><td class="num">$1,821 · 분사 후 +6,500% · fwd PER ~23배</td><td class="num">사상 최대 매출 랠리</td><td class="num">MS 목표 $400 상향</td><td class="num">+841% · '26E 매출 대비 ~16배 (최고 배수)</td></tr>
+  </table></div>
+
+  <h3>이 팩터를 사는 4가지 방법</h3>
+  <div class="scrollx"><table>
+    <tr><th>사고 싶은 것</th><th>최적 도구</th><th>근거</th><th>대가</th></tr>
+    <tr><td>낸드 <b>가격</b> 레버리지</td><td>샌디스크·키옥시아 (+326% YTD)</td><td>GPM 78% · $42B 장기계약 ('27년 생산 1/3)</td><td>이미 +6,500% · 아키텍처 루머 민감 (6월 −11%)</td></tr>
+    <tr><td>eSSD <b>물량</b> + 안정성</td><td>실리콘모션</td><td>흑자 체력 · MonTitan 옵션 · 상대 저배수</td><td>클라이언트 역풍 상쇄 필요 · 엔터프라이즈 아직 5~10%</td></tr>
+    <tr><td>쇼티지 <b>매출 폭발</b></td><td>파이슨</td><td>+196% · AI 스토리지 확장</td><td>모듈 재고이익 착시 · 소비자 조달 리스크</td></tr>
+    <tr class="hl"><td>엔터프라이즈 <b>순도 × 레버리지</b></td><td><b>파두</b></td><td>유일한 eSSD 전업 + 문턱 직후 3~4배 + 한국 상장 유일</td><td>고객 집중 · 재판·희석 · 최고 배수</td></tr>
+  </table></div>
+
+  <p class="note"><b>실전 함의 셋.</b> ① 파두의 밸류에이션 준거는 국내가 아니라 이 표다 — 프리미엄의 근거는 「순도+성장률」이며,
+  유지되려면 분기마다 SIMO MonTitan의 램프 속도보다 빨리 커야 한다 (<b>MonTitan 가속 = 파두 프리미엄 침식의 새 감시 지표</b>).
+  ② 샌디스크와 파두는 대체재가 아니라 보완재 — 하나는 가격, 하나는 수량×레버리지. 이 팩터에 크게 베팅한다면 낸드사+파두 조합이 단독보다 안정적.
+  ③ 수급 전망(MS: '26년 −15% → '27년 −9% 부족)은 팩터의 유효기간이 최소 '27년임을 시사하나, YMTC 증설×AI 성장률 조합에 따라
+  과잉 회귀 가능하다는 매트릭스가 병기됐고 소비자 쪽 주문 삭감은 이미 시작 — 화려한 사이클의 균열 씨앗이다.</p>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·CGS인터내셔널·NH·모건스탠리 리포트·언론 보도(디일렉·톰스하드웨어 등) 기반의 정리 자료이며 투자 권유가 아닙니다.
+  1Q26·연간 확정치 외 분기 분해(1~2Q25·4Q25)는 역산 추정, 제품별 GPM·시가총액은 추정입니다 (주식수 확인 필요).
+  글로벌 피어 수치는 각사 공시·실적발표 기준이나 시점이 상이합니다(1~7월 혼재). 주가는 파두 5/11, 샌디스크 7/6 기준.
+  숙제로 남긴 것: CB 7건 전환가·잔액 전수조사, 4Q25·2Q26 확정치 레버리지 보정, 수주공시→매출 전환율 매핑.
+  기준일: 2026년 7월 7일. 자매 리포트: 솔브레인 · 이엔에프테크놀로지 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스.
+</footer>
+
+</div>
+</body>
+</html>

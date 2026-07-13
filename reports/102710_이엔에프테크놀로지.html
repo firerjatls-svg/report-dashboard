@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이엔에프테크놀로지 (102710) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#A16207; --accent-soft:#F7F0DE; --accent-deep:#7A4A0E;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(161,98,7,.38)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#E3B96A;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#F0C87A;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#E3B96A;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 반도체 소재 · 시리즈 2/2</div>
+  <h1>이엔에프테크놀로지<span class="ticker">KOSDAQ 102710</span></h1>
+  <div class="sub">최저 밸류의 도전자 — 신규 팹 침투 · 불산 내재화 · HSN 진입의 3중 성장축 검증</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 05</b></div>
+    <div>주가 (2월 중순)<b class="figures">53,500~61,000원</b></div>
+    <div>시가총액<b class="figures">약 7,600억원</b></div>
+    <div>2026E 영업이익<b class="figures">970~1,014억 (+24~30%)</b></div>
+    <div>PER<b class="figures">12.5배 (6월 기준 · 동종 최저 유지)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 손익 공식은 솔브레인과 동일하되(웨이퍼 투입량 × 사용량 × 단가), 이엔에프의 이익은
+  <b>3중 축</b>으로 움직인다: <b>① 물량 Q</b>(신규 디램 팹 침투 + HSN 신규 진입), <b>② 원가 C</b>(불산 내재화로 식각액 마진 +10%p),
+  <b>③ 사이클</b>. 얇은 마진 베이스(OPM 10~12%) 위에서 <b>레버리지는 약 2.5~3배</b> — 솔브레인(2배)보다 탄력이 크고, 그만큼 하방도 깊다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">2000년 설립·2009년 상장. 디스플레이 소재사에서 출발해 반도체 소재사로 체질 전환 중 (모회사: 한국알콜산업 외 35.6%).</div>
+
+  <h3>매출 구성 (2025년, 매출 6,709억원)</h3>
+  <div class="stackbar">
+    <div style="flex:65;background:#A16207">반도체 65%</div>
+    <div style="flex:35;background:#C4A265">디스플레이·기타 35%</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#A16207">반도체: 식각액·신너·박리액·PR원료·CMP 슬러리 — 2020년 55% → 2025년 65%로 확대</span>
+    <span style="--c:#C4A265">디스플레이: 컬러페이스트·박리액 (LGD·중국 패널사)</span>
+  </div>
+  <p class="note">NH투자증권: "반도체 비중 65% — 이제는 완전한 반도체 소재 업체로 인식". 단 35%의 디스플레이 꼬리는 솔브레인(14%)보다 무겁다.</p>
+
+  <h3>제품 4개 군 — 「범용 침투 + 원료 수직계열화」가 정체성</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">프로세스케미칼 (주력)</div>
+      <h4>식각액·신너·박리액 <span class="pill neutral">범용·점유 확대형</span></h4>
+      <ul>
+        <li>포지션 <b>불산계 식각액 — 솔브레인 독점을 20~30%까지 침투한 도전자</b></li>
+        <li>고객 <b>삼성전자·SK하이닉스 (디램/낸드), 반도체 내 디램 노출 ~65%</b></li>
+        <li>신규 <b>HBM향 신너·스트리퍼·에천트 (TSV 공정)</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">화인케미칼</div>
+      <h4>PR 핵심원료 <span class="pill up">B2B 소재의 소재</span></h4>
+      <ul>
+        <li>제품 <b>모노머·폴리머·PAG (ArF급)</b></li>
+        <li>고객 <b>미국·일본 소재업체 + 국내 DP</b></li>
+        <li>의미 <b>합성·정제 원천기술의 증거</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">CMP 슬러리</div>
+      <h4>유비머티리얼즈 (60.75%) <span class="pill up">낸드 고단화 수혜</span></h4>
+      <ul>
+        <li>드라이버 <b>낸드 단수↑ → CMP 스텝 수↑</b></li>
+        <li>특화 <b>ACL층 정밀 제거용 특수 슬러리</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">팸테크놀로지 (신규 편입)</div>
+      <h4>고순도 불산 내재화 <span class="pill up">2026.2월 연결 완료</span></h4>
+      <ul>
+        <li>구조 <b>일본 모리타케미칼 지분 인수 → HF 습식 케미칼 수직계열화 완성</b></li>
+        <li>효과 <b>식각액 마진 +10%p (전사 +1~2%p), 2H26 본격화</b></li>
+        <li>부수 <b>2Q26부터 고객사향 원료 자체 판매 매출</b></li>
+      </ul>
+    </div>
+  </div>
+  <p><b>생산 거점:</b> 울산·아산·천안 + 중국 광저우·우한 + 미국 텍사스(오스틴/카일 — 삼성 팹 인접) + 예산 산단 318억 신규 투자.
+  솔브레인처럼 PO 기반 소모품 반복 매출 구조이며, 리드타임 짧아 고객사 가동률이 1분기 내 매출 반영.</p>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">범용 소재는 단가 협상력이 약하다 → 그래서 이 회사의 마진 전략은 「가격」이 아니라 「원가」다.</div>
+
+  <div class="formula">매출     = 웨이퍼 투입량 × 웨이퍼당 사용량 × 단가(범용 = 협상력 약함)
+영업이익 = 매출 − <b>변동비(원재료 — 내재화로 절감 중)</b> − 고정비(공장·감가상각)
+⇒ 공헌이익률 25~38% ÷ OPM 10~12% → <b>레버리지 ≈ 2.5~3배</b> (솔브레인 2배보다 탄력↑)</div>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 지렛대 (+)</th><th>마진의 약점 (−)</th></tr>
+    <tr>
+      <td>① <b>불산 내재화</b> — 팸테크 편입으로 식각액 마진 +10%p 예상 (2H26)<br>② 고마진 신규 제품 믹스 — HBM향 신너·스트리퍼, HSN<br>③ 원료 외판 매출 신설 (2Q26~)<br>④ 2021~23년 한 자릿수 OPM → 2025년 11.6% 「체질 개선」 진행형</td>
+      <td>① 범용 소재의 낮은 단가 협상력 — 독점 제품 부재<br>② 원재료 급등 전가 시차 (중동발 황산·무수불산 조달비 상승 사례)<br>③ 감가상각 증가 사이클 — 3Q25 비용 증가로 주가 고점 대비 30% 조정<br>④ 디스플레이 35%의 구조적 저마진</td>
+    </tr>
+  </table></div>
+  <p class="note">솔브레인과의 결정적 차이: 솔브레인은 「독점 제품의 가격」으로, 이엔에프는 「수직계열화의 원가」로 마진을 만든다.
+  전자는 사이클에 강하고, 후자는 사이클과 무관하게 쌓이는 대신 완성까지 실행 리스크를 진다.</p>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 잘하고 있는가</h2>
+  <div class="lead">솔브레인보다 진폭이 큰 5년: 2022년 급증 → 2023년 순손실 → 2024~25년 체질 개선 → 2026년 사상 최대 경신 중.</div>
+
+  <h3>연간 매출 추이 (억원)</h3>
+  <div class="hbar">
+    <div class="row"><div class="lb">2021</div><div class="tr"><div class="fill pos" style="width:63%">5,218</div></div></div>
+    <div class="row"><div class="lb">2022 <span class="figures">+30%</span></div><div class="tr"><div class="fill pos" style="width:82%">6,802</div></div></div>
+    <div class="row"><div class="lb">2023 <span class="figures">−15.5%</span></div><div class="tr"><div class="fill neg" style="width:69%">5,748</div></div></div>
+    <div class="row"><div class="lb">2024</div><div class="tr"><div class="fill pos" style="width:70%">5,824</div></div></div>
+    <div class="row"><div class="lb">2025</div><div class="tr"><div class="fill pos" style="width:81%">6,709</div></div></div>
+    <div class="row"><div class="lb">2026E</div><div class="tr"><div class="fill strong" style="width:89%">~7,380</div></div></div>
+  </div>
+
+  <h3>연간 영업이익 · 이익률</h3>
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>영업이익</th><th>YoY</th><th>OPM</th><th>해설</th></tr>
+    <tr><td>2021</td><td class="num">~260억</td><td class="num">—</td><td class="num">5.0%</td><td>한 자릿수 마진 시대</td></tr>
+    <tr><td>2022</td><td class="num">646억</td><td class="num" style="color:var(--up)">+148.6%</td><td class="num">9.5%</td><td>매출 +30%에 이익 +149% — 레버리지 위력의 실증</td></tr>
+    <tr><td>2023</td><td class="num">247억</td><td class="num" style="color:var(--down)">−61.9%</td><td class="num">4.3%</td><td>감산 직격 + <b>당기순손실 −232억 (적자전환)</b></td></tr>
+    <tr><td>2024</td><td class="num">~594억</td><td class="num">+140%</td><td class="num">10.2%</td><td>회복 + 원재료비 절감 개시</td></tr>
+    <tr><td>2025</td><td class="num">780억</td><td class="num">+31.4%</td><td class="num">11.6%</td><td>사상 최대 — 순익 496억 (+66.8%)</td></tr>
+    <tr class="hl"><td>2026E</td><td class="num">970~1,014억</td><td class="num" style="color:var(--up)">+24~30%</td><td class="num">~14%</td><td>내재화 + HSN + 신규 팹의 「계단식 성장」 전망 (2027E 1,220억)</td></tr>
+  </table></div>
+
+  <h3>최근 분기 흐름</h3>
+  <div class="scrollx"><table>
+    <tr><th>분기</th><th>매출</th><th>영업이익</th><th>OPM</th><th>비고</th></tr>
+    <tr><td>3Q25</td><td class="num">1,721억 (+13% YoY)</td><td class="num">220억 (+20%)</td><td class="num">12.8%</td><td>확정 — 단, 감가상각 증가로 추정 하회 → 주가 30% 조정 트리거</td></tr>
+    <tr class="hl"><td>1Q26</td><td class="num">1,708.7억</td><td class="num">249.2억</td><td class="num"><b>14.6%</b></td><td>확정 — AI·HPC 전방 수요로 분기 OPM 레벨업 확인</td></tr>
+  </table></div>
+  <p><b>평가:</b> 2022년(매출 +30% → 이익 +149%)과 2023년(순손실)이 이 회사의 양 극단을 보여준다.
+  솔브레인이 다운사이클에도 OPM 15.8%를 지킨 것과 달리 이엔에프의 바닥은 4%·적자 — <b>마진 체력의 격차가 곧 리스크 프로파일의 격차</b>다.
+  다만 2024~25년의 개선이 업황만이 아니라 원가 구조 개선(내재화)에서 온 점은 「체질 변화」의 증거로 평가할 만하다.</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 무엇이 실적을 결정하는가</h2>
+  <div class="lead">사슬은 솔브레인과 같은 강(국내 메모리 웨이퍼 투입량)에서 갈라진다. 차이는 「디램 가중 + 자기 실행 변수 2개」.</div>
+
+  <h3>사슬 A · 디램/HBM — 노출 최대 (반도체 내 ~65%) <span class="pill up">현 사이클의 주연</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">AI 서버·HBM 수요 → 삼성 P4·SK M15X <b>신규 디램 팹 램프업</b></div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">신규 팹 = 고객사의 <b>공급사 다변화 기회</b> → 이엔에프 신규 팹향 소재 공급 확대 (도전자의 침투 창구)</div></div>
+    <div class="step"><div class="n"><i>3</i></div><div class="body">HBM TSV 가동률 상승 → <b>고마진 신너·스트리퍼·에천트</b> 판매 증가</div></div>
+    <div class="step final"><div class="n"><i>4</i></div><div class="body">디램 노출 65% = <b>낸드 회복 지연 국면에서도 실적 가시성 우위</b> (NH: "NAND 노출 높은 업체 대비 편안한 선택지")</div></div>
+  </div>
+
+  <h3>사슬 B · 낸드/HSN — 규모는 작지만 리레이팅의 열쇠 <span class="pill warn">2H26 검증</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">낸드 V8/V9 전환 + 고단화 → 인산계(HSN) 수요 = 단수에 비례 성장 (400~500단 시대까지)</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">현재 HSN은 솔브레인 사실상 독과점 → <b>이엔에프 300단대 HSN 퀄 테스트, 추가 고객사에서 진행 중</b></div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body"><b>2H26 주요 고객사향 신규 납품 예상</b> (미래에셋) → 성사 시 불산계 도전자에서 「인산계 2공급사」로 격상 = 멀티플 리레이팅 재료</div></div>
+  </div>
+
+  <h3>사슬 C · 원가 자기혁신 — 사이클과 무관한 마진 축 <span class="pill up">진행 중</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">팸테크놀로지 연결 편입 완료 (2026.2월) → 고순도 불산(HF) 수직계열화</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">2H26 식각액 마진 +10%p (전사 OPM +1~2%p) + 2Q26부터 원료 외판 매출</div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">함의: <b>메모리 가격이 꺾여도 작동하는 유일한 증익 엔진</b> — 단, 실행(양산 수율·품질 승인)이 조건</div></div>
+  </div>
+
+  <h3>사슬 D · 디스플레이 (~35%) — 성숙·계절성</h3>
+  <p style="font-size:14px">컬러페이스트(국산화 선도)·박리액을 LGD와 중국 패널사(광저우·우한 현지 생산)에 공급. 성수기 계절성이 있는 안정 캐시카우이나
+  성장 축은 아니며, LCD 구조 축소와 중국 고객 의존이 장기 부담.</p>
+
+  <h3>수혜 시점 지도</h3>
+  <div class="scrollx"><table>
+    <tr><th>이벤트</th><th>시점</th><th>이엔에프 반영</th></tr>
+    <tr class="hl"><td>P4·M15X 디램 램프업</td><td>진행 중</td><td class="num"><b>현재 진행형 — 1Q26 OPM 14.6%로 확인</b></td></tr>
+    <tr><td>HBM TSV 가동률 상승 (HBM4)</td><td>2Q26~</td><td class="num">고마진 소재 믹스 개선 지속</td></tr>
+    <tr><td>불산 내재화 마진 효과</td><td>2H26 본격화</td><td class="num">식각액 마진 +10%p · 원료 외판 2Q26~</td></tr>
+    <tr><td>HSN 신규 납품</td><td>2H26 (예상)</td><td class="num">신규 매출 + 리레이팅 트리거</td></tr>
+    <tr><td>낸드 웨이퍼 투입 본격 램프업</td><td>2027</td><td class="num">HSN 진입 성공 시 물량 개화</td></tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 무엇을 언제 보는가</h2>
+  <div class="lead">매크로 지표는 솔브레인 대시보드와 공유. 이엔에프 고유 지표는 「자기 실행」ㅡHSN 퀄·내재화 마진ㅡ에 있다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 중요한가</th><th>확인처 · 주기</th><th>현재 상태 (2026.7월 초)</th></tr>
+    <tr><td><span class="dot g"></span><b>디램 현물가·고정가</b></td><td>노출 65%의 직접 환경 변수</td><td>트렌드포스 · 일간/월말 · 무료</td><td class="num">DDR4 21달러 사상최고 · 현물 프리미엄 +72%</td></tr>
+    <tr><td><span class="dot g"></span>P4·M15X 램프업 뉴스</td><td>신규 팹 = 침투 창구</td><td>디일렉 등 · 수시</td><td>순차 가동 진행 중</td></tr>
+    <tr><td><span class="dot y"></span><b>HSN 퀄·납품 뉴스</b></td><td>리레이팅의 단일 최대 트리거</td><td>전문지·증권사 리포트 · 수시</td><td>추가 고객사 퀄 진행 중 · 2H26 납품 예상 — <b>미확정</b></td></tr>
+    <tr><td><span class="dot y"></span><b>분기 GPM/OPM 추이</b></td><td>내재화 효과의 실측 (2H26 +1~2%p 약속)</td><td>DART 분기보고서</td><td class="num">1Q26 OPM 14.6% — 궤도 진입 신호</td></tr>
+    <tr><td><span class="dot y"></span>무수불산·황산 가격</td><td>원재료 급등 시 전가 시차로 마진 훼손</td><td>원자재 시황 · 수시</td><td>중동발 조달비 상승 전례 (2025.6~7월) — 재점화 감시</td></tr>
+    <tr><td><span class="dot g"></span>솔브레인 반도체 부문 성장률</td><td>점유율 다툼의 상대 스코어보드</td><td>DART · 분기</td><td>양사 모두 고성장 — 침투 속도는 분기마다 교차검증</td></tr>
+    <tr><td><span class="dot y"></span>디스플레이 업황 (LGD·중국 패널 가동률)</td><td>매출 35%의 계절성·바닥 확인</td><td>산업 뉴스 · 월간</td><td>성수기/비수기 계절성 감안 필요</td></tr>
+    <tr><td><span class="dot g"></span>하이퍼스케일러 CapEx</td><td>사이클 최선행 (솔브레인과 공유)</td><td>빅테크 컨콜 · 분기</td><td>'26년 +30% 성장 유지</td></tr>
+  </table></div>
+
+  <h3>실전 체크 리듬</h3>
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>디램 현물가 (괴리 축소 = 1차 경보, 솔브레인과 공유)</li><li>「이엔에프 HSN·인산계」 뉴스 검색</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>월말 고정거래가 + 반도체 수출액</li><li>무수불산·황산 시황 점검</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY</div>
+      <ul><li>분기보고서: OPM 14% 안착 여부 + 팸테크 기여</li><li>솔브레인 대비 반도체 부문 상대 성장률</li><li>고객사 컨콜 (신규 팹 웨이퍼 투입)</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 실적으로 검증</h2>
+  <div class="lead">이엔에프의 레버리지는 솔브레인보다 크다. 마진 베이스가 얇을수록 같은 공헌이익률에서 증익 탄력은 커지기 때문.</div>
+
+  <h3>실증: Incremental Margin (Δ영업이익 ÷ Δ매출)</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>Δ매출</th><th>Δ영업이익</th><th>Inc. Margin</th><th>이익 증가율 ÷ 매출 증가율</th></tr>
+    <tr class="hl"><td>2021→2022 (업)</td><td class="num">+1,584억</td><td class="num">+386억</td><td class="num">24.4%</td><td class="num"><b>4.9배</b> (+30% → +149%)</td></tr>
+    <tr class="hl"><td>2022→2023 (다운)</td><td class="num">−1,054억</td><td class="num">−399억</td><td class="num"><b>37.9%</b></td><td class="num"><b>4.0배</b> (−15.5% → −62%)</td></tr>
+    <tr><td>2024→2025 (업)</td><td class="num">+885억</td><td class="num">+186억</td><td class="num">21.0%</td><td class="num">2.1배</td></tr>
+    <tr><td>2025→2026E</td><td class="num">~+670억</td><td class="num">+190~234억</td><td class="num">~28~35%</td><td class="num">2.4~3.0배 (내재화 효과 포함)</td></tr>
+  </table></div>
+
+  <div class="formula">공헌이익률 25~38% ÷ OPM 10~12% ⇒ 레버리지 <b>≈ 2.5~3배</b> (사이클 극단에선 4~5배)
+
+시나리오 (2025년 베이스: 매출 6,709억 · 영업이익 780억)
+  매출 +10%  →  영업이익 <b>+22~30%</b>
+  매출 +20%  →  영업이익 <b>+43~60%</b>
+  + 내재화 효과 별도 <b>+1~2%p OPM</b> (매출과 무관하게 가산)</div>
+
+  <h3>2026E 증익 +24~30% 의 분해</h3>
+  <div class="hbar">
+    <div class="row"><div class="lb">물량 레버리지 (신규 팹·HBM)</div><div class="tr"><div class="fill pos" style="width:55%">~+18~22%p</div></div></div>
+    <div class="row"><div class="lb">불산 내재화 (2H26 반영)</div><div class="tr"><div class="fill strong" style="width:26%">~+6~10%p</div></div></div>
+  </div>
+  <p><b>솔브레인과의 대조:</b> 솔브레인 2026E 증익의 절반은 「일회성 소멸」(2027년 소멸 항목)이지만, 이엔에프의 내재화 효과는
+  <b>2027년에도 남는 구조적 항목</b>이다 (내재화 비율 추가 상향 + 2027E 영업이익 1,220억, +25.7% 전망). 성장의 「질」에서는 이엔에프가 우위인 셈.
+  단, HSN 납품이 지연되면 2027년 물량 축 하나가 빠진다는 조건부.</p>
+  <p class="note">주의: 레버리지 4~5배의 극단값(2022~23년)은 디스플레이 부문 스윙이 겹친 수치. 반도체 비중이 커진 현재는 2.5~3배가 현실적 밴드.
+  역방향도 동일 — 다운사이클에서 매출 −15%면 이익 −40~50%, 2023년처럼 순손실 가능성까지 열린다.</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+  <div class="lead">솔브레인과 공유하는 사이클 리스크 위에, 이엔에프 고유의 「실행 리스크」가 얹힌다.</div>
+
+  <div class="risk r1">
+    <span class="impact r1i">이익 임팩트 −40~60% (순손실 가능)</span>
+    <h4>① 메모리 사이클 반전 — 마진 체력이 얇아 하방이 더 깊다</h4>
+    <p>매크로 시나리오는 솔브레인 리포트 Section 07과 동일 (칩플레이션 수요 파괴 + 27~28년 공급 과잉). 차이는 체력:
+    솔브레인의 다운사이클 바닥이 OPM 15.8%였던 반면 이엔에프는 <b>OPM 4.3% + 순손실 −232억(2023년)</b>이 실측 바닥.
+    레버리지 3~4배가 역방향으로 작동하면 증익 스토리가 1년 만에 적자 우려로 바뀔 수 있다.</p>
+    <div class="alarm"><b>경보</b> — 현물-고정가 괴리 축소 → 하이퍼스케일러 CapEx 하향 → 고객사 웨이퍼 투입 조절 발언 (솔브레인 대시보드 공유)</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">리레이팅 무산 + 디레이팅</span>
+    <h4>② HSN 진입 실패·지연 — 도전의 뒷면 <span class="pill warn">2H26 판가름</span></h4>
+    <p>「2H26 신규 납품」은 아직 증권사 예상이지 확정 공급이 아니다. 방어자 솔브레인의 신규 팹 퀄 선점력은 검증돼 있고,
+    SK스페셜티도 로우엔드에 기공급 중. 퀄 통과가 밀리면 ① 2027년 물량 성장축 하나가 소멸하고 ② 주가에 선반영된
+    기대가 되돌려진다 — 3Q25 실적 미스 때 <b>고점 대비 30% 조정</b>이 이 종목의 기대-실망 진폭을 이미 보여줬다.</p>
+    <div class="alarm"><b>경보</b> — 2H26까지 HSN 납품 공시·보도 부재 · 증권사 리포트에서 「지연」 표현 등장 · 솔브레인 인산계 증설 공시 (방어 강화 신호)</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">컨센 대비 −10~20%</span>
+    <h4>③ 비용 사이클과 원재료 — 내재화의 실행 리스크</h4>
+    <p>감가상각 증가는 이미 3Q25 실적 미스의 원인이었고, 예산 산단 318억·미국 법인·팸테크 통합 비용이 이어진다.
+    내재화 효과(+10%p)는 양산 수율과 고객 품질 승인이 전제 — 지연 시 「비용은 선반영, 효과는 후행」의 마진 공백이 생긴다.
+    중동발 무수불산·황산 급등이 재연되면 범용 소재 특성상 전가 시차로 분기 마진이 눌린다.</p>
+    <div class="alarm"><b>경보</b> — 분기 OPM 14% 미달 반복 · 팸테크 연결 기여 미미 (분기보고서 주석) · 원자재 시황 급등 뉴스</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (2026년 2월 기준)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:10%"><div class="tick"></div><div class="price">13,450원</div><div class="lbl">'24.11월 실측 저점<br>(사이클+순손실 공포)</div></div>
+      <div class="mk" style="left:38%"><div class="tick"></div><div class="price">40,100원</div><div class="lbl">'25.11월 조정 저점<br>(실적 미스 −30%)</div></div>
+      <div class="mk" style="left:62%"><div class="tick"></div><div class="price">53,500~61,000</div><div class="lbl">현 주가대 (2월)<br>fPER 12.7배·PBR 1.64</div></div>
+      <div class="mk" style="left:88%"><div class="tick"></div><div class="price">61,000~64,000</div><div class="lbl">목표주가 (NH·DS)<br>Target PER 12.4배</div></div>
+    </div>
+  </div>
+  <p class="note">4사 중 최저 밸류 (6월 기준 PER 12.5배 vs 솔브레인 2026F 21.9배·동진 27.5배 — 격차 오히려 확대). NH: "동종업계 대비 현저히 낮은 밸류에이션은 납득하기 어렵다".
+  단 이 디스카운트에는 이유가 있다 — 독점 부재·2023년 적자 전력·디스플레이 35%. 디스카운트 해소의 조건이 곧 HSN과 내재화의 「증명」이다.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>이 종목의 본질은 「사이클 베타」인가 「리레이팅 옵션」인가?</h4>
+    <p>둘 다인데, 가격은 베타만 쳐주고 있다 (6월 기준 PER 12.5배 = 동종 최저). 즉 HSN 진입·내재화 완성이라는 옵션을
+    시장이 거의 공짜로 얹어주는 구간. 반대로 말하면 옵션이 소멸(퀄 실패·지연)해도 잃는 멀티플이 상대적으로 작다.</p>
+    <p>판정법: 2H26이 데드라인. HSN 납품 공시가 나오면 「불산계 도전자 → 인산계 2공급사」로 지위가 바뀌며
+    Peer 평균(11~14배 이상)으로의 리레이팅 근거가 생긴다. 안 나오면 이 종목은 그냥 잘 관리된 사이클 베타다 — 그것도 나쁘지 않지만, 멀티플 확장은 없다.</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>솔브레인과 함께 들 것인가, 대신 들 것인가?</h4>
+    <p>같은 팩터(국내 메모리 웨이퍼 투입)의 롱이므로 함께 들면 분산이 아니라 증폭이다. 선택 기준은 성향:
+    사이클 확신이 강하고 변동을 감내한다면 이엔에프 (레버리지 3배·최저 밸류·옵션 무료),
+    마진 체력과 하방 방어를 원한다면 솔브레인 (독점·OPM 15% 바닥·주주환원).</p>
+    <p>이탈 규율은 솔브레인과 공유 (현물-고정가 괴리 = 공통 1차 경보) + 이엔에프 고유 트리거 하나 추가:
+    <b style="color:#E3B96A">분기 OPM 14% 미달이 2분기 연속이면 체질 개선 스토리 훼손으로 판정.</b></p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>마진 전략의 방향이 반대</h4>
+      <ul><li>솔브레인 = 독점 제품의 <b>가격</b></li><li>이엔에프 = 수직계열화의 <b>원가</b> — 사이클 무관 증익축이나 실행 리스크 동반</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>레버리지 2.5~3배 (극단 4~5배)</h4>
+      <ul><li>2022년 +30%→+149%, 2023년 −15.5%→−62% 실증</li><li>솔브레인(2배)보다 상하방 모두 탄력적 — <b>얇은 마진의 양날</b></li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>2026 증익의 질은 오히려 우위</h4>
+      <ul><li>내재화 효과는 2027년에도 남는 구조적 항목</li><li>솔브레인의 「일회성 소멸」 항목과 대조 — 단 HSN은 미확정 조건부</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ 부록: 솔브레인 직접 비교 ═══════════ -->
+<section>
+  <div class="eyebrow">APPENDIX · HEAD-TO-HEAD</div>
+  <h2>솔브레인 vs 이엔에프 — 같은 강, 다른 배</h2>
+  <div class="scrollx"><table>
+    <tr><th></th><th>솔브레인 (방어자)</th><th>이엔에프테크 (도전자)</th></tr>
+    <tr><td>매출 · 반도체 비중</td><td class="num">9,233억 · 83%</td><td class="num">6,709억 · 65%</td></tr>
+    <tr><td>OPM (평시/바닥)</td><td class="num"><b>17~19% / 15.8%</b></td><td class="num">10~14% / 4.3% (순손실 전력)</td></tr>
+    <tr><td>마진의 원천</td><td>독점 제품 가격 (인산·초산계)</td><td>원가 내재화 + 믹스 개선</td></tr>
+    <tr><td>레버리지</td><td class="num">~2배</td><td class="num"><b>~2.5~3배 (극단 4~5배)</b></td></tr>
+    <tr><td>2026E 증익 / 질</td><td class="num">+41~62% / 절반이 일회성 소멸</td><td class="num">+24~30% / <b>내재화는 2027년에도 지속</b></td></tr>
+    <tr><td>밸류에이션</td><td class="num">Fwd PER ~14배 + 주주환원</td><td class="num"><b>PER 12.5배 · 6월 (최저)</b> + 리레이팅 옵션</td></tr>
+    <tr><td>고유 리스크</td><td>성장 내러티브 부재 · 이엔에프의 HSN 침공</td><td>HSN 미확정 · 실행 리스크 · 얇은 바닥</td></tr>
+    <tr class="hl"><td><b>2H26 공동 관전포인트</b></td><td colspan="2" style="text-align:center"><b>이엔에프의 HSN 퀄 통과 여부 — 한쪽의 리레이팅이 곧 다른 쪽의 침식</b></td></tr>
+  </table></div>
+  <p class="note">두 종목은 제로섬 요소(HSN)와 공동 수혜 요소(웨이퍼 투입 증가)를 동시에 갖는다. 사이클 상승 국면에서는 공동 수혜가 지배하고,
+  성장이 감속하는 국면부터 제로섬이 부각된다 — 포지션을 둘 다 들었다면 2027년이 그 전환점일 가능성이 높다.</p>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·증권사 리포트(NH·DS·미래에셋·신한 등)·언론 보도 기반의 정리 자료이며 투자 권유가 아닙니다.
+  2021년 영업이익·2024년 영업이익은 증감률 역산치, 2026~27년 전망은 증권사 추정치입니다.
+  HSN 신규 납품은 미확정 예상이며, 주가·밸류에이션은 2026년 2월 중순 기준으로 현재와 다를 수 있습니다.
+  기준일: 2026년 7월 5일. 자매 리포트: 솔브레인(357780) 기업분석.
+</footer>
+
+</div>
+</body>
+</html>

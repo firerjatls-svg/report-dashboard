@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한솔케미칼 (014680) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#245BA7; --accent-soft:#E5EEF9; --accent-deep:#173F78;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(36,91,167,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#9FC3EE;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#A8CDF5;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#9FC3EE;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 반도체 소재 · 시리즈 4</div>
+  <h1>한솔케미칼<span class="ticker">KOSPI 014680</span></h1>
+  <div class="sub">가장 빠른 소재 — 팹 가동 1~2개월 전에 먼저 납품되는 과산화수소, 그 위에 얹힌 프리커서 고성장</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 05</b></div>
+    <div>주가 (1월 말)<b class="figures">243,500원</b></div>
+    <div>목표주가<b class="figures">30만 ~ 33만원</b></div>
+    <div>2026E 영업이익<b class="figures">2,296억 (+36%) · OPM 22.7%</b></div>
+    <div>12M Fwd PER<b class="figures">~17배 (목표가 기준)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 한솔의 손익도 「웨이퍼 투입량 × 사용량」 위에 있지만, 시리즈에서 두 가지가 다르다.
+  첫째, 주력 과산화수소는 <b>신규 팹 가동 1~2개월 전에 선납품</b>되는, 밸류체인에서 가장 빠른 소재다.
+  둘째, 성장축인 프리커서는 삼성을 넘어 <b>TSMC·인텔·일본 메모리까지 뚫은, 소재 4사 중 유일한 글로벌 고객 다변화 성공 사례</b>다
+  (2025년 +61%, 2026E +31%). 여기에 고단화(낸드 400단·HBM 24Hi)로 과수 사용량이 최소 2배로 늘어나는 구조적 순풍이 얹힌다.
+  OPM 19→23%로 가는 믹스 개선이 이 종목의 본질이다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">한솔그룹 정밀화학사 (최대주주 조동혁 외 15.1%). 제지약품 회사에서 출발해 과산화수소 → 프리커서·QD → 2차전지로
+  「소규모 투자·고수익 신사업」을 겹겹이 쌓아온 회사. 생산거점: 전주·울산·중국 시안(삼성 시안팹 대응).</div>
+
+  <h3>매출 구성 (2025년 매출 약 8,860억 — 부문별은 근사 추정)</h3>
+  <div class="stackbar">
+    <div style="flex:45;background:#245BA7">정밀화학 (과산화수소 등) ~45%</div>
+    <div style="flex:27;background:#5B84C4">전자소재 ~27%</div>
+    <div style="flex:10;background:#8FA9D6">2차전지 ~10%</div>
+    <div style="flex:18;background:#C3D2E8">테이팩스·기타 ~18%</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#245BA7">과산화수소(반도체용 초고순도 + 제지·섬유용)·차아황산소다·BPO·라텍스</span>
+    <span style="--c:#5B84C4">프리커서(TSA·High-K·Zr·Si계) 2025년 1,350억 + QD 소재·Resin</span>
+    <span style="--c:#8FA9D6">음극바인더(2025년 550억)·분리막바인더·실리콘음극재</span>
+    <span style="--c:#C3D2E8">자회사 테이팩스(테이프)·환경약품 등</span>
+  </div>
+  <p class="note">부문 비중은 증권사 추정 조합 기반 근사치 — 회사 공시는 정밀화학/전자소재 등 대분류 수준. 확실하지 않음.
+  핵심은 구성비가 아니라 <b>성장 기여의 편중</b>: 2025~26년 증익의 대부분이 프리커서(+61%→+31%)와 과수 물량에서 나온다.</p>
+
+  <h3>제품 3축 — 성격이 전부 다르다</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">과산화수소 (본진)</div>
+      <h4>가동률 동행 + 최선행 납품 <span class="pill up">국내 1위 고착</span></h4>
+      <ul>
+        <li>노출 <b>DRAM 40% / 파운드리 40% / NAND 20%</b></li>
+        <li>구조 <b>세정·산화 공정 소모품 — 팹 가동과 동행</b></li>
+        <li>특징 <b>신규 팹 가동 1~2개월 전 선납품 (4Q25 P4 ph2·M15X향 개시)</b></li>
+        <li>고단화 <b>낸드 400단·HBM 24Hi 시 사용량 최소 2배 분석</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">프리커서 (성장축)</div>
+      <h4>글로벌 다변화 성공 <span class="pill up">'25년 +61%</span></h4>
+      <ul>
+        <li>제품 <b>TSA(갭필, 프리커서의 ~40%)·High-K·Zr('25 개시)·Si계</b></li>
+        <li>고객 <b>삼성 + TSMC·인텔·북미 파운드리·일본 메모리</b></li>
+        <li>드라이버 <b>파운드리 선단화 → 갭필 공정 횟수 증가</b></li>
+        <li>궤적 <b>'24년 840억 → '25년 1,350억 → '26E 1,770억</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">2차전지 + 기타 (옵션·노이즈)</div>
+      <h4>바인더 반등 vs 테이팩스 부진</h4>
+      <ul>
+        <li>바인더 <b>'25년 550억 (+67%) — 중국 ESS 신규 고객 확보</b></li>
+        <li>실리콘음극재 <b>생산시설 완공, 개화 대기 (삼성SDI 특허 협력)</b></li>
+        <li>테이팩스 <b>OPM 14%('22)→1%('24) — 연결 마진의 발목</b></li>
+        <li>QD <b>삼성 TV 의존, 뚜렷한 계절성 (하반기 비수기)</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">시리즈 4사 중 가장 「우량주」다운 손익 구조 — 다각화된 캐시카우 위에 고마진 신제품을 얹는 믹스 개선형.</div>
+
+  <div class="formula">매출     = 가동률 동행 소모품(과수) + 선단화 비례 신소재(프리커서) + 옵션(바인더)
+영업이익 = 매출 − <b>LNG 연동 원가(과수의 핵심 변수)</b> − 고정비
+OPM 궤적: 16.6%('24) → ~19%('25) → <b>22.7%('26E)</b> — 믹스 개선이 마진을 끌어올리는 구조</div>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 변수·약점 (−)</th></tr>
+    <tr>
+      <td>① 국내 과산화수소 시장 우수한 지위 + 고정 거래처(대형 전자·제지) — 안정 기반<br>
+      ② 프리커서·High-K 등 고마진 신제품 비중 확대 (믹스 개선의 엔진)<br>
+      ③ LNG 가격 하향 안정화 — 미국·카타르 공급 확대로 '26년 이후 원가 완화 전망<br>
+      ④ 재무 최우량: 부채비율 47.5%, 순차입금/EBITDA 0.8배</td>
+      <td>① 과수 원가 = LNG(수소 원료) — 에너지 가격 급등기 마진 직격 ('23~24년 실증)<br>
+      ② 자회사 테이팩스 수익성 악화가 연결 마진 잠식<br>
+      ③ QD 소재의 계절성 — 하반기 분기 마진 착시 유발<br>
+      ④ 연말 성과급 등 4분기 일회성 비용 패턴 (4Q25 영업이익 컨센 -22% 하회 사례)</td>
+    </tr>
+  </table></div>
+  <p class="note">시리즈 비교: 솔브레인(독점의 가격)·이엔에프(내재화의 원가)·동진(국산화 프리미엄)과 달리,
+  한솔의 마진 동력은 <b>「제품 믹스의 고급화」</b>다. 그래서 이 종목의 이익 추정에서는 매출 총액보다 프리커서 매출 라인이 훨씬 중요하다.</p>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 잘하고 있는가</h2>
+  <div class="lead">다운사이클에도 OPM 16%를 지킨 방어력 + 2025년부터 재가동된 성장. 4분기마다 반복되는 일회성 비용 패턴은 유의.</div>
+
+  <h3>연간 실적 (연결, 억원)</h3>
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>매출</th><th>YoY</th><th>영업이익</th><th>YoY</th><th>OPM</th><th>해설</th></tr>
+    <tr><td>2023</td><td class="num">~7,717억</td><td class="num">—</td><td class="num">~1,241억</td><td class="num">감익</td><td class="num">~16%</td><td>원재료(LNG) 급등 + 고객 감산 + 테이팩스 부진 — 그래도 16% 방어</td></tr>
+    <tr><td>2024</td><td class="num">7,764억</td><td class="num">+0.6%</td><td class="num">1,288억</td><td class="num">+3.8%</td><td class="num">16.6%</td><td>2차전지 부진을 라텍스·전자재료·LNG 하락이 상쇄</td></tr>
+    <tr><td>2025</td><td class="num">~8,860억</td><td class="num">+14%</td><td class="num">~1,610~1,690억</td><td class="num" style="color:var(--up)">+25~31%</td><td class="num">~18~19%</td><td>프리커서 +61% 주도 · 4Q 성과급 일회성으로 마감 눌림</td></tr>
+    <tr class="hl"><td>2026E</td><td class="num">1조 136억</td><td class="num">+14.2%</td><td class="num">2,296억</td><td class="num" style="color:var(--up)"><b>+35.9%</b></td><td class="num"><b>22.7%</b></td><td>「매출 1조 클럽」 첫 진입 + 사상 최대 이익 전망 (키움·메리츠)</td></tr>
+  </table></div>
+
+  <h3>2025년 분기 흐름 — 성장의 질 확인</h3>
+  <div class="scrollx"><table>
+    <tr><th>분기</th><th>매출</th><th>영업이익</th><th>OPM</th><th>비고</th></tr>
+    <tr><td>2Q25</td><td class="num">2,219억 (+11%)</td><td class="num">489억 (+39%)</td><td class="num"><b>22.0%</b></td><td>프리커서 두 자릿수 증가 (삼성·TSMC 생산 확대)</td></tr>
+    <tr><td>3Q25</td><td class="num">2,300억 (+21%)</td><td class="num">488억 (+32%)</td><td class="num">21.2%</td><td>확정 — 과수 +11%, 북미 파운드리·일본 메모리향 프리커서 확대</td></tr>
+    <tr><td>4Q25</td><td class="num">~2,240~2,265억 (+20%)</td><td class="num">~214~227억</td><td class="num">~10%</td><td><b>성과급 등 일회성 비용으로 컨센 -22% 하회</b> — 매년 반복되는 패턴</td></tr>
+    <tr class="hl"><td>1Q26E</td><td class="num">—</td><td class="num">511억 (QoQ +139%)</td><td class="num">~21%+</td><td>과수 +2% QoQ, 프리커서 +32% YoY (TSMC·인텔향) 전망</td></tr>
+  </table></div>
+  <p><b>평가:</b> 3분기 누적 영업이익 +31%가 이 회사의 실력이고, 4분기 숫자는 성과급 노이즈다 — <b>이 종목의 연간 흐름은 「9개월 실적 × 4/3 − 4Q 일회성」으로 읽는 게 정확하다.</b>
+  다운사이클 바닥 OPM 16%는 시리즈 4사 중 솔브레인(15.8%)과 함께 최상급 방어력. 성장의 질도 좋다 —
+  2025년 증익은 업황 회복분 위에 프리커서라는 구조적 성장(고객 다변화)이 얹힌 것이라, 사이클이 꺾여도 전부 되돌려지지 않는다.</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 무엇이 실적을 결정하는가</h2>
+  <div class="lead">사슬은 셋. 과수(동행·최선행), 프리커서(선단화 비례), 바인더(중국 ESS). 시리즈 공통의 강 위에서 시차가 가장 빠르다.</div>
+
+  <h3>사슬 A · 팹 가동률·신규 팹 → 과산화수소 <span class="pill up">최선행 소재</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">삼성 P4 ph2 (월 6만장)·P5 인프라·SK M15X 투자 — <b>고객 CapEx의 직접 수혜</b></div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">신규 팹 가동 <b>1~2개월 전 과수 선납품</b> — 4Q25에 P4 ph2·M15X향 매출 이미 개시</div></div>
+    <div class="step"><div class="n"><i>3</i></div><div class="body">가동 후엔 세정·산화 공정 소모품으로 가동률 동행 (DRAM 40 / 파운드리 40 / NAND 20)</div></div>
+    <div class="step final"><div class="n"><i>4</i></div><div class="body">고단화 승수: 낸드 300→400단+, HBM 16→24Hi로 <b>증착·식각·세정 반복 증가 → 과수 사용량 최소 2배</b> 분석</div></div>
+  </div>
+  <p class="note">시리즈 함의: 장비사 → <b>한솔(가동 1~2개월 전)</b> → 솔브레인·이엔에프(가동 시점) 순서로 매출이 인식된다.
+  즉 한솔의 과수 신규 팹향 매출 개시는 <b>솔브레인 식각액 매출의 1~2개월 선행지표</b>로도 쓸 수 있다.</p>
+
+  <h3>사슬 B · 선단화 → 프리커서 <span class="pill up">구조적 성장축</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">파운드리 첨단화(2나노·GAA) → 갭필 공정 횟수 증가 → <b>TSA 수요 비례 성장</b></div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">디램 미세화·HBM → High-K 프리커서 신제품 + Zr('25 공급 개시)·Si계 고객 다변화</div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">고객 지도: 삼성 + <b>TSMC + 인텔 + 일본 메모리</b> — 국내 2사 사이클과 부분적으로 독립된 성장.
+    '24년 840억 → '26E 1,770억, 2년간 2.1배</div></div>
+  </div>
+
+  <h3>사슬 C · 중국 ESS → 2차전지 바인더 <span class="pill neutral">옵션</span></h3>
+  <p style="font-size:14px">중국 LFP·ESS 시장 성장 + 신규 고객 확보로 '25년 +67% (550억). 중·일 관계 악화가 일본계 바인더 대체 수요를 만드는 반사이익 구조.
+  실리콘음극재는 설비 완공 후 개화 대기. 전사 비중이 작아 아직 주가 변수는 아니나, EV·ESS 사이클과 메모리 사이클의 위상이 달라 분산 가치가 있다.</p>
+
+  <h3>수혜 시점 지도</h3>
+  <div class="scrollx"><table>
+    <tr><th>이벤트</th><th>시점</th><th>한솔 반영</th></tr>
+    <tr class="hl"><td>P4 ph2·M15X 과수 선납품</td><td>4Q25~</td><td class="num"><b>이미 개시 — 시리즈 중 최선행</b></td></tr>
+    <tr><td>신규 팹 램프업 → 과수 물량 동행 증가</td><td>2026년 내내</td><td class="num">분기 계단식 반영</td></tr>
+    <tr><td>TSMC·인텔향 프리커서 확대</td><td>진행 중</td><td class="num">1Q26 프리커서 +32% YoY 전망</td></tr>
+    <tr><td>삼성 낸드 가동률 상승 전환</td><td>1H26</td><td class="num">과수 NAND 20% 노출분 회복</td></tr>
+    <tr><td>P5·용인1 완공</td><td>'27~28</td><td class="num">차기 사이클의 선납품 이벤트</td></tr>
+    <tr><td>LNG 공급 확대 → 원가 완화</td><td>'26 이후</td><td class="num">과수 마진의 구조적 개선</td></tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 무엇을 언제 보는가</h2>
+  <div class="lead">매크로 지표는 시리즈 공통 대시보드(솔브레인 리포트 Section 05)를 공유. 한솔 고유 지표는 「프리커서·LNG·자회사」 세 축.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 중요한가</th><th>확인처 · 주기</th><th>현재 상태 (2026.7월 초)</th></tr>
+    <tr><td><span class="dot g"></span><b>고객사 CapEx·신규 팹 일정</b> (P4 ph2·P5·M15X·용인)</td><td>과수 선납품 이벤트 = 최선행 매출</td><td>컨콜·전문지 · 분기/수시</td><td>P4 ph2·M15X향 개시 완료, 램프업 진행 중</td></tr>
+    <tr><td><span class="dot g"></span><b>분기 프리커서 매출 성장률</b></td><td>믹스 개선 = 이 종목 이익의 엔진</td><td>실적발표·리포트 · 분기</td><td class="num">'25년 +61% → '26E +31% 궤도</td></tr>
+    <tr><td><span class="dot y"></span><b>LNG 가격</b></td><td>과수 원가의 핵심 변수 — 급등 시 마진 직격</td><td>에너지 시황 · 주간</td><td>미·카타르 공급 확대로 하향 안정화 전망 — 중동 리스크 감시</td></tr>
+    <tr><td><span class="dot g"></span>삼성 낸드 가동률</td><td>과수 NAND 20% 노출의 회복 변수</td><td>전문지 · 수시</td><td>1H26 상승 전환 전망 (시안 ~80%)</td></tr>
+    <tr><td><span class="dot y"></span>테이팩스 분기 실적</td><td>연결 마진의 발목 — OPM 1%('24)</td><td>DART · 분기</td><td>회복 여부 미확인</td></tr>
+    <tr><td><span class="dot y"></span>4Q 일회성 비용 규모</td><td>매년 반복 — 연간 추정 왜곡 방지</td><td>4Q 실적 · 연간</td><td>4Q25 성과급으로 컨센 -22% 하회 전례</td></tr>
+    <tr><td><span class="dot g"></span>중국 ESS·바인더 수주</td><td>2차전지 옵션의 진행 확인</td><td>뉴스 · 수시</td><td>신규 고객 확보, '26E +33%</td></tr>
+    <tr><td><span class="dot g"></span>메모리 현물가·CapEx (공통)</td><td>사이클 최선행</td><td>트렌드포스 · 일간</td><td>현물 프리미엄 +72% — 공통 녹색</td></tr>
+  </table></div>
+
+  <h3>실전 체크 리듬</h3>
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>메모리 현물가 (공통 1차 경보)</li><li>LNG·천연가스 가격 (과수 원가 선행)</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>고정거래가 + 반도체 수출 (공통)</li><li>신규 팹 램프업·장비 반입 기사 (선납품 시점 추적)</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY</div>
+      <ul><li>프리커서 매출 성장률 (컨센 +31% 대비)</li><li>테이팩스 실적 + 4Q 일회성 규모</li><li>OPM 20%+ 안착 여부 (22.7% 경로 검증)</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 실적으로 검증</h2>
+  <div class="lead">한솔의 증익 공식 = 물량 레버리지 × 믹스 개선. 순수 가동 레버리지보다 「프리커서 비중 상승」의 기여가 크다.</div>
+
+  <h3>실증: Incremental Margin (Δ영업이익 ÷ Δ매출)</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>Δ매출</th><th>Δ영업이익</th><th>Inc. Margin</th><th>이익 탄력 (증익률÷증수율)</th></tr>
+    <tr><td>2Q25 (YoY)</td><td class="num">+220억</td><td class="num">+137억</td><td class="num"><b>62%</b></td><td class="num">3.5배</td></tr>
+    <tr><td>3Q25 (YoY)</td><td class="num">+394억</td><td class="num">+118억</td><td class="num">30%</td><td class="num">1.5배</td></tr>
+    <tr class="hl"><td>2024→2025 (연간)</td><td class="num">+1,100억</td><td class="num">+320~400억</td><td class="num"><b>29~36%</b></td><td class="num"><b>~2배</b></td></tr>
+    <tr><td>2025→2026E</td><td class="num">+1,280억</td><td class="num">+610~690억</td><td class="num"><b>~48~54%</b></td><td class="num">2.5배</td></tr>
+  </table></div>
+
+  <div class="formula">기본 공식: 공헌이익률 ~30~35% ÷ OPM 17~19% ⇒ 물량 레버리지 <b>~1.8~2배</b>
++ 믹스 효과: 프리커서(고마진) 비중 상승이 incremental margin을 <b>30% → 50%대로 증폭</b>
+
+시나리오 (2025년 베이스: 매출 ~8,860억 · 영업이익 ~1,650억)
+  매출 +10% (프리커서 주도)  →  영업이익 <b>+25~33%</b>
+  매출 +14% ('26E 컨센 경로)  →  영업이익 <b>+36%</b> (OPM 22.7% 도달)</div>
+
+  <h3>'26E 증익 +36%의 분해 — 질이 좋다</h3>
+  <div class="hbar">
+    <div class="row"><div class="lb">물량 레버리지 (과수·가동률)</div><div class="tr"><div class="fill pos" style="width:42%">~+14~18%p</div></div></div>
+    <div class="row"><div class="lb">믹스 개선 (프리커서 +31%)</div><div class="tr"><div class="fill strong" style="width:38%">~+12~15%p</div></div></div>
+    <div class="row"><div class="lb">원가 완화 (LNG) + 4Q 기저</div><div class="tr"><div class="fill pos" style="width:22%">~+5~8%p</div></div></div>
+  </div>
+  <p><b>시리즈 비교의 핵심:</b> 솔브레인 '26E 증익의 절반이 「일회성 소멸」(2027년 소멸)인 반면, 한솔의 세 구성 요소는
+  <b>모두 2027년에도 지속 가능한 항목</b>이다 — 프리커서 다변화는 구조적이고, 신규 팹 과수는 누적형이며, LNG 완화는 공급 사이클상 수년짜리다.
+  키움이 '26~28년 EPS 연평균 +25%를 그리는 근거가 이것. 대신 폭발력은 이엔에프(3배)·동진(스위치 ON 시 3배)보다 낮다 —
+  <b>탄력은 중간, 지속성은 최상</b>이 한솔 레버리지의 성격이다.</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+  <div class="lead">사이클 리스크는 시리즈 공통이되 방어력은 최상급. 한솔 고유 리스크는 「에너지 원가·자회사·기대치」다.</div>
+
+  <div class="risk r1">
+    <span class="impact r1i">이익 임팩트 −20~35%</span>
+    <h4>① 사이클 반전 — 단, 시리즈에서 가장 완충이 두껍다</h4>
+    <p>매크로 시나리오는 공통(솔브레인 리포트 Section 07). 한솔의 완충재: 과수의 제지·섬유향 기저 수요,
+    파운드리 40% 노출(메모리 사이클과 부분 독립), TSMC·인텔향 프리커서, 2차전지·QD의 이종 사이클.
+    2023년 다운사이클 실측 바닥이 OPM 16%로, 순손실까지 갔던 이엔에프나 이익 -36%의 솔브레인 대비 진폭이 작았다.
+    대신 상승 사이클의 폭발력도 그만큼 제한적 — 방어의 대가다.</p>
+    <div class="alarm"><b>경보</b> — 현물-고정가 괴리 축소 (공통 1차) → 고객사 가동률 하락 발언 → 신규 팹 장비 반입 지연 (선납품 이벤트 밀림)</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">이익 임팩트 −10~20%</span>
+    <h4>② 에너지 원가 역습 — LNG가 과수 마진의 목줄</h4>
+    <p>과산화수소 원가는 수소 원료인 LNG에 연동된다. '23~24년 감익의 주범이 에너지 가격이었고,
+    현재의 「원가 완화」 전망은 미국·카타르 LNG 증설이라는 외생 변수에 기대고 있다. 중동 분쟁 재격화·한파 등으로
+    LNG가 급등하면 판가 전가 시차 동안 과수 마진이 눌린다 — OPM 22.7% 경로의 최대 하방 변수.</p>
+    <div class="alarm"><b>경보</b> — JKM(아시아 LNG 현물가) 급등 · 호르무즈·중동 리스크 재점화 · 분기 정밀화학 부문 마진 하락</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">컨센 대비 −10~15% + 디레이팅</span>
+    <h4>③ 기대치 리스크 — 「최선호주」의 무게 + 자회사·계절성 노이즈</h4>
+    <p>목표가 30만→33만 상향 행진과 업종 Top Pick 지위는 컨센 자체가 높아졌다는 뜻이다. 프리커서 +31% 경로에서
+    분기 하나만 미끄러져도(고객 재고조정, TSMC·인텔 물량 이연) 실망 매물이 나온다. 여기에 테이팩스 부진 장기화,
+    QD 계절성, 매년 4분기 일회성 비용이 「어닝 미스처럼 보이는 분기」를 주기적으로 만든다 —
+    4Q25 컨센 -22% 하회가 전형. 구조를 모르는 투자자에게는 함정, 아는 투자자에게는 매수 기회가 되는 패턴이다.</p>
+    <div class="alarm"><b>경보</b> — 분기 프리커서 성장률이 +20% 아래로 2분기 연속 · 테이팩스 적자 전환 · 목표가 하향 리포트 등장</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (2026년 1월 기준)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:14%"><div class="tick"></div><div class="price">'23~24년</div><div class="lbl">다운사이클 박스권<br>(성장 실종 구간)</div></div>
+      <div class="mk" style="left:52%"><div class="tick"></div><div class="price">243,500원</div><div class="lbl">1월 말 주가<br>12M Fwd PER ~14배 내외</div></div>
+      <div class="mk" style="left:84%"><div class="tick"></div><div class="price">30~33만</div><div class="lbl">목표주가 (키움·메리츠·미래)<br>12M Fwd PER ~17배 적용</div></div>
+    </div>
+  </div>
+  <p class="note">목표가 33만원은 12M Fwd PER 약 17배 수준으로 산출 — 솔브레인(2026F 21.9배)·동진(27.5배)보다 낮고 이엔에프(12.5배)보다 높은,
+  「성장의 지속성 프리미엄 + KOSPI 우량주 디스카운트」가 섞인 자리다. 7월 현재가는 미확인 — 최신 주가로 밴드 내 위치 재확인 필요.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>이 종목은 사이클 주식인가, 성장 주식인가 — 답은 「반반이고, 그래서 좋다」</h4>
+    <p>과수는 사이클(가동률 동행), 프리커서는 성장(고객 다변화 + 선단화 비례)이다. '26E 증익 +36%를 분해하면
+    사이클 몫과 구조 몫이 얼추 반반 — 즉 사이클이 꺾여도 이익의 전부가 되돌려지지 않는, 시리즈에서 가장 「질 좋은 증익」이다.</p>
+    <p>판정법: 분기마다 프리커서 성장률 하나만 보면 된다. +25~35% 궤도 유지 = 성장 스토리 유효,
+    +20% 하회 반복 = 그냥 사이클 주식으로 강등하고 멀티플을 사이클 피어(12~15배)로 낮춰 재평가.</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>시리즈 4종 포트폴리오에서 한솔의 자리는?</h4>
+    <p>한솔은 「가장 빠르고(선납품), 가장 안정적이며(바닥 OPM 16%·재무 최우량), 가장 넓은(파운드리 40%·TSMC·인텔·2차전지)」 소재주다.
+    솔브레인의 방어력에 원익QnC의 글로벌 노출을 조금 섞은 성격 — 시리즈 내에서 유일하게 「코어(장기 보유) 후보」 자격이 있다.</p>
+    <p>이탈 규율: 공통 경보(현물-고정가 괴리) + 한솔 고유 트리거 둘 —
+    <b style="color:#9FC3EE">프리커서 성장률 +20% 하회 2분기 연속(성장 스토리 훼손), JKM LNG 급등(마진 경로 훼손).</b>
+    반대로 4분기 일회성발 급락은 구조적 악재가 아니므로 오히려 검토 기회.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>밸류체인 최선행 소재</h4>
+      <ul><li>과수는 팹 가동 <b>1~2개월 전 선납품</b></li><li>한솔의 신규 팹향 매출 개시 = <b>솔브레인 매출의 선행지표</b>로 활용 가능</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>증익의 질이 시리즈 최상</h4>
+      <ul><li>'26E +36% = 물량 + 믹스 + 원가, <b>전부 '27년에도 지속되는 항목</b></li><li>솔브레인의 일회성 소멸 의존과 대조</li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>4분기는 매년 노이즈</h4>
+      <ul><li>성과급 일회성으로 4Q 컨센 하회가 패턴</li><li>연간 흐름은 <b>9개월 누적으로 판단</b> — 4Q발 급락은 기회일 수 있음</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ 부록: 시리즈 4종 최종 비교 ═══════════ -->
+<section>
+  <div class="eyebrow">APPENDIX · SERIES 4종 통합</div>
+  <h2>소재 4사 최종 비교 — 사이클 위의 네 가지 성격</h2>
+  <div class="scrollx"><table>
+    <tr><th></th><th>솔브레인<br>(방어자)</th><th>이엔에프테크<br>(도전자)</th><th>동진쎄미켐<br>(몽상가)</th><th>한솔케미칼<br>(우등생)</th></tr>
+    <tr><td>매출 ('25)</td><td class="num">9,233억</td><td class="num">6,709억</td><td class="num">1조 1,941억<br>(中매각 후 ~9,700억)</td><td class="num">~8,860억</td></tr>
+    <tr><td>OPM (평시/바닥)</td><td class="num">17~19% / 15.8%</td><td class="num">10~14% / 4.3%</td><td class="num">14~16% / —</td><td class="num"><b>19~23%E / 16%</b></td></tr>
+    <tr><td>수요의 함수</td><td>웨이퍼 물량×단수</td><td>웨이퍼 물량(디램)</td><td>선단화 레이어 수</td><td>가동률(과수)+선단화(프리커서)</td></tr>
+    <tr><td>매출 인식 시차</td><td>가동 시점</td><td>가동 시점</td><td>가동 시점</td><td><b>가동 1~2개월 前 (최선행)</b></td></tr>
+    <tr><td>레버리지</td><td class="num">2배 (구조)</td><td class="num">2.5~3배 (구조)</td><td class="num">0~3배 (스위치)</td><td class="num">~2배 + 믹스 증폭</td></tr>
+    <tr><td>'26E 증익 / 질</td><td class="num">+41~62% / 절반 일회성</td><td class="num">+24~30% / 내재화 지속</td><td class="num">1Q +39% / 지속성 검증 중</td><td class="num"><b>+36% / 전 항목 지속형</b></td></tr>
+    <tr><td>밸류에이션 (최신 확인치)</td><td class="num">2026F PER 21.9배 (6월)</td><td class="num">PER 12.5배 (6월)</td><td class="num">PER 27.5배 (5월)</td><td class="num">Fwd ~14배, 목표 17배 (1월)</td></tr>
+    <tr><td>글로벌 고객</td><td>테일러(초입)</td><td>미국 법인(초입)</td><td>BOE 이탈 · 텍사스(초입)</td><td><b>TSMC·인텔·일본 (기확보)</b></td></tr>
+    <tr><td>고유 관전포인트</td><td>'27년 성장 감속</td><td>2H26 HSN 퀄</td><td>상속·OPM 지속</td><td>프리커서 +31% 궤도 · LNG</td></tr>
+  </table></div>
+  <p class="note">포트폴리오 설계 제안: 코어 = 한솔(지속성) 또는 솔브레인(순도), 새틀라이트 = 이엔에프(HSN 옵션) 또는 동진(국산화 옵션),
+  진짜 분산 = 원익QnC(장비사·대만 축). 4종 전부 보유는 「국내 메모리 사이클」 단일 팩터의 증폭임을 재차 유의.</p>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·KIS 신용평가 의견·증권사 리포트(키움·메리츠·DS·미래에셋·NH)·언론 보도 기반의 정리 자료이며 투자 권유가 아닙니다.
+  2025년 연간 확정치는 4분기 추정(214~227억) 기반 근사치, 부문별 매출 비중은 추정 조합입니다. 주가는 2026년 1월 말 기준으로 현재와 다를 수 있습니다.
+  기준일: 2026년 7월 5일. 자매 리포트: 솔브레인 · 이엔에프테크놀로지 · 동진쎄미켐.
+</footer>
+
+</div>
+</body>
+</html>

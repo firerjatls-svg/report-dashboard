@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HD현대마린엔진 (071970) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#78350F; --accent-soft:#F5EBE4; --accent-deep:#5A280B;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(120,53,15,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#D9A886;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#E0B394;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#D9A886;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 조선 기자재 (선박엔진·부품) · 시리즈 13 — 조선 팩터 4편: 엔진 과점의 다른 반쪽</div>
+  <h1>HD현대마린엔진<span class="ticker">KOSPI 071970</span></h1>
+  <div class="sub">STX의 부활 — 4년 만에 이익 10배 경로, OEM 직계약 전환이라는 구조 개선, 그리고 한화엔진과의 정면 비교</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 07</b></div>
+    <div>2025년 확정<b class="figures">매출 4,020억 (+27%) · OP 760억 (+128%)</b></div>
+    <div>1Q26 확정<b class="figures">매출 1,335억 · OP 326억 (OPM 24.4%) — 컨센 상회</b></div>
+    <div>2026E<b class="figures">매출 ~6,000억 · OP ~1,400억 (약 2배)</b></div>
+    <div>주가·목표가<b class="figures">~99,900원 (5/7 역산) · 목표 컨센 122,400원 (+22%)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — HD현대마린엔진(옛 STX중공업, 2024년 7월 HD현대 편입)은 한화엔진과 <b>같은 팩터·같은 빈티지 구조의
+  직접 경쟁사</b>다 — 시리즈 최초의 「동일 팩터 페어」로, 분산 가치는 없지만 비교 가치가 크다. 몸집은 한화엔진의 1/3.4(매출
+  4,020억 vs 1.37조)인데 <b>OPM은 2배(18.9% vs 9.5%, '25년)</b> — 그 차이의 정체가 이 리포트의 축이다: ① 부품사업부
+  (크랭크샤프트·터보차저 국산화·AM)의 고마진 축, ② <b>OEM → 직계약 전환</b>(HD현대重 경유 물량을 직접 계약으로 — 중간
+  마진 제거)이라는 그룹 편입발 구조 개선, ③ 빈티지 — '26년 매출의 90%가 '24~25년 고단가 수주분이라는, 시리즈에서 가장
+  정밀하게 공개된 판가 지도. 여기에 4년 만에 이익 10배(180억→1,900억E) 경로와 중국 수주 릴레이가 얹혔다.
+  질문은 하나로 수렴한다 — <b>이 가파른 경로가 주가에 얼마나 선반영됐는가.</b>
+  <b>[개정 1판]</b> 밸류 좌표 확정(5월 초 ~10만원 · 목표 컨센 122,400원 · 여력 ~+22%)과 함께 비영업 리스크 하나를 발굴 —
+  <b>공정위가 인수 승인 조건으로 부과한 「'27년 7월까지 엔진 부품(CS) 가격 인상 제한·공급 거절 금지」 시정조치</b>.
+  부품 마진 스토리에 규제 천장이 있었고, 그 만료('27.7)가 옵션이자 이벤트다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">창원 기반의 선박엔진·부품 제조사. STX중공업 시절부터 엔진과 핵심 부품(크랭크샤프트)의 강자였고,
+  2024년 7월 HD현대 편입으로 그룹 엔진 밸류체인의 한 축이 됐다. 캐파 140만 마력.</div>
+
+  <h3>매출 구성 (2026E 기준 — 메리츠 전망으로 부문 분해)</h3>
+  <div class="stackbar">
+    <div style="flex:82;background:#78350F">엔진사업부 ~82% (5,313억E)</div>
+    <div style="flex:18;background:#B97B4C">부품사업부 ~18% (1,140억E)</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#78350F">선박용 저속·중속 엔진 — '26E 매출 +67.9% · OPM 23.1% (메리츠)</span>
+    <span style="--c:#B97B4C">크랭크샤프트 + 터보차저(국산화·Accelleron 위탁, 연 700대로 확대) + AM 부품 — '26E +32.7% · OPM 24.5%</span>
+  </div>
+
+  <h3>구조의 세 기둥</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">고객 지도</div>
+      <h4>그룹 + 중국의 두 날개 <span class="pill up">한화엔진과 동일 문법</span></h4>
+      <ul>
+        <li>그룹 <b>HD현대重·삼호 등 계열 조선사 — OEM 경유에서 직계약으로 전환 중</b></li>
+        <li>중국 <b>'26년 연초 수주 릴레이: 장수뉴양즈장 243억 + TSSE 622억 + 타이저우 산푸 335억 = 1,200억</b></li>
+        <li>구조 <b>중국 조선 호황 = 한국 엔진 특수</b> — 엔진 과점 2사가 같은 순풍을 나눠 탄다</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">경쟁 구도 — 제품별 분리</div>
+      <h4>엔진은 과점, 부품은 틈새 강자</h4>
+      <ul>
+        <li>엔진 <b>한국 3사 구도 (HD현대重 엔진기계 · 한화엔진 · 당사)</b> — 라이선스 생산 공통</li>
+        <li>크랭크샤프트 <b>국내 희소 공급자 — 수요 견조</b> (메리츠)</li>
+        <li>터보차저 <b>스위스 Accelleron(비상장 아님 — 스위스 상장) 위탁생산 + 국산화</b> — 부품 국산화의 대표 사례</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">신사업 옵션</div>
+      <h4>가스터빈 블레이드 <span class="pill warn">초도품 단계</span></h4>
+      <ul>
+        <li>내용 <b>두산에너빌리티 협업 — 정밀 주조 블레이드</b>, 초도품 75개 상반기 납품 예정</li>
+        <li>조건 <b>초도품 통과 후 주조 라인 본격 증설</b> (현대차증권) — 발전 사이클로의 다각화 옵션</li>
+        <li>+ HD현대마린솔루션과의 AM 네트워크 효과 (그룹 시너지)</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">직접 고객 vs 최종 수요: 엔진의 직접 고객은 조선소(계열+중국), 최종 수요는 선주 — 한화엔진과 동일한 2단 구조.
+  부품은 엔진사·조선소·AM 시장으로 다층 판매.</p>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 같은 빈티지, 더 높은 밀도</h2>
+  <div class="lead">가격 결정은 수주 시 고정(빈티지형) — 원가 전가 불가, 방어는 고가 빈티지의 도래와 믹스. 한화엔진과 같은 문법이되
+  마진의 밀도가 2배인 이유가 이 회사의 정체성이다.</div>
+
+  <div class="formula">매출     = 엔진 인도 (대수 × <b>수주 시점 판가 — 빈티지</b>) + 부품 (크랭크샤프트·터보차저·AM)
+영업이익 = (빈티지 판가 − 제조원가) × 물량 + <b>직계약 전환 마진</b> + 부품 고마진 ± 환율
+
+OPM 2배(vs 한화엔진)의 해부:
+① <b>OEM → 직계약 전환</b> — HD현대重 경유 물량이 직접 계약이 되며 중간 마진 소멸 + 매출 전액 인식 (구조적·비가역적)
+② 부품 믹스 — 부품사업부 OPM 24.5%E, 터보차저 국산화로 확대 중
+③ 몸집이 작아 고정비 희석이 빠름 — 캐파 140만 마력의 집중 운영</div>
+
+  <h3>제품별 이익 기여 분해 (2026E, 메리츠 기반 계산)</h3>
+  <div class="scrollx"><table>
+    <tr><th>부문</th><th>매출</th><th>비중</th><th>OPM</th><th>영업이익</th><th>이익 비중</th></tr>
+    <tr><td>엔진</td><td class="num">5,313억</td><td class="num">82%</td><td class="num">23.1%</td><td class="num">~1,227억</td><td class="num">~81%</td></tr>
+    <tr><td>부품</td><td class="num">1,140억</td><td class="num">18%</td><td class="num">24.5%</td><td class="num">~279억</td><td class="num">~19%</td></tr>
+  </table></div>
+  <p class="note">매출-이익 비중이 거의 일치 — 덕산(MSB)·마린솔루션(핵심사업) 같은 극단적 비대칭이 없어, <b>전사 헤드라인을
+  그대로 읽어도 되는 드문 종목</b>이다. 다만 부품의 마진이 근소하게 높고 성장 옵션(터보차저 700대·가스터빈)이 부품 쪽에
+  몰려 있어, 장기 믹스는 부품이 끌어올린다.</p>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 변수·약점 (−)</th></tr>
+    <tr>
+      <td>① '22년 저가 물량 소진 → '24~25년 고단가 빈티지 집중 납품기<br>
+      ② 직계약 전환의 구조적 마진 (2H26 그룹향 직계약 매출 본격 반영 — 현대차)<br>
+      ③ 터보차저 국산화 — 수입 대체분이 마진으로<br>
+      ④ 환율 효과 (1Q26 실증)</td>
+      <td>① 강재·주단조 원가 상승 시 전가 불가 (빈티지 고정)<br>
+      ② 그룹 의존의 이전가격 — 직계약 전환의 조건·단가는 그룹 의사결정에 종속<br>
+      ③ 중국 수주의 단납기·투기적 발주 성격 (메리츠 표현) — 판가는 좋지만 지속성 검증 필요<br>
+      ④ 가스터빈 초도품 지연 전례 (일부 지연 — 상반기 완료 예정)<br>
+      ⑤ <b>[개정] 공정위 시정조치 — 크랭크샤프트 등 엔진 부품(CS)의 가격 인상이 '27년 7월까지 제한</b> (인수 조건부 승인, '24.7.15) — 부품 프라이싱의 규제 천장</td>
+    </tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 4년 10배 경로의 중간 검증</h2>
+
+  <h3>연간 실적 (연결, 억원)</h3>
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>매출</th><th>영업이익</th><th>OPM</th><th>해설</th></tr>
+    <tr><td>2023</td><td class="num">2,440억</td><td class="num">180억</td><td class="num">7.4%</td><td>STX중공업 말기 — 저가 물량 시대</td></tr>
+    <tr><td>2024</td><td class="num">3,160억</td><td class="num">~333억 (역산)</td><td class="num">~10.5%</td><td>7월 HD현대 편입 — 전환의 해</td></tr>
+    <tr class="hl"><td>2025 (확정)</td><td class="num"><b>4,020억 (+27%)</b></td><td class="num" style="color:var(--up)"><b>760억 (+128%)</b></td><td class="num"><b>18.9%</b></td><td>4Q25 어닝서프라이즈: 매출 1,110억 · OP 279억 (OPM 25%)</td></tr>
+    <tr><td>2026 (진행)</td><td class="num">1Q 1,335억</td><td class="num" style="color:var(--up)">1Q 326억</td><td class="num"><b>24.4%</b></td><td>컨센 +6.3%/+11.9% 상회 · 연간 E: ~6,000억/1,400억 (2배)</td></tr>
+    <tr><td>2027E</td><td class="num">7,470억</td><td class="num">1,900억</td><td class="num">25.4%</td><td><b>'23년 대비 이익 10배 경로의 종착 전망</b> (컨센)</td></tr>
+  </table></div>
+  <p><b>평가:</b> 감익의 질 이슈가 거의 없는 깨끗한 우상향이다 — 4Q25 서프라이즈는 일회성이 아니라 빈티지 도래였고,
+  1Q26은 전분기 대손충당금 환입(18억)을 제거해도 QoQ 마진이 개선됐다(현대차 확인). 4분기 일회성 함정도 미확인 —
+  오히려 4Q가 최고 분기였다. 순이익-영업이익 괴리도 특기할 수준이 아님(세부 미확인 — 확실하지 않음).
+  주의점은 하나: 이 트랙레코드의 상당분이 <b>「그룹 편입」이라는 일회적 구조 변화</b>(직계약 전환·그룹 발주)에서 나왔다는 것 —
+  성장의 재료가 사이클(빈티지)과 구조(전환)로 이원화되어 있어, 사이클이 꺾여도 전환 효과는 남는다는 게 방어 논리다.</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 시리즈에서 가장 투명한 빈티지 지도</h2>
+  <div class="lead"><b>팩터 선언: 「신조 발주 사이클 (flow)」 — 한화엔진과 완전 동일 팩터.</b> 분산 가치는 없다. 대신 이 종목은
+  빈티지 구성이 연도별 %로 공개된, 시리즈에서 가장 투명한 판가 지도를 제공한다.</div>
+
+  <h3>사슬 · 신조 발주 → 엔진 수주 (2~3년 시차) → 인도 <span class="pill up">한화엔진과 공유</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">글로벌 신조 발주 + 중국 조선 호황 — 엔진 쇼티지 국면 (기사 표제: "엔진 숏티지·중국 수주로 초호황")</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">수주 (그룹 직계약 + 중국 릴레이) → 잔고 '27년 상반기까지 확보</div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">2~3년 뒤 인도·매출 — <b>'26년 매출 구성: '25년 수주분 50% + '24년 수주분 40% + '23년 한 자릿수</b> (현대차 백주호)</div></div>
+  </div>
+
+  <h3>ASP 빈티지 지도 — 연도별 % 공개라는 희귀 자료</h3>
+  <div class="scrollx"><table>
+    <tr><th>납품 연도</th><th>매출의 빈티지 구성</th><th>판가 성격</th><th>판정</th></tr>
+    <tr><td>2025</td><td>'23년(저가 잔재) + '24년(상승기) 혼재</td><td>상승 개시</td><td class="num">OPM 18.9% 실현</td></tr>
+    <tr class="hl"><td><b>2026</b></td><td><b>'25수주 50% + '24수주 40% + '23 한 자릿수</b></td><td>'24~25 = 중국발 단납기·투기적 발주로 <b>판가 급등기</b> (메리츠)</td><td class="num" style="color:var(--up)"><b>고단가 압도 — OPM 23%+ 경로</b></td></tr>
+    <tr><td>2027</td><td>'25~26년 수주분 중심</td><td>'26년 신조선가 반등 국면의 수주</td><td class="num" style="color:var(--up)">상승 지속 전망 (OP 1,900억 컨센)</td></tr>
+    <tr><td>2028~</td><td>'26~27년 수주분</td><td>발주 사이클 지속 여부에 종속</td><td class="num">열린 구간 — 올해 수주가 예고편</td></tr>
+  </table></div>
+  <p class="note"><b>메아리 점검</b>: 한국카본('24년 수주 공백 → '26년 매출 공백)과 달리 이 회사는 '24~25년에 수주가 오히려
+  몰렸으므로 '26~27년에 매출 공백이 없다 — 같은 조선 팩터 안에서도 수주 타이밍에 따라 메아리의 위상이 다르다는 실례.
+  전방 교차 검증: 한화엔진 1Q26 수주 1.23조·잔고 5.2조, 조선 3사 LNGC·컨선 수주 호조 — 엔진 2사가 같은 강의 상류를 공유하므로
+  <b>한화엔진 리포트의 사슬 A~D와 대시보드를 그대로 겸용</b>하면 된다.</p>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 지표 추세형 (한화엔진과 겸용)</h2>
+  <div class="lead">리스크 관리 유형: <b>지표 추세형</b> — 이벤트 뇌관(재판·담합)은 미확인. 엔진 2사가 상류를 공유하므로
+  한화엔진 대시보드에 이 종목 고유 지표 4개만 얹으면 된다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처 · 주기 · 무료</th><th>현재 상태 (확인 시점)</th></tr>
+    <tr><td><span class="dot g"></span><b>수주 공시 (특히 중국향)</b></td><td>매출의 2~3년 선행 + '28년 빈티지 예고편</td><td>DART · 수시 · 무료</td><td class="num">연초 3건 1,200억 릴레이 (1~3월)</td></tr>
+    <tr><td><span class="dot g"></span><b>OEM → 직계약 전환 진행률</b></td><td>구조적 마진 개선의 진행 확인 — 이 종목 고유</td><td>실적 컨콜·리포트 · 분기</td><td>2H26 그룹향 직계약 매출 본격 반영 예정 (현대차, 5월)</td></tr>
+    <tr><td><span class="dot g"></span>분기 인도 대수·믹스</td><td>빈티지 진행의 실측</td><td>증권사 리포트 · 분기</td><td>1Q26 인도 증가 + 믹스 개선 (현대차)</td></tr>
+    <tr><td><span class="dot y"></span><b>가스터빈 초도품 납품</b></td><td>신사업 증설 투자의 선행 조건</td><td>컨콜·뉴스 · 분기</td><td>75개 일부 지연 — 상반기 완료 예정 (5월)</td></tr>
+    <tr><td><span class="dot g"></span>가동률</td><td>물량 레버리지의 잔여 룸</td><td>사업보고서·리포트 · 분기</td><td class="num">4Q25 92.6% — 이론상 120%까지</td></tr>
+    <tr><td><span class="dot g"></span>신조 발주·신조선가 (공유)</td><td>사이클 상류 — 한화엔진 대시보드 겸용</td><td>클락슨·전문지 · 주간 · 무료</td><td>'26년 발주 붐 국면</td></tr>
+    <tr><td><span class="dot y"></span>강재·주단조 원가 (공유)</td><td>스프레드의 원가 반쪽</td><td>철강 시황 · 월간</td><td>안정 — 급등 시 경보</td></tr>
+    <tr><td><span class="dot y"></span>중국 엔진 자급화 동향 (공유)</td><td>중국 수주의 지속성 변수</td><td>전문지 · 수시</td><td>CSSC 계열 캐파 확장 감시</td></tr>
+    <tr><td><span class="dot y"></span><b>[개정] 공정위 시정조치 만료 ('27.7)</b></td><td>부품(CS) 가격 인상 제한 해제 = 마진 옵션 / 연장 = 리스크</td><td>공정위·뉴스 · 이벤트</td><td>'24.7.15 부과 — 3년 시한부. <b>이벤트 캘린더에 등록</b></td></tr>
+  </table></div>
+
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>DART 수주 공시 알림 (중국향 릴레이 지속 여부)</li><li>조선·엔진 발주 뉴스 (한화엔진과 한 창에서)</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>강재 시황 + 중국 조선·엔진 동향</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY — 한 세트</div>
+      <ul><li>인도·믹스 → <b>직계약 전환 진행 (2H26 본격화 확인)</b> → 가스터빈 초도품 → 한화엔진 실적과 교차 비교</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 빈티지 × 직계약 전환 × 가동률 룸의 3중 곱</h2>
+
+  <h3>실측: Incremental Margin</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>Δ매출</th><th>Δ영업이익</th><th>Inc. Margin</th><th>판정</th></tr>
+    <tr><td>'23→'24</td><td class="num">+720억</td><td class="num">+153억 (역산)</td><td class="num">21%</td><td>편입 전환기</td></tr>
+    <tr class="hl"><td>'24→'25 (확정)</td><td class="num">+860억</td><td class="num" style="color:var(--up)"><b>+427억</b></td><td class="num" style="color:var(--up)"><b>50%</b></td><td>빈티지 + 직계약 전환의 합작</td></tr>
+    <tr><td>4Q25→1Q26 (QoQ)</td><td class="num">+225억</td><td class="num">+65억 (환입 18억 조정 후)</td><td class="num">29%</td><td>일회성 제거 후에도 마진 개선 지속</td></tr>
+    <tr><td>'25→'26E</td><td class="num">+1,970억</td><td class="num">+640억</td><td class="num"><b>32%</b></td><td>OPM 18.9% → 23%+ 경로</td></tr>
+  </table></div>
+
+  <style>
+    .levviz{margin:16px 0 6px}
+    .levrow{display:flex;align-items:center;gap:12px;margin:9px 0}
+    .levlab{flex:0 0 96px;font-size:12.5px;font-weight:700;color:var(--accent-deep);text-align:right}
+    .levbar{flex:1;display:flex;height:32px;border-radius:7px;overflow:hidden;background:#EEF1F5;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+    .levcost{background:#CBD3DD;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:#54637A;white-space:nowrap}
+    .levgain{background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11.5px;color:#fff;font-weight:700;white-space:nowrap}
+    .levpct{flex:0 0 118px;font-size:12.5px;font-weight:800;color:var(--accent)}
+    .levhead{display:flex;gap:12px;font-size:11px;color:#8A97A8;margin-bottom:2px}
+    .levhead span:first-child{flex:0 0 96px}
+    .gauge{margin:18px 0 4px;position:relative;height:56px}
+    .gauge .track{position:absolute;top:24px;left:0;right:0;height:10px;border-radius:5px;background:linear-gradient(90deg,#EEF1F5,var(--accent-soft))}
+    .gauge .fillB{position:absolute;top:24px;left:0;height:10px;border-radius:5px 0 0 5px;background:var(--accent);opacity:.25;width:40%}
+    .gauge .fillA{position:absolute;top:24px;left:0;height:10px;border-radius:5px;background:#94A3B8;width:24.4%}
+    .gauge .mkr{position:absolute;top:0;font-size:11.5px;font-weight:700;transform:translateX(-50%);text-align:center;line-height:1.25}
+    .gauge .mkr i{display:block;width:2px;height:14px;background:currentColor;margin:3px auto 0;font-style:normal}
+    @media(max-width:560px){.levlab{flex-basis:64px;font-size:11px}.levpct{flex-basis:70px;font-size:11px}}
+  </style>
+
+  <h3>한눈에 보기 · 증분 매출 100원의 여정</h3>
+  <div class="levviz">
+    <div class="levhead"><span></span><span>← 증분 매출 100원 →</span></div>
+    <div class="levrow">
+      <div class="levlab">'23→'24</div>
+      <div class="levbar"><div class="levcost" style="width:79%">비용 79</div><div class="levgain" style="width:21%">21</div></div>
+      <div class="levpct">이익 잔존 21%</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab"><b>'24→'25</b></div>
+      <div class="levbar"><div class="levcost" style="width:50%">비용 50</div><div class="levgain" style="width:50%">이익 50</div></div>
+      <div class="levpct">50%</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab">1Q26 QoQ</div>
+      <div class="levbar"><div class="levcost" style="width:71%">비용 71</div><div class="levgain" style="width:29%">29</div></div>
+      <div class="levpct">29% ※환입 조정</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab">'25→'26E</div>
+      <div class="levbar"><div class="levcost" style="width:68%">비용 68</div><div class="levgain" style="width:32%">이익 32</div></div>
+      <div class="levpct">32%</div>
+    </div>
+  </div>
+  <p class="note">'24→'25의 50%가 이 회사 레버리지의 절정 실측 — 빈티지 판가 상승과 직계약 전환(중간 마진 소멸)이
+  겹친 구간이다. 1Q26 QoQ 29%는 전분기 대손충당금 환입 18억을 제거한 조정값(제거 전 21%).</p>
+
+  <h3>한눈에 보기 · 레버리지 배율 게이지</h3>
+  <div class="gauge">
+    <div class="track"></div>
+    <div class="fillB"></div>
+    <div class="fillA"></div>
+    <div class="mkr" style="left:24.4%;color:#64748B">현재 OPM<br>24.4% (1Q26)<i></i></div>
+    <div class="mkr" style="left:40%;color:var(--accent-deep)">증분 공헌이익률<br>~40%<i></i></div>
+  </div>
+  <p class="note" style="margin-top:14px">배율 ≈ 40 ÷ 24.4 ≈ <b>1.6배</b> — 매출 +10% → OP +13~16%, +20% → +26~32%.
+  한화엔진(3~4배 구간)보다 배율이 낮은 이유는 결함이 아니라 <b>이미 OPM이 높아서</b>다 — "OPM 상승 시 배율 자연 감소"
+  원리의 실례로, 한화엔진은 마진 회복의 초입(9.5%→14.9%)이라 배율이 크고, 이 회사는 회복이 상당히 진행된(24.4%) 상태다.
+  즉 <b>레버리지 스토리로서의 순서는 한화엔진이 앞, 마진의 질은 이 회사가 앞.</b></p>
+
+  <h3>여력 — 가동률 룸 + 경량 증설</h3>
+  <p>가동률 92.6%(4Q25)이나 <b>이론상 120%까지 운영 가능</b>(OEM 물량 20%의 직계약 전환분이 가동률 룸으로 작용 — 현대차),
+  추가로 창원공장 B동 증설 여력 보유. 즉 한화엔진(101.5% 풀캐파, 증설 '27년 대기)과 달리 <b>당장 쓸 수 있는 물량 레버리지가
+  남아 있다.</b> 가스터빈 정밀 주조 라인 증설은 초도품 통과가 선행 조건 — CAPEX 규모 미공시(확실하지 않음), 성격상
+  소규모 라인 투자로 회수 기간 2~3년대 추정(프레임 추정). 3중 곱 구조: <b>빈티지(P) × 직계약 전환(구조 마진) ×
+  가동률 룸(Q)</b> — 셋 다 '26~27년에 정방향.</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+
+  <div class="risk r1">
+    <span class="impact r1i">장기 · 사이클 반전</span>
+    <h4>① 발주 절벽 + 중국 수주의 이중 취약성</h4>
+    <p>한화엔진과 공유하는 후행 사이클 리스크에 더해, 이 회사의 중국 수주는 메리츠 표현으로 <b>"단납기 수요 및 투기적
+    발주"</b>의 성격이 있다 — 판가는 급등시켜줬지만, 중국 조선 시황이 꺾이거나 자국 엔진(CSSC 계열) 캐파가 올라오면
+    가장 먼저 끊기는 물량일 수 있다. 잔고가 '27년 상반기까지로 한화엔진(3년+)보다 짧다는 점도 하강 국면에서의
+    완충재 차이로 작용한다.</p>
+    <div class="alarm"><b>경보</b> — 중국향 수주 공시 2개 분기 공백 · 글로벌 신조 발주 급감 · 중국 엔진사 증설·수주 확대 보도</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">기대 조정 −20~40%</span>
+    <h4>② "4년 10배"가 컨센이 된 상태 — 선반영 점검</h4>
+    <p>주가 85,300원(1월)에서 목표가 117,000원(현대차, 5월)까지, 이 종목의 내러티브(빈티지·직계약·10배 경로)는 이미
+    널리 유통됐다. 이미 가격에 든 것들: '26년 이익 2배, '27년 1,900억, 직계약 전환 완료, 터보차저 700대.
+    남은 상방은 초과 달성(가스터빈 증설 개시, 중국 릴레이 연장)뿐이며, 컨센 경로의 어느 분기 하나가 미달하면
+    — 특히 2H26 직계약 매출 반영이 지연되면 — 멀티플부터 조정받는다. 현 주가 미확인 (7월 기준 — 재확인 필수)이라
+    여력 판단은 보류.</p>
+    <div class="alarm"><b>경보</b> — 2H26 직계약 매출 반영 지연 · 분기 OPM 20% 하회 · 목표가 상향 정체</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">거버넌스·구조</span>
+    <h4>③ 그룹 의존의 양날 — 비영업 리스크 점검</h4>
+    <p>직계약 전환·그룹 발주라는 성장 동력 자체가 <b>그룹 의사결정에 종속</b>돼 있다 — 이전가격, 물량 배분(HD현대重
+    엔진기계와의 영역), 그리고 그룹 3사(중공업 엔진기계·마린엔진·마린솔루션) 간 AM 시장 배분이 모두 계열 협의 사항이다.
+    소수주주 관점에서는 유리한 전환이 언제든 재조정될 수 있는 구조. <b>[개정] 여기에 규제가 확인됐다</b> — 공정위는
+    인수를 조건부 승인하며(24.7.15) 국내 엔진 시장 경쟁 제한을 우려해 <b>3년간 엔진 부품(CS·크랭크샤프트) 공급 거절 금지·
+    최소 물량 보장·가격 인상 제한·납기 지연 금지</b>를 부과했다. 함의 셋: ① 부품사업부의 단가 인상 여력이 '27년 7월까지 묶여
+    있어 부품 마진 개선은 물량·국산화(터보차저)로만 가능, ② 경쟁사(한화엔진)는 역으로 CS 공급 안정을 보장받는 구조,
+    ③ '27년 7월 만료 시 프라이싱 자유화라는 옵션이 열리나 연장·재부과 가능성도 병존. 옛 STX 시절 우발채무·CB·BW는
+    여전히 미확인(확실하지 않음 — 사업보고서 주석 확인 필요).</p>
+    <div class="alarm"><b>경보</b> — 계열 간 사업 이관·수의계약 공시 · 그룹 엔진 밸류체인 재편 발표 · 우발부채 주석 신설</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (시점 혼재 — 7월 현재가 재확인 필수)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:8%"><div class="tick"></div><div class="price">20,300원</div><div class="lbl">'24.8월 (편입 직후)<br>이후 1년 반 새 ~5배</div></div>
+      <div class="mk" style="left:42%"><div class="tick"></div><div class="price">85,300원</div><div class="lbl">'26.1월 중순</div></div>
+      <div class="mk" style="left:66%"><div class="tick"></div><div class="price">~99,900원</div><div class="lbl">'26.5.7 (하나 리포트 역산)<br>여력 +20.1% 시점</div></div>
+      <div class="mk" style="left:92%"><div class="tick"></div><div class="price">122,400원</div><div class="lbl">6개월 평균 목표 컨센<br>(직전 6개월 11만원 → +11.3%)</div></div>
+    </div>
+  </div>
+  <p class="note"><b>[개정] 판정 확정 — 「가격이 증명을 상당히 앞서갔으나, 컨센이 계속 따라 올라오는 중」.</b>
+  이미 가격에 든 것: '26년 이익 2배·'27년 1,900억·직계약 전환·터보차저 확대. 목표가 궤적이 기대 인플레의 속도를 보여준다 —
+  하나증권 기준 '25년 7월 55,000원 → '26년 5월 120,000원 (1년 새 2.2배), 컨센 평균도 6개월 만에 11만 → 122,400원.
+  단 목표가 대비 여력 ~+20%가 유지되고 1Q26이 또 컨센을 상회(+11.9%)한 것은 「컨센이 낮게 잡혀 쫓아가는」 국면의 전형 —
+  티씨케이형 소진(여력 0)과는 구별된다. 시총·PER은 주식수 미확인으로 보류(확실하지 않음). 7월 현재가 재확인 필수.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>2H26 직계약 매출 본격 반영 — 이 종목의 올해 단일 관문</h4>
+    <p>빈티지('26년 매출의 90%가 고단가)와 가동률 룸은 이미 확정된 재료다. 열려 있는 것은 <b>OEM → 직계약 전환분의
+    매출 반영 시점과 폭</b> — 현대차가 2H26 본격화를 명시했으므로, 3Q26 실적에서 이것이 확인되는지가 '27년 OP 1,900억
+    경로의 관문이다. <b>검증 순서: ① 2Q26 OPM 23%+ 유지 (8월 중순 반기 발표) → ② 3Q26 직계약 매출 반영 확인 →
+    ③ 가스터빈 초도품 완납·증설 결정 → ④ 중국 수주 릴레이 연장.</b></p>
+    <p><b>IR에 물어볼 핵심 질문 하나:</b> "OEM 잔여 물량(생산의 ~20%)의 직계약 전환 완료 시점과, 전환 시 동일 물량 기준
+    마진 개선폭은 몇 %p인가" — 이 답으로 '27년 이익의 구조적 하한이 계산된다.</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>엔진 2사 중 무엇을 고르나 — 시리즈 최초의 동일 팩터 페어 판정</h4>
+    <p>3질문 좌표: ①강도 — 마린엔진 ★★★ (이익 2배 경로·빈티지 90%) vs 한화 ★★★ (inc. 108% 실측·P×Q '27년) — 백중.
+    ②룸 — <b>[개정] 마린엔진 여력 ~+22% (5월 초, 컨센 122,400원 기준)</b>로 확정, 한화엔진은 현재가 미확인으로 보류 — 판정 가능한 쪽은 「얇지만 컨센 추격이 살아 있는」 상태. ③변수 — <b>마린엔진이 근소 우위</b>: 잔고는 짧지만
+    (1.5년 vs 3년+) 카타르·소송 노출이 없고 직계약 전환이라는 사이클 무관 동력을 보유. 단 그룹 종속이라는 고유 변수가 추가.</p>
+    <p>실전 판정: <b>마진의 질·구조 개선을 사려면 마린엔진, 레버리지의 폭발력(마진 회복 초입)과 잔고의 길이를 사려면
+    한화엔진.</b> 둘을 함께 들면 같은 팩터의 중복이므로, 페어로는 "수주 공시 강한 쪽으로 분기마다 기울이는" 상대가치
+    운용이 맞다. 이탈 규율 3단계: <b style="color:#D9A886">경계 = 분기 OPM 20% 하회 · 축소 = 직계약 반영 지연 + 중국 수주
+    공백 동반 · 실적 무관 이탈 = 그룹 밸류체인 재편(물량 회수) 공시.</b> 노이즈성 급락(환율·조업일수·시장 동반 조정)은
+    빈티지 구성이 멀쩡하면 검토 기회.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>같은 팩터, 다른 국면</h4>
+      <ul><li>한화(OPM 9.5→14.9%, 배율 3~4배) vs 마린엔진(24.4%, 1.6배)</li><li><b>배율은 마진 회복의 「위치」를 알려주는 온도계</b> — 낮다고 나쁜 게 아니다</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>구조 전환은 사이클과 별도 계정</h4>
+      <ul><li>OEM→직계약 전환 = 사이클이 꺾여도 남는 비가역 마진</li><li>성장의 재료를 <b>사이클분 vs 구조분으로 분해</b>하면 하방이 계산된다</li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>빈티지 % 공개는 금맥이다</h4>
+      <ul><li>"'26년 = '25수주 50%+'24수주 40%" — 연도별 %가 공개되면 <b>이익 경로가 사실상 계산 가능</b></li><li>다른 수주산업 분석 시 IR에 가장 먼저 물을 항목</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ 부록: 엔진 2사 정면 비교 ═══════════ -->
+<section>
+  <div class="eyebrow">APPENDIX · ENGINE PAIR</div>
+  <h2>엔진 과점 페어 정면 비교 — 한화엔진 vs HD현대마린엔진</h2>
+  <div class="scrollx"><table>
+    <tr><th></th><th>한화엔진 (082740)</th><th class="hl-col"><b>HD현대마린엔진 (071970)</b></th></tr>
+    <tr><td>'25년 실적</td><td class="num">매출 1조 3,711억 · OP 1,301억 (9.5%)</td><td class="num">매출 4,020억 · OP 760억 (<b>18.9%</b>)</td></tr>
+    <tr><td>1Q26</td><td class="num">OPM 14.9% (역대 최고) · inc. 108%</td><td class="num"><b>OPM 24.4%</b> · 컨센 +11.9% 상회</td></tr>
+    <tr><td>수주잔고</td><td class="num"><b>5.2조 (3년+) · DF 79%</b></td><td class="num">'27년 상반기까지 (~1.5년)</td></tr>
+    <tr><td>고유 동력</td><td>DF 믹스 · AM(LTSA) · 테스트베드 증설 '27</td><td><b>OEM→직계약 전환(구조) · 터보차저 국산화 · 가동률 룸 120%</b></td></tr>
+    <tr><td>레버리지 국면</td><td>회복 초입 — 배율 3~4배 (폭발력)</td><td>회복 후반 — 배율 1.6배 (질)</td></tr>
+    <tr><td>고유 리스크</td><td>카타르 노출 · 소송 169억 · RSU</td><td>중국 투기적 발주 의존 · 그룹 이전가격 종속</td></tr>
+    <tr><td>목표가 (시점)</td><td class="num">6.8만 인용 (최근) — 현재가 미확인</td><td class="num">11.7만 (5/12) — 현재가 미확인</td></tr>
+    <tr class="hl"><td><b>한 줄 판정</b></td><td>잔고의 길이와 레버리지의 폭발력</td><td><b>마진의 질과 구조 개선의 비가역성</b></td></tr>
+  </table></div>
+  <p class="note">둘은 대체재이지 보완재가 아니다 (같은 팩터) — 조선 포트폴리오 구성 시 「카본(LNG 순도) + 엔진 2사 중 1
+  + 마린솔루션(스톡 앵커)」이 중복 없는 3층 구조. 엔진 자리의 선택 기준은 위 표의 마지막 줄.</p>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·증권사 리포트(현대차·메리츠)·언론 보도(파이낸셜뉴스 등) 기반의 정리 자료이며 투자 권유가 아닙니다.
+  2023·2025년 연간과 4Q25·1Q26은 확정/보도 기준, 2024년 OP(~333억)는 증감률 역산, 2026~27년은 컨센서스·메리츠 전망입니다.
+  주가 ~99,900원은 하나증권 리포트(5/8)의 여력 +20.1%에서 역산한 5/7 종가 추정치, 목표 컨센 122,400원은 최근 6개월 평균(뉴스핌 로보뉴스). 시총·주식수·CB/BW·우발부채는 여전히 미확인 — 재확인 필수. 공정위 시정조치는 2024.7.15 조건부 승인 기준.
+  다음 갱신 트리거: 8월 중순 반기 실적(2Q26 OPM·직계약 언급) · 3Q26 실적(직계약 매출 본격 반영 검증) · 가스터빈 초도품 완납 공시 · <b>2027년 7월 공정위 시정조치 만료</b>.
+  기준일: 2026년 7월 7일 · <b>개정 1판</b> (밸류 좌표 확정 · 목표가 컨센 122,400원 · 공정위 시정조치 발굴 · 주가 밴드 4점 재구성). 자매 리포트: 솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 ·
+  파두 · 덕산하이메탈 · 한국카본 · 한화엔진 · HD현대마린솔루션.
+</footer>
+
+</div>
+</body>
+</html>

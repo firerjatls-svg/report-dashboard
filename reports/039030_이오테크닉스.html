@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이오테크닉스 (039030) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#B91C1C; --accent-soft:#FBE7E7; --accent-deep:#7F1D1D;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(185,28,28,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#EFA9A9;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#F2B6B6;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#EFA9A9;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 반도체 레이저 장비 · 시리즈 14 — 다섯 번째 유형: 장비 (사이클의 최선행)</div>
+  <h1>이오테크닉스<span class="ticker">KOSDAQ 039030</span></h1>
+  <div class="sub">레이저로 새기고, 굽고, 자르고, 떼어내는 회사 — 어닐링 독주와 P/E 50배의 무게</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 10</b></div>
+    <div>2025년 확정<b class="figures">매출 3,809억 (+18.7%) · OP 808억 (+158.8%)</b></div>
+    <div>2026E (iM)<b class="figures">매출 4,880억 (+28%) · OP 1,331억 (+65%, OPM 27.3%)</b></div>
+    <div>주가<b class="figures">407,000원 (3/16 · 시총 ~5.0조)</b></div>
+    <div>밸류에이션<b class="figures">12M fwd P/E ~49.6배 (3년 평균 +41% 할증)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 이오테크닉스는 시리즈의 다섯 번째 유형, <b>「장비」</b>를 연다. 같은 메모리 CapEx 나무를 타지만 위상이
+  다르다 — 소재가 가동률에 동행(T0)한다면, 장비는 <b>발주 시점(T-18~12M)에 돈을 버는 사이클의 최선행</b>이고, 하강할 때도
+  최선행이다. 사업의 축은 레이저 4형제: 마커(세계 1위, 캐시카우), <b>어닐링(사실상 독점 — 삼성 1c 디램 필수, '26년 400단+
+  낸드 채용 개시, 마이크론 협의 중)</b>, 커팅·그루빙(Apple M칩·HBM, '25년 매출 2배), 디본더(신규). '25년은 고마진 반도체
+  장비 믹스가 폭발하며 incremental margin 83%를 실측한 해였고, '26년은 사상 최대(매출 4,880억E)를 예고했다.
+  단 두 개의 그림자가 있다 — <b>어닐링 기술을 둘러싼 디아이티 소송(형사·민사 진행 중)</b>과, 이미 3년 평균 대비 41% 할증된
+  <b>P/E 50배</b>라는 가격표. 이 종목의 질문은 실적이 아니라 「독점의 방어와 밸류의 소화」다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">1989년 설립, 2000년 코스닥 상장. 레이저를 이용한 반도체·PCB·디스플레이 생산장비 제조 — 안양 본사.
+  레이저 마커로 시작해 응용처를 공정 안쪽으로 확장해온 「레이저 플랫폼」 기업이다.</div>
+
+  <h3>제품 포트폴리오 (2025년 — 반도체 장비 2,484억이 본체)</h3>
+  <div class="stackbar">
+    <div style="flex:65;background:#B91C1C">반도체 레이저 장비 ~65%</div>
+    <div style="flex:35;background:#E08585">PCB 드릴러·디스플레이·기타 ~35%</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#B91C1C">마커·어닐링·커팅/그루빙·디본더 — '25년 2,484억 → '26E 3,170억 (+28%, iM). 고마진의 본체</span>
+    <span style="--c:#E08585">PCB 드릴러(FC-BGA향 — '26년 투자 재개 수혜 전망) · 디스플레이·2차전지(부진 지속)</span>
+  </div>
+
+  <h3>레이저 4형제 — 제품별로 경쟁 구도가 전부 다르다</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">① 마커 (각인)</div>
+      <h4>세계 1위 캐시카우</h4>
+      <ul>
+        <li>지위 <b>레이저 마커 글로벌 1위</b> — 웨이퍼·패키지 각인의 표준</li>
+        <li>수요 <b>생산량 비례 + 교체 주기 — '27년 교체 수요 도래로 큰 폭 상승 전망 (iM)</b></li>
+        <li>성격 <b>장비지만 소모성에 가까운 반복 수요 — 사이클 완충재</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">② 어닐링 (열처리)</div>
+      <h4>독주 성장축 <span class="pill up">사실상 독점</span></h4>
+      <ul>
+        <li>원리 <b>국소 레이저 열처리 — 고단화·미세화로 전체 가열이 불가능해지는 지점의 해법</b></li>
+        <li>디램 <b>삼성 1c부터 필수 적용 — P4·P5 투자발 주문 지속</b> (iM)</li>
+        <li>낸드 <b>400단 이상에서 '26년 중 채용 개시 → '27년 본격화</b> · 미국 디램 고객사(마이크론 추정) 협의 중</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">③ 커팅·그루빙 + ④ 디본더</div>
+      <h4>HBM·패키징의 신병기 <span class="pill up">'25년 2배</span></h4>
+      <ul>
+        <li>커팅 <b>피코·펨토초 레이저 — Apple M시리즈·HBM 적용, '25년 매출 2배</b></li>
+        <li>디본더 <b>하이브리드 본딩 시대의 신규 장비 — 글로벌 OSAT·파운드리 고객 확보</b></li>
+        <li>옵션 <b>TGV 유리기판 가공 대응력 — 시장 개화 시 추가 모멘텀 (한국IR협의회)</b></li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">고객: 삼성전자(어닐링·마커의 주력 — 추정)·SK하이닉스·글로벌 OSAT·파운드리·PCB사. 직접 고객 = 칩메이커·OSAT로
+  단순한 1단 구조 — 파두·덕산 같은 다단 구조가 아니다. 경쟁: 마커는 글로벌 분산 경쟁 속 1위, <b>어닐링은 국내 독점적 지위이나
+  디아이티(DIT)와의 기술 분쟁이 진행 중</b>(섹션 7), 커팅·그루빙은 일본 디스코(DISCO) 등과의 격전지다.</p>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">장비업의 손익 — 대당 판가 × 대수의 수주형 매출에, 이익은 「어떤 장비를 파느냐」의 믹스가 결정한다.</div>
+
+  <div class="formula">매출     = 장비 대수 × 대당 판가 (발주 시 확정 — <b>수주~매출 시차 2~4분기의 짧은 수주형</b>)
+매출원가 = 레이저 소스·광학계·부품 (일부 수입) + 조립 인건비
+영업이익 = 매출 × <b>제품 믹스 마진</b> − R&D·인건비 (고정비)
+
+믹스의 물리학: 반도체 장비(어닐링·커팅 — 고마진) ↑ + 디스플레이·PCB(저마진) ↓ = OPM 9.7%('24) → 21.2%('25) → 27.3%('26E)
+가격 결정: 발주 시 협상 고정 — 원가 전가는 신규 발주분에서만 가능. 단 어닐링처럼 <b>대체재 없는 장비는 프라이싱 파워 자체가 큼</b></div>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 변수·약점 (−)</th></tr>
+    <tr>
+      <td>① 어닐링의 독점적 지위 — 공정 필수화(1c·400단+)로 갈수록 협상력 강화<br>
+      ② 고마진 반도체 장비 믹스 확대 — '25년 실증 (OP +159%)<br>
+      ③ 무차입 재무 (부채비율 13%) — 금융수익이 순익을 보탬<br>
+      ④ 레이저 플랫폼의 R&D 공유 — 한 소스 기술로 다품종 전개</td>
+      <td>① 4분기 상여금 일회성 — <b>4Q25 OP 144억 (3Q 260억 대비 급감)</b>: 실적 호전 시 반복될 패턴<br>
+      ② 디스플레이·2차전지 부진 장기화 — 비주력의 만성 드래그<br>
+      ③ 순익-영업익 괴리: '24년 순익(427억)＞영업익(312억), '25년은 역전 — 영업외(금융·환) 변동 커서 <b>밸류에이션은 영업이익 기준 권장</b><br>
+      ④ 장비 검수·인도 시점에 따른 분기 매출 출렁임</td>
+    </tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 정체 2년 뒤의 폭발</h2>
+
+  <h3>연간 실적 (연결, 억원)</h3>
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>매출</th><th>영업이익</th><th>OPM</th><th>해설</th></tr>
+    <tr><td>2022</td><td class="num">4,472억</td><td class="num">928억</td><td class="num">20.8%</td><td>직전 피크 — 슈퍼사이클 + PCB 호황</td></tr>
+    <tr><td>2023</td><td class="num">~3,186억 (역산)</td><td class="num">309억</td><td class="num">~9.7%</td><td>다운사이클 — 매출 −29%</td></tr>
+    <tr><td>2024</td><td class="num">3,209억</td><td class="num">312억 (+0.8%)</td><td class="num">9.7%</td><td>정체 — 어닐링 대기, 디스플레이 부진</td></tr>
+    <tr class="hl"><td>2025 (확정)</td><td class="num"><b>3,809억 (+18.7%)</b></td><td class="num" style="color:var(--up)"><b>808억 (+158.8%)</b></td><td class="num"><b>21.2%</b></td><td>반도체 믹스 폭발 — 순익 576억 (+34.9%)</td></tr>
+    <tr><td>2026E (iM)</td><td class="num">4,880억 (+28%)</td><td class="num" style="color:var(--up)">1,331억 (+65%)</td><td class="num">27.3%</td><td>'22년 피크 경신 — 회장 주총 발언 "사상 최대치 이상" (3/31)</td></tr>
+  </table></div>
+
+  <h3>분기 흐름 — 4분기 함정의 실측</h3>
+  <div class="scrollx"><table>
+    <tr><th>분기</th><th>매출</th><th>영업이익</th><th>비고</th></tr>
+    <tr><td>2Q25</td><td class="num">~967억</td><td class="num">~258억</td><td>반도체 믹스 개선 가속</td></tr>
+    <tr><td>3Q25</td><td class="num">1,005억 (+21%)</td><td class="num"><b>260억 (3년 최고)</b></td><td>분기 매출 1,000억대 안착</td></tr>
+    <tr class="hl"><td>4Q25</td><td class="num">1,013억 (예상 상회)</td><td class="num" style="color:var(--down)"><b>144억 (예상 200억 하회)</b></td><td><b>실적 호전 상여금 지급 — 일회성 (iM 확인)</b></td></tr>
+    <tr><td>1Q26</td><td class="num" colspan="2">미확인 — 확인 필요</td><td>5월 발표분 검색 미포착</td></tr>
+  </table></div>
+  <p><b>평가:</b> 트랙레코드가 장비업의 물성을 그대로 보여준다 — '23~24년 2년 정체(발주 공백) 뒤 '25년 폭발(발주 재개+믹스).
+  증익의 질은 구조적이다: 물량(반도체 CapEx)×믹스(어닐링·커팅 비중)가 주범이고, 일회성은 오히려 반대 방향(4Q 상여금 −)으로
+  작용했다. <b>판독 기준 확립: 이 회사도 「3Q 누적이 실력」 종목이다</b> — 실적이 좋은 해일수록 4Q에 상여금이 집중되므로
+  (한솔케미칼·아이원스와 동일 패턴), 4Q 헤드라인 쇼크는 구조 악재가 아니다. 순익 라인은 '24년 영업외로 부풀고 '25년 정상화되는
+  변동이 있어 영업이익 기준 판단을 권한다.</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 사이클의 최선행 마디</h2>
+  <div class="lead"><b>팩터 선언: 「메모리·파운드리 CapEx의 장비 발주」</b> — 소재 7종과 같은 나무, 다른 가지다. 시리즈 사이클 연구에서
+  확인한 위상 그대로: 주가는 소재와 거의 동행(0~1개월)하지만, <b>이익은 장비가 소재를 약 4분기 선행</b>한다. 분산 가치는 낮고
+  「시차 가치」가 있다 — 이 회사의 실적이 소재 7종의 1년 뒤 예고편이다.</div>
+
+  <h3>사슬 A · CapEx → 장비 발주 → 검수·매출 <span class="pill up">본진</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">삼성·하이닉스 '26년 투자 70조 — P4·P5 1c 디램 전환 + V9 낸드 착수 (시리즈 공통 대시보드)</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">라인 설계 확정 → 장비 발주 (T-18~12M) — <b>어닐링은 1c의 표준 스텝이라 라인당 대수가 확정적</b></div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">2~4분기 뒤 입고·검수 → 매출 인식 — '26E 반도체 장비 +28%의 근거. <b>같은 입고가 아이원스(부품)·소재 7종의 미래 수요를 만든다</b></div></div>
+  </div>
+
+  <h3>사슬 B~D — 세 개의 신규 궤도</h3>
+  <div class="scrollx"><table>
+    <tr><th>사슬</th><th>구조</th><th>확인 수단 · 시점</th></tr>
+    <tr><td>B. 낸드 고단화 → 어닐링 2막</td><td>400단+에서 고열 문제 → 전체 가열이 불가능 → <b>국소 레이저 열처리로 전환</b> — '26년 채용 개시, <b>'27년 본격화</b> (iM). 솔브레인 낸드 2막과 같은 시간표</td><td>V9/V10 투자 뉴스 · 어닐링 수주 공시</td></tr>
+    <tr><td>C. HBM·하이브리드 본딩 → 커팅·디본더</td><td>적층 고도화 → 그루빙·디본딩 공정 신설 — Apple M칩·HBM 적용 확대, '25년 커팅 매출 2배</td><td>HBM 캐파 뉴스 · OSAT 수주</td></tr>
+    <tr><td>D. FC-BGA 재개 → PCB 드릴러</td><td>이비덴 5,000억엔 CapEx('26~28) — <b>덕산 MSB와 같은 전방을 장비로 타는 사슬</b>. '26년 드릴러 매출 회복 전망 (iM)</td><td>이비덴 가이던스 (덕산 대시보드 겸용)</td></tr>
+  </table></div>
+  <p class="note">수주산업 판정: 수주~매출 2~4분기의 <b>짧은 수주형</b> — 카본·엔진 같은 다년 잔고·메아리 구조는 없다.
+  대신 발주 공백이 2~3분기 만에 매출에 닿으므로 <b>하강 국면에서 소재보다 1년 먼저 꺾인다</b> — '23~24년 정체가 그 실측.
+  이 위상차를 뒤집으면 활용법이 나온다: <b>이오테크닉스의 수주·실적 변곡 = 소재 7종의 1년 선행 지표.</b></p>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 추세형 + 이벤트 2개</h2>
+  <div class="lead">유형 판정: 기본은 <b>지표 추세형</b>(CapEx·수주 감시)이되, <b>디아이티 재판과 4Q 상여금</b>이라는 달력 이벤트 2개를 병행 관리.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처 · 주기 · 무료</th><th>현재 상태 (확인 시점)</th></tr>
+    <tr><td><span class="dot g"></span><b>삼성 P4·P5 / V9 투자 뉴스</b></td><td>어닐링 발주의 원천 (T-18~12M)</td><td>디일렉 등 · 수시 · 무료</td><td>1c 전환 + V9 2Q26 착수 국면 (시리즈 공통)</td></tr>
+    <tr><td><span class="dot g"></span><b>장비 수주 공시</b></td><td>매출의 2~4분기 선행</td><td>DART · 수시 · 무료</td><td>단일 공시 기준 미달 건 많아 분기 실적으로 보완</td></tr>
+    <tr><td><span class="dot y"></span><b>낸드 400단+ 어닐링 채용 확인</b></td><td>'27년 본격화 스토리의 관문</td><td>iM 등 리포트·컨콜 · 분기</td><td>'26년 중 채용 개시 전망 — 미확정</td></tr>
+    <tr><td><span class="dot y"></span>마이크론(미국 디램) 공급 협의</td><td>고객 다변화 — 삼성 집중 완화</td><td>뉴스·리포트 · 수시</td><td>협의 진행 중 (한국IR협의회, '25.6)</td></tr>
+    <tr><td><span class="dot g"></span>이비덴 가이던스 (공유)</td><td>PCB 드릴러 회복의 전방 — 덕산 대시보드 겸용</td><td>분기 · 무료</td><td>FY26 +32% 상향 · 캐파 2배</td></tr>
+    <tr><td><span class="dot y"></span><b>디아이티 재판 (형사·민사)</b></td><td>어닐링 독점 지위의 법적 방어선</td><td>법조 보도·공시 · 이벤트</td><td>형사 진행 중 · 민사 재판부 지정, 기일 미정 (3/31 주총)</td></tr>
+    <tr><td><span class="dot g"></span>메모리 현물가 (공통)</td><td>사이클 1차 경보</td><td>일간 · 무료</td><td>공통 녹색 — 괴리 축소가 경보</td></tr>
+    <tr><td><span class="dot y"></span>4Q 상여금 규모</td><td>연간 추정 왜곡 방지 — 매년 반복 가능</td><td>4Q 실적 · 연간</td><td>4Q25 실측 (OP 예상 대비 −56억)</td></tr>
+  </table></div>
+
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>메모리 현물가 (공통 1차 경보)</li><li>팹 투자·장비 반입 뉴스 + DART 공시 알림</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>「이오테크닉스 어닐링·디본더·디아이티」 뉴스 검색</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY — 한 세트</div>
+      <ul><li>분기 실적 (반도체 장비 매출·OPM 믹스 검증) → 이비덴 가이던스 → 낸드 어닐링 채용 진행 → 재판 기일</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 믹스가 만든 83%의 해</h2>
+  <div class="lead">고정비는 R&D·엔지니어 인건비 — 장비업은 매출이 늘 때 조립 인력만 늘면 되므로 공헌이익률이 높고,
+  고마진 제품(어닐링) 믹스가 얹히면 incremental margin이 극단으로 뛴다.</div>
+
+  <h3>실측: Incremental Margin</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>Δ매출</th><th>Δ영업이익</th><th>Inc. Margin</th><th>판정</th></tr>
+    <tr><td>'23→'24</td><td class="num">+23억</td><td class="num">+3억</td><td class="num">13%</td><td>정체기 — 발주 공백</td></tr>
+    <tr class="hl"><td><b>'24→'25 (확정)</b></td><td class="num">+599억</td><td class="num" style="color:var(--up)"><b>+495억</b></td><td class="num" style="color:var(--up)"><b>83%</b></td><td>어닐링·커팅 믹스 폭발 — 시리즈 장비형 최고 실측</td></tr>
+    <tr><td>3Q→4Q25 (QoQ)</td><td class="num">+8억</td><td class="num" style="color:var(--down)">−116억</td><td class="num">일회성 역방향</td><td>상여금 — 제거 시 OP ~230억대 추정 (정상 궤도)</td></tr>
+    <tr><td>'25→'26E</td><td class="num">+1,071억</td><td class="num">+523억</td><td class="num"><b>49%</b></td><td>OPM 21.2% → 27.3% 경로</td></tr>
+  </table></div>
+
+  <style>
+    .levviz{margin:16px 0 6px}
+    .levrow{display:flex;align-items:center;gap:12px;margin:9px 0}
+    .levlab{flex:0 0 96px;font-size:12.5px;font-weight:700;color:var(--accent-deep);text-align:right}
+    .levbar{flex:1;display:flex;height:32px;border-radius:7px;overflow:hidden;background:#EEF1F5;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+    .levcost{background:#CBD3DD;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:#54637A;white-space:nowrap}
+    .levgain{background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11.5px;color:#fff;font-weight:700;white-space:nowrap}
+    .levgain.neg{background:repeating-linear-gradient(45deg,#B91C1C 0 8px,#7F1D1D 8px 16px)}
+    .levpct{flex:0 0 118px;font-size:12.5px;font-weight:800;color:var(--accent)}
+    .levhead{display:flex;gap:12px;font-size:11px;color:#8A97A8;margin-bottom:2px}
+    .levhead span:first-child{flex:0 0 96px}
+    .gauge{margin:18px 0 4px;position:relative;height:56px}
+    .gauge .track{position:absolute;top:24px;left:0;right:0;height:10px;border-radius:5px;background:linear-gradient(90deg,#EEF1F5,var(--accent-soft))}
+    .gauge .fillB{position:absolute;top:24px;left:0;height:10px;border-radius:5px 0 0 5px;background:var(--accent);opacity:.25;width:55%}
+    .gauge .fillA{position:absolute;top:24px;left:0;height:10px;border-radius:5px;background:#94A3B8;width:21.2%}
+    .gauge .mkr{position:absolute;top:0;font-size:11.5px;font-weight:700;transform:translateX(-50%);text-align:center;line-height:1.25}
+    .gauge .mkr i{display:block;width:2px;height:14px;background:currentColor;margin:3px auto 0;font-style:normal}
+    @media(max-width:560px){.levlab{flex-basis:64px;font-size:11px}.levpct{flex-basis:70px;font-size:11px}}
+  </style>
+
+  <h3>한눈에 보기 · 증분 매출 100원의 여정</h3>
+  <div class="levviz">
+    <div class="levhead"><span></span><span>← 증분 매출 100원 →</span></div>
+    <div class="levrow">
+      <div class="levlab">'23→'24</div>
+      <div class="levbar"><div class="levcost" style="width:87%">비용 87</div><div class="levgain" style="width:13%">13</div></div>
+      <div class="levpct">이익 잔존 13%</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab"><b>'24→'25</b></div>
+      <div class="levbar"><div class="levcost" style="width:17%">17</div><div class="levgain" style="width:83%">이익 83 — 고마진 믹스의 폭발</div></div>
+      <div class="levpct">83% ⚡</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab">3Q→4Q25</div>
+      <div class="levbar"><div class="levgain neg" style="width:100%">매출 +8억에 이익 −116억 — 상여금 일회성 (제거 시 정상)</div></div>
+      <div class="levpct" style="color:var(--accent-deep)">역방향 ※일회성</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab">'25→'26E</div>
+      <div class="levbar"><div class="levcost" style="width:51%">비용 51</div><div class="levgain" style="width:49%">이익 49</div></div>
+      <div class="levpct">49%</div>
+    </div>
+  </div>
+  <p class="note">'24→'25의 83%는 순수 가동률 효과가 아니라 <b>「저마진(디스플레이·PCB) 정체 + 고마진(어닐링·커팅) 급증」이라는
+  믹스 교체</b>의 결과 — 지속 가능한 정상 레버리지는 '26E의 49% 쪽에 가깝다. 빗금 막대(4Q25)는 이 회사의 4분기 판독 규칙
+  그 자체다.</p>
+
+  <h3>한눈에 보기 · 레버리지 배율 게이지</h3>
+  <div class="gauge">
+    <div class="track"></div>
+    <div class="fillB"></div>
+    <div class="fillA"></div>
+    <div class="mkr" style="left:21.2%;color:#64748B">현재 OPM<br>21.2% ('25)<i></i></div>
+    <div class="mkr" style="left:55%;color:var(--accent-deep)">증분 공헌이익률<br>~50~55%<i></i></div>
+  </div>
+  <p class="note" style="margin-top:14px">배율 ≈ 52 ÷ 21.2 ≈ <b>2.5배</b> — 매출 +10% → OP +20~26%, +20% → +40~52% ('26E 컨센 +65%는
+  +28% 증수 × 배율 2.3과 정합). 파두(3~4배)와 소재(1.5~2배)의 중간 — OPM이 27%('26E)로 오르면 배율은 ~2배로 자연 감소.
+  레버리지는 곱 구조: <b>물량(CapEx) × 믹스(반도체 장비 비중) × 검수 타이밍</b> — 세 번째 항이 분기 노이즈의 원천이다.</p>
+
+  <h3>여력 — 장비업의 증설은 공장이 아니라 엔지니어</h3>
+  <p>자산 경량(부채비율 13%·무차입) — 병목은 물리 캐파가 아니라 <b>레이저 엔지니어와 검수 인력</b>이다. CAPEX 공시 대형 건은
+  미확인(확실하지 않음)이며, 조립장 증설은 규모가 작고 회수가 빠른 유형(프레임 추정 payback 1~2년). 실질 레버리지 여력은
+  ① 어닐링의 낸드 확장('27년 본격화 — 디램에 낸드가 얹히는 시장 2배 이벤트), ② 마이크론 진입(고객 2배), ③ '27년 마커
+  교체 사이클 — 세 개의 예약된 믹스·물량 스위치다.</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+
+  <div class="risk r1">
+    <span class="impact r1i">−50~70% (역레버리지)</span>
+    <h4>① 발주 절벽 — 최선행의 숙명</h4>
+    <p>장비는 사이클이 꺾일 때 가장 먼저, 가장 크게 꺾인다 — '22년 4,472억 → '23년 3,186억(−29%), OPM 20.8%→9.7%가
+    실측이다. '27H2~28년 공급 과잉 시나리오가 현실화되면 소재 7종보다 1년 먼저 발주가 잘리고, 배율 2.5배의 역방향이
+    작동한다. 완충재는 마커의 반복 수요와 어닐링의 「공정 필수화」(투자가 줄어도 1c·400단 전환분은 집행) — 그러나
+    완충이지 면역이 아니다.</p>
+    <div class="alarm"><b>경보</b> — 현물-고정가 괴리 축소 (공통 1차) → 삼성·하이닉스 CapEx 가이던스 하향 → 분기 반도체 장비 매출 QoQ 감소 전환</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">독점 프리미엄 훼손</span>
+    <h4>② 어닐링 해자의 침식 — 디아이티 분쟁과 경쟁 진입</h4>
+    <p>이 회사 밸류에이션 프리미엄의 근원은 어닐링 독점이다. 그런데 그 기술을 둘러싸고 <b>디아이티(DIT)와의 분쟁이
+    진행 중</b>이다 — 형사재판이 먼저 진행되고 있고, 이오테크닉스가 제기한 민사는 재판부 지정 후 기일 미정(형사 결과 관망),
+    가처분·특허소송은 검토 단계(3/31 주총 발언). 형사에서 유출이 인정되면 해자가 재확인되지만, 반대로 디아이티가
+    합법적 자체 기술로 판정받으면 <b>어닐링 2사 경쟁 구도</b>가 열린다 — 티씨케이-디에스테크노 판결과 정확히 같은 구조의
+    분수령이다. 삼성 집중(고객 다변화 미완)도 같은 축의 리스크.</p>
+    <div class="alarm"><b>경보</b> — 형사재판 선고 · 디아이티의 고객사 퀄 진입 보도 · 마이크론 협의 진전 여부 (다변화 = 완충)</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">멀티플 압축 −30~50%</span>
+    <h4>③ P/E 50배의 무게 — 가격이 증명을 앞서갔다 + 후계</h4>
+    <p>12M fwd P/E ~49.6배는 자기 3년 평균(35.2배) 대비 +41%, 업종 평균(27.4배) 대비 +81% 할증이다 (iM, 3월).
+    이미 가격에 든 것: '26년 사상 최대, 낸드 어닐링 '27년 본격화, 마이크론 진입, '27년 마커 교체, 유리기판 옵션 —
+    <b>2027년의 그림까지 상당분 선반영</b>. 어느 고리(특히 낸드 채용 시점)가 밀리면 이익이 늘어도 멀티플이 깎이는
+    티씨케이형 조정이 온다. 비영업으로는 성규동 회장이 주총에서 직접 「후계 문제」를 회사 리스크로 언급한 점,
+    정관에 M&A 중개업 등을 추가한 점 — 지배구조 이벤트의 씨앗으로 감시가 필요하다. CB·BW는 미확인 (부채비율 13%로
+    가능성 낮음 — 확실하지 않음).</p>
+    <div class="alarm"><b>경보</b> — 낸드 어닐링 채용 지연 보도 · 목표가 상향 정체 · 지배구조·승계 관련 공시 · 4Q 상여금 재현 (판독용)</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (2026년 3월 기준 — 7월 현재가 재확인 필수)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:10%"><div class="tick"></div><div class="price">'24년</div><div class="lbl">정체기 — 어닐링 대기</div></div>
+      <div class="mk" style="left:38%"><div class="tick"></div><div class="price">fwd 35.2배</div><div class="lbl">자기 3년 평균 P/E</div></div>
+      <div class="mk" style="left:72%"><div class="tick"></div><div class="price">407,000원</div><div class="lbl">'26.3.16 · 시총 ~5.0조<br>fwd P/E ~49.6배 (+41% 할증)</div></div>
+      <div class="mk" style="left:93%"><div class="tick"></div><div class="price">?</div><div class="lbl">6월 말 조정 언급 (코스닥 급락일 −8.8%)<br>현재가 미확인</div></div>
+    </div>
+  </div>
+  <p class="note"><b>판정: 가격이 증명을 앞서간 상태 — 티씨케이·파두와 같은 「선반영」 그룹.</b> 단 두 종목과의 차이:
+  이오테크닉스의 미검증 스토리(낸드 어닐링·마이크론)는 공정 물리학이 강제하는 방향이라 성사 확률이 상대적으로 높다는 것.
+  즉 비싼 값의 근거는 있으나, 그 근거가 이미 다 계산된 값이다. 7월 현재가·최신 목표가 컨센 미확인 — 재확인 필수.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>낸드 어닐링 채용 — '27년 스토리의 관문이자 프리미엄의 시험대</h4>
+    <p>디램(1c 필수)은 확정된 현재고, 시장이 P/E 50배로 미리 산 것은 <b>낸드(400단+)라는 두 번째 시장</b>이다.
+    검증 순서: ① 1Q~2Q26 실적에서 반도체 장비 매출 +25%대 유지 (1Q26 미확인 — 최우선 확인) → ② '26년 중 낸드향
+    어닐링 첫 수주·채용 확인 → ③ 마이크론 협의의 구체화 → ④ 디아이티 형사재판 결과. ①②가 순서대로 찍히면 '27년
+    본격화가 컨센으로 승격되고, ②가 밀리면 할증분(+41%)부터 반납한다.</p>
+    <p><b>IR에 물어볼 핵심 질문 하나:</b> "V9(400단급) 라인에서 레이저 어닐링이 표준 스텝으로 확정됐는가, 그리고
+    디램 대비 낸드 라인의 대당 소요 대수는 어느 수준인가" — 이 답으로 '27~28년 어닐링 매출의 천장이 계산된다.</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>시리즈 지도에서의 자리 — 다섯 번째 유형 「장비」의 첫 종목</h4>
+    <p>3질문 좌표: ①강도 ★★★ (배율 2.5배 + 믹스 83% 실측 + 어닐링 2막) / ②룸 얇음 (fwd 50배 — '27년까지 선반영,
+    티씨케이·파두와 같은 그룹) / ③변수 중간 (낸드 채용 시점 + 디아이티 재판 + 삼성 집중 — 조건 3개).
+    소재 7종과 같은 나무이므로 <b>분산 가치는 없고 시차 가치가 있다</b>: 이 회사의 발주·실적 변곡이 소재의 1년 선행 지표다.
+    포트폴리오 실전 — 코어(솔브레인·한솔)와 함께 들면 사이클 노출이 중복 + 선행 증폭되므로, 편입한다면 <b>소재 비중의
+    일부를 대체하는 방식</b>(같은 팩터의 시차 분산)이 맞고, 신규 진입은 밸류 조정(6월 말 급락 같은)을 기다리는 편이 유리하다.</p>
+    <p>이탈 규율 3단계: <b style="color:#EFA9A9">경계 = CapEx 가이던스 하향 또는 낸드 채용 지연 1회 · 축소 = 반도체 장비 매출
+    QoQ 감소 전환 (최선행 경보) · 실적 무관 이탈 = 디아이티 패소(어닐링 경쟁 구도 확정) 또는 승계 관련 급변.</b>
+    반대로 4Q 상여금발 쇼크·시장 동반 급락은 발주 지표가 멀쩡하면 검토 기회 — 특히 이 종목은 P/E 할증이 커서
+    「좋은 회사를 싸게 살 기회」가 밸류 조정 형태로만 온다.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>장비의 시차 가치</h4>
+      <ul><li>주가는 소재와 동행하지만 <b>이익은 4분기 선행</b> — 장비 실적 변곡 = 소재의 1년 예고편</li><li>하강도 최선행 — '23년 −29%가 소재보다 먼저 왔다</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>믹스 83%의 교훈</h4>
+      <ul><li>극단 incremental margin은 가동률이 아니라 <b>제품 믹스 교체</b>에서 나온다</li><li>지속 가능 배율(2.5배)과 구분해서 써야 시나리오가 안 부푼다</li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>공정 필수화 = 최고의 해자, 최대의 소송 표적</h4>
+      <ul><li>어닐링처럼 「공정이 강제하는 장비」는 프리미엄의 근원이자 기술 분쟁의 표적</li><li><b>티씨케이(디에스테크노)와 동형 — 판결이 멀티플을 바꾼다</b></li></ul></div>
+  </div>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·증권사 리포트(iM 송명섭·한국IR협의회·상상인)·주총 보도(ZDNet)·언론 기반의 정리 자료이며 투자 권유가 아닙니다.
+  2024~25년 연간·분기는 확정(2025년은 감사 전 잠정), 2023년 매출은 역산, 2026년은 iM 추정입니다. 1Q26 실적·7월 현재가·최신 목표가
+  컨센·CB/BW는 미확인 — 재확인 필수. 시총 ~5.0조는 3/16 주가(407,000원)×주식수 추정. 사업부 매출 비중은 iM의 반도체 장비 부문
+  수치 기반 추정입니다. 다음 갱신 트리거: 1Q26 실적 확인(최우선) · 8월 반기 실적 · 낸드 어닐링 채용 보도 · 디아이티 형사재판 선고.
+  기준일: 2026년 7월 10일. 자매 리포트: 솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 ·
+  파두 · 덕산하이메탈 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진.
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>원익QnC (074600) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#166534; --accent-soft:#E3F1EA; --accent-deep:#14532D;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(22,101,52,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#A7D7B8;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#B2E0C2;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#A7D7B8;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 반도체 부품 · 시리즈 5 — 소재에서 부품으로</div>
+  <h1>원익QnC<span class="ticker">KOSDAQ 074600</span></h1>
+  <div class="sub">시리즈 유일의 「부품」이자 유일한 글로벌 축 — 쿼츠웨어 이중 채널(장비사+칩메이커)과 모멘티브 정상화의 해</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 05</b></div>
+    <div>주가 궤적<b class="figures">15,250('25.4 저점) → 39,300('26.3 고점)</b></div>
+    <div>목표주가<b class="figures">3.6만(컨센) ~ 4.5만(신한)</b></div>
+    <div>2026E 영업이익<b class="figures">1,030~1,160억 (+73~94%)</b></div>
+    <div>2026F PER<b class="figures">14.6배 (6월 · Peer 25배 대비 할인)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 소재의 수요 공식이 「웨이퍼 투입 × 사용량」이라면, 부품의 공식은
+  <b>「웨이퍼 투입 × 공정 강도 ÷ 부품 수명」 + 신규 장비 First-fit</b>이다. 쿼츠웨어는 식각·확산 챔버 안에서 갈려나가는 교체형 파츠라
+  ① 칩메이커 직납(가동률 동행)과 ② 장비사 경유(Lam·TEL — 신규 장비·재고 정책 연동)의 <b>이중 채널</b>로 팔린다.
+  지금은 두 채널이 동시 순풍(고객 가동률 90~95% + 북미 장비사의 재고 2배 확충 주문)이고,
+  2026E 증익 +73~94%의 절반은 이 순풍, 절반은 <b>모멘티브(매출 46%) 정상화의 기저효과</b>다.
+  단, 부품에는 소재에 없는 고유 리스크가 있다 — 재고의 채찍효과와 SiC 대체.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">원익그룹 계열 (원익홀딩스 외 40.6%, 국민연금 7.4%). 반도체 공정 챔버용 석영유리 부품(쿼츠웨어)의 국내 대표주자로,
+  2020년 모멘티브(쿼츠 원재료) 인수로 원재료까지 수직계열화.</div>
+
+  <h3>매출 구성 (2025년 확정, 매출 9,436억)</h3>
+  <div class="stackbar">
+    <div style="flex:46.4;background:#166534">쿼츠 원재료(모멘티브) 46.4%</div>
+    <div style="flex:38.4;background:#3E8E5C">쿼츠 38.4%</div>
+    <div style="flex:11.8;background:#7CBA93">세정 11.8%</div>
+    <div style="flex:3.4;background:#C9E5D2"></div>
+  </div>
+  <div class="legend">
+    <span style="--c:#166534">모멘티브(MT Holding): 쿼츠 원재료 글로벌 과점 — 반도체 + 차량·조명 등 비반도체 전방, 저마진</span>
+    <span style="--c:#3E8E5C">쿼츠웨어: 식각·확산·CVD 챔버용 석영 부품 (한국·대만 생산)</span>
+    <span style="--c:#7CBA93">세정·코팅: 반도체 부품 세정 서비스 + 신규 코팅 아이템</span>
+    <span style="--c:#C9E5D2">세라믹 2.7% · 기타 0.7%</span>
+  </div>
+  <p class="note">1Q26 공시로 교차 확인: 쿼츠 원재료 45.2% / 한국 쿼츠 32.5% / 세정·코팅 12.0%. <b>지역별 미국 48.4% · 한국 45.9% · 대만 8.2%</b> —
+  시리즈 5사 중 유일하게 해외 매출이 절반. 평균 가동률 83.3%.</p>
+
+  <h3>부품의 이중 채널 — 소재와 다른 첫 번째 지점</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">채널 ① 장비사 경유</div>
+      <h4>Lam·TEL·AMAT <span class="pill up">선행적 · 현재 과열</span></h4>
+      <ul>
+        <li>수요 <b>신규 장비 First-fit + 장비사 재고 정책</b></li>
+        <li>현황 <b>북미 고객사, 부품 벤더에 재고 2배 확충 주문</b> — 안성·대만 파츠 수요 급증</li>
+        <li>성격 <b>27~28년 팹 장비 발주 사이클과 동행 = 소재보다 선행</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">채널 ② 칩메이커 직납</div>
+      <h4>삼성·하이닉스·TSMC <span class="pill up">동행 · 반복 매출</span></h4>
+      <ul>
+        <li>수요 <b>가동률 × 식각 시간 ÷ 부품 수명 = 교체 주기</b></li>
+        <li>현황 <b>주요 고객사향 가동률 90~95%</b> — 풀가동 교체 수요</li>
+        <li>대만 <b>T사향 '25년 +29% 성장, '26년 +10%+ · 쿼츠 이원화 수혜</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">수직계열화</div>
+      <h4>모멘티브 <span class="pill warn">양날의 검</span></h4>
+      <ul>
+        <li>의미 <b>원재료(잉곳)부터 완제품까지 — 공급망 지배력</b></li>
+        <li>대가 <b>매출 46%가 저마진 + '25년 일회성 자산평가손실로 순익 파괴</b></li>
+        <li>'26년 <b>1Q 흑자 유지, 하반기 차량용 반도체 회복과 동반 개선 전망</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">부품 가공업 = 설비·인력 고정비 사업. 그래서 이 회사의 마진은 「가동률」이 만들고, 「모멘티브」가 깎는다.</div>
+
+  <div class="formula">매출     = 교체 수요(가동률 동행) + First-fit(장비 출하 동행) + 원재료 외판(모멘티브)
+영업이익 = 매출 − 원재료 − <b>고정비(가공 설비·인력 — 가동률 레버리지의 원천)</b>
+구조: 본업(쿼츠·세정) OPM 양호 ↔ 모멘티브 저마진·변동 → 연결 OPM 6~11%로 희석
+주의: <b>영업이익-순이익 괴리 극단</b> — '25년 OP 596억인데 순익 9.6억 (−98.4%, 모멘티브 일회성 평가손실 등)</div>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 약점 (−)</th></tr>
+    <tr>
+      <td>① 가동률 레버리지 — 고정비 사업이라 물량 증가가 이익으로 직결 (4Q25 흑자전환 서프라이즈의 원리)<br>
+      ② 소모성 부품의 반복 매출 — 팹이 도는 한 갈려나가고 교체됨<br>
+      ③ 고단화 승수 — 식각 시간 증가 → 부품 소모 가속 → 교체 주기 단축<br>
+      ④ 수직계열화의 원가 안정성 (원재료 내부 조달)</td>
+      <td>① 모멘티브 46%의 저마진 — 연결 OPM을 구조적으로 희석<br>
+      ② 모멘티브발 영업외 손실 — 순이익 라인의 예측 불가능성 ('25년 실증)<br>
+      ③ 부품 단가는 고객·장비사 협상 구조 — 독점 소재 같은 가격 결정력 없음<br>
+      ④ CapEx 부담 — '26년 1,300억 (미국 세정공장 포함) + 증자성 투자</td>
+    </tr>
+  </table></div>
+  <p class="note">시리즈 비교: 소재 4사의 마진 동력이 가격·원가·믹스였다면, 원익QnC는 <b>「가동률」 그 자체</b>다.
+  그래서 이 종목의 분기 추정에서 가장 중요한 숫자는 판가도 원가도 아닌 자사·고객사 가동률이다 (1Q26 자사 83.3%, 고객사 90~95%).</p>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 잘하고 있는가</h2>
+  <div class="lead">2025년은 「매출 성장 + 영업이익 급감 + 순이익 소멸」의 기이한 해 — 범인은 본업이 아니라 모멘티브였다.</div>
+
+  <h3>연간 실적 (연결, 억원 · 확정치)</h3>
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>매출</th><th>YoY</th><th>영업이익</th><th>YoY</th><th>OPM</th><th>순이익</th></tr>
+    <tr><td>2023</td><td class="num">8,061억</td><td class="num">—</td><td class="num">830억</td><td class="num">—</td><td class="num">10.3%</td><td class="num">510억</td></tr>
+    <tr><td>2024</td><td class="num">8,915억</td><td class="num">+10.6%</td><td class="num">906억</td><td class="num">+9.2%</td><td class="num">10.2%</td><td class="num">615억</td></tr>
+    <tr><td>2025</td><td class="num">9,436억</td><td class="num">+5.8%</td><td class="num" style="color:var(--down)"><b>596억</b></td><td class="num" style="color:var(--down)">−34.3%</td><td class="num">6.3%</td><td class="num" style="color:var(--down)"><b>9.6억 (−98.4%)</b></td></tr>
+    <tr class="hl"><td>2026E</td><td class="num">1조~1.07조</td><td class="num">+9~14%</td><td class="num">1,030~1,160억</td><td class="num" style="color:var(--up)"><b>+73~94%</b></td><td class="num">9.5~10.8%</td><td class="num">정상화</td></tr>
+    <tr><td>2027E</td><td class="num">—</td><td class="num">—</td><td class="num">1,417억 (유안타)</td><td class="num" style="color:var(--up)">+26.1%</td><td class="num">10.0%</td><td class="num">—</td></tr>
+  </table></div>
+
+  <h3>분기 흐름 — 바닥 통과의 궤적</h3>
+  <div class="scrollx"><table>
+    <tr><th>분기</th><th>매출</th><th>영업이익</th><th>비고</th></tr>
+    <tr><td>3Q25 누적</td><td class="num">+3.0% YoY</td><td class="num" style="color:var(--down)">−58.3% YoY</td><td>모멘티브 일회성 자산평가손실 + 적자(3Q) 반영 구간</td></tr>
+    <tr><td>4Q25</td><td class="num">2,491억 (+14.7%)</td><td class="num" style="color:var(--up)"><b>184억 (흑자전환)</b></td><td>컨센 <b>+99% 상회</b> — 본업 수익성 개선 + 모멘티브 OP 51억 흑전</td></tr>
+    <tr class="hl"><td>1Q26 (확정)</td><td class="num">2,562억</td><td class="num">219억 (+15% YoY)</td><td>컨센 −11% 하회했으나 <b>본업 쿼츠는 서프라이즈</b> — 신한, 미스에도 '26E를 +14% 상향</td></tr>
+  </table></div>
+  <p><b>평가:</b> 2025년 숫자를 액면으로 읽으면 안 되는 회사다. 본업(쿼츠 +22% 성장, 세정 견조)은 내내 좋았고,
+  모멘티브의 일회성 손실이 영업이익을, 평가손실이 순이익을 각각 파괴했다. 4Q25 흑자전환 → 1Q26 219억 → (유안타 1Q 추정 247억 대비 미스지만)
+  2Q~3Q 계단식 성장 전망이 현재 궤적. <b>이 종목의 실적 읽기 공식: 본업과 모멘티브를 반드시 분리하라</b> —
+  합산 숫자는 두 개의 전혀 다른 사이클(반도체 팹 vs 차량·조명)이 섞인 노이즈다.</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 무엇이 실적을 결정하는가</h2>
+  <div class="lead">부품의 사슬은 소재보다 하나 많다 — 「재고」라는 마디가 끼기 때문이다.</div>
+
+  <h3>사슬 A · 장비사 채널 — 지금의 주연 <span class="pill up">재고 2배 순풍</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">27~28년 가동 팹의 장비 발주 사이클 → Lam·TEL·AMAT 장비 생산 확대</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">신규 장비마다 쿼츠 파츠 First-fit 장착 수요</div></div>
+    <div class="step"><div class="n"><i>3</i></div><div class="body">+ <b>북미 고객사의 「부품 재고 2배 확충」 주문</b> — 수요 강세 대응용 안전재고 축적</div></div>
+    <div class="step final"><div class="n"><i>4</i></div><div class="body">안성·대만 파츠 수요 급증 (현재 진행) — 단, ③은 실수요가 아니라 <b>재고 이동</b>임을 기억할 것 (리스크 ①의 복선)</div></div>
+  </div>
+
+  <h3>사슬 B · 칩메이커 채널 — 교체 수요의 물리학 <span class="pill up">가동률 90~95%</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">팹 가동률 상승 (고객사향 90~95%) → 플라즈마·고온 공정 시간 증가</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">쿼츠 파츠 마모 가속 → 교체 주기 단축 → 반복 매출 증가</div></div>
+    <div class="step"><div class="n"><i>3</i></div><div class="body">고단화 승수: 9세대 낸드 1Q26 퀄 완료 → <b>2Q26 양산 + 삼성 낸드 가동률 연말 급회복 전망</b> (키움: 올해 서프라이즈 요인)</div></div>
+    <div class="step final"><div class="n"><i>4</i></div><div class="body">신규 팹(P4·M15X) 초기 장착 + 대만 T사 쿼츠 이원화 수혜 — 시리즈 유일의 <b>TSMC CapEx 직접 베타</b></div></div>
+  </div>
+
+  <h3>사슬 C · 모멘티브 — 다른 강에서 흐르는 46%</h3>
+  <p style="font-size:14px">쿼츠 원재료의 전방은 반도체 + <b>차량용 반도체·조명·EV</b>로, 메모리 사이클과 위상이 다르다.
+  '25년의 발목이 '26년엔 기저효과의 원천 — 1Q26 흑자 유지, 하반기 차량용 반도체 회복과 동반 개선이 컨센의 전제.
+  단 유안타는 "EV 전방 수요 불투명, 기여 제한적으로 보수 반영"을 명시 — 이 보수성이 깨지면(회복 가속) 추정 상향 여지, 반대면 하향 리스크.</p>
+
+  <h3>수혜 시점 지도</h3>
+  <div class="scrollx"><table>
+    <tr><th>이벤트</th><th>시점</th><th>원익QnC 반영</th></tr>
+    <tr class="hl"><td>북미 장비사 재고 2배 확충</td><td>진행 중</td><td class="num"><b>파츠 수요 급증 — 현재의 주 동력</b></td></tr>
+    <tr><td>9세대 낸드 양산 + 삼성 낸드 가동률 회복</td><td>2Q26~연말</td><td class="num">교체 수요 가속 — '26년 서프라이즈 후보</td></tr>
+    <tr><td>신규 CAPA 가동 (본사 255억 기계장치 등)</td><td>'26년 말</td><td class="num">공급 병목 해소 → '27년 물량</td></tr>
+    <tr><td>미국 세정공장 (CapEx 1,300억 內)</td><td>'26~27</td><td class="num">세정 사업 글로벌 확장</td></tr>
+    <tr><td>모멘티브 정상화 (차량 반도체 회복)</td><td>2H26</td><td class="num">연결 OPM 10% 복귀의 조건</td></tr>
+    <tr><td>27~28년 신규 팹 가동</td><td>'27~28</td><td class="num">First-fit + 교체 베이스 확대</td></tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 무엇을 언제 보는가</h2>
+  <div class="lead">매크로는 시리즈 공통 대시보드 공유. 원익QnC 고유 지표는 「가동률·장비사·모멘티브·SiC」 네 축이다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 중요한가</th><th>확인처 · 주기</th><th>현재 상태 (2026.7월 초)</th></tr>
+    <tr><td><span class="dot g"></span><b>자사·고객사 가동률</b></td><td>이 종목 이익의 제1변수</td><td>분기보고서·리포트</td><td class="num">자사 83.3% (1Q26) · 고객사 90~95%</td></tr>
+    <tr><td><span class="dot g"></span><b>장비사(Lam·TEL·AMAT) 실적·수주</b></td><td>채널 ① 선행지표 — 장비 출하 = First-fit</td><td>각사 실적발표 · 분기</td><td>주문 호조 지속 (신한)</td></tr>
+    <tr><td><span class="dot y"></span><b>장비사 재고 정책 변화</b></td><td>「재고 2배」의 되돌림 = 채찍효과 경보</td><td>장비사 컨콜 발언 · 분기</td><td>확충 국면 — <b>축소 발언이 1급 경보</b></td></tr>
+    <tr><td><span class="dot g"></span>삼성 낸드 가동률·9세대 양산</td><td>'26년 서프라이즈 후보 (키움)</td><td>전문지 · 수시</td><td>1Q26 퀄 완료 → 2Q26 양산 개시</td></tr>
+    <tr><td><span class="dot y"></span><b>모멘티브 분기 실적 분리 확인</b></td><td>연결 노이즈 제거 + 정상화 검증</td><td>분기보고서 종속기업 주석</td><td class="num">4Q25 OP 51억 흑전 → 1Q26 흑자 유지</td></tr>
+    <tr><td><span class="dot y"></span>차량용 반도체·EV 업황</td><td>모멘티브 전방 — 하반기 회복이 컨센 전제</td><td>산업 뉴스 · 월간</td><td>불투명 (유안타 보수 반영)</td></tr>
+    <tr><td><span class="dot y"></span>SiC 파츠 침투 (티씨케이·하나머티리얼즈 실적)</td><td>식각 링에서 쿼츠 대체의 진행 속도</td><td>경쟁사 실적 · 분기</td><td>구조적 잠식 진행 — 속도 감시</td></tr>
+    <tr><td><span class="dot g"></span>메모리 현물가·CapEx (공통)</td><td>사이클 최선행</td><td>트렌드포스 · 일간</td><td>현물 프리미엄 +72% — 공통 녹색</td></tr>
+  </table></div>
+
+  <h3>실전 체크 리듬</h3>
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>메모리 현물가 (공통 1차 경보)</li><li>삼성 낸드 가동률·9세대 양산 기사</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>고정거래가 + 반도체 수출 (공통)</li><li>차량용 반도체·EV 시황 (모멘티브 전방)</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY</div>
+      <ul><li>Lam·TEL 실적 + <b>재고 관련 발언 정독</b></li><li>분기보고서: 본업/모멘티브 분리 + 가동률</li><li>티씨케이·하나머티리얼즈 성장률 (SiC 침투 속도)</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 실적으로 검증</h2>
+  <div class="lead">부품 가공업의 레버리지는 가동률에서 나온다 — 그리고 2025년엔 그 레버리지가 모멘티브에 전부 잡아먹혔다.</div>
+
+  <h3>실증: 연결 숫자는 오염, 분해가 필수</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>Δ매출</th><th>Δ영업이익</th><th>판정</th></tr>
+    <tr><td>2024→2025 (연결)</td><td class="num">+521억</td><td class="num" style="color:var(--down)">−310억</td><td>레버리지 실종처럼 보이나 — <b>본업은 성장, 모멘티브 일회성이 −400억+ 흡수</b></td></tr>
+    <tr class="hl"><td>4Q25 (YoY)</td><td class="num">+320억</td><td class="num" style="color:var(--up)">+265억 (적자→184억)</td><td>일회성 소멸 + 가동률 상승 — <b>레버리지의 실체 확인</b></td></tr>
+    <tr><td>1Q26 (YoY)</td><td class="num">+~210억</td><td class="num">+29억 (190→219억)</td><td>Inc. margin ~14% — 본업 호조 속 모멘티브 회복 완만</td></tr>
+    <tr><td>2025→2026E</td><td class="num">+900억~1,000억</td><td class="num">+440~560억</td><td class="num">Inc. margin 45~55% (기저효과 포함)</td></tr>
+  </table></div>
+
+  <div class="formula">본업(쿼츠·세정): 고정비형 가공업 ⇒ 가동률 레버리지 — 4Q25 서프라이즈(컨센 +99%)의 원리
+연결 OPM 궤적: 10.2%('24) → 6.3%('25 · 모멘티브 붕괴) → 9.5~10.8%('26E) → 10.0%('27E)
+
+'26E 증익 +73~94% 분해:
+  모멘티브 정상화 기저효과   ~ +35~45%p  ← '27년엔 소멸하는 항목
+  본업 가동률·물량 레버리지  ~ +30~40%p  ← 지속 항목
+⇒ '27년 현실적 증익 = 유안타 +26.1% — 솔브레인과 같은 「기저 절반」 구조</div>
+
+  <p><b>부품 고유의 레버리지 특성 두 가지.</b> 첫째, <b>CapEx가 레버리지의 전제</b>다 — 소재는 증설이 가볍지만
+  부품 가공은 설비가 무겁다('26년 CapEx 1,300억, 본사 기계장치 255억, 신규 CAPA 연말 가동). 지금의 증설이 '27년 물량을 만들되,
+  다운사이클에 걸리면 고정비 폭탄이 된다. 둘째, <b>재고 채찍의 증폭</b> — 장비사 재고 2배 확충은 지금 실수요 위에 재고 수요를 얹어
+  레버리지를 과시하게 만들고, 되돌림 국면엔 반대로 작동한다. 즉 이 회사의 현재 incremental margin에는
+  「일시적 재고 수요」 프리미엄이 섞여 있을 수 있음을 할인하고 봐야 한다.</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+  <div class="lead">사이클 공통 리스크에 부품 고유의 두 가지(채찍효과·SiC)와 모멘티브가 얹힌다.</div>
+
+  <div class="risk r1">
+    <span class="impact r1i">이익 임팩트 −40~60%</span>
+    <h4>① 사이클 반전 × 재고 채찍효과 — 부품의 이중 하방</h4>
+    <p>매크로는 시리즈 공통. 부품 고유의 증폭 장치가 문제다: 지금 장비사들이 쌓는 「2배 재고」는 다운사이클 진입 시
+    <b>신규 주문 급감 + 기존 재고 소진</b>의 이중 역풍으로 돌아온다 — 실수요가 -20% 빠질 때 부품 주문은 -40~50% 빠질 수 있는 구조.
+    2025년 4월 주가 15,250원(고점 대비 -63%)이 이 진폭의 실측치다. 고정비형 사업 + '26년 CapEx 1,300억의 감가상각이
+    하방에서 레버리지를 역방향으로 증폭한다.</p>
+    <div class="alarm"><b>경보</b> — 현물-고정가 괴리 축소 (공통 1차) → <b>장비사 컨콜의 재고 축소·주문 조정 발언 (부품 고유 1급)</b> → 자사 가동률 80% 하회</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">순익 라인 파괴 재발 + 컨센 미달</span>
+    <h4>② 모멘티브 — 매출 46%의 예측 불가능성 <span class="pill warn">'25년 실증</span></h4>
+    <p>2025년 순이익 9.6억(-98.4%)의 주범. 영업 레벨의 부진(차량·EV 전방)과 영업외 레벨의 평가손실이 겹치면
+    본업이 아무리 좋아도 연결 숫자가 무너진다. '26년 컨센(+73~94%)의 절반이 모멘티브 정상화 가정 위에 있는데,
+    유안타조차 "EV 전방 불투명"을 명시한 상태 — 하반기 차량용 반도체 회복이 밀리면 컨센 하단도 위태롭다.
+    Deposition Technology 증자 642억 등 미국 투자도 당분간 비용 선행.</p>
+    <div class="alarm"><b>경보</b> — 분기보고서 종속기업 주석에서 MT Holding 적자 재전환 · 추가 자산 평가손실 · 차량용 반도체 재고조정 뉴스</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">구조적 · 완만</span>
+    <h4>③ SiC 대체 — 쿼츠의 영토가 조금씩 줄어드는 문제</h4>
+    <p>식각 공정의 링·파츠에서 쿼츠 대비 수명이 긴 SiC(티씨케이·하나머티리얼즈, OPM 20~30%)로의 대체가 진행 중이다.
+    쿼츠가 확산·CVD 튜브 등에서 갖는 지위는 견고하지만, 식각 파츠 잠식은 장기적으로 성장률과 멀티플 양쪽을 갉아먹는다 —
+    시장이 원익QnC에 Peer(25배) 대비 14.6배만 주는 이유의 일부. 반대로 이 회사가 세정·코팅·세라믹으로 파츠 서비스를
+    묶어내는 전략이 먹히면 할인 축소 여지도 있다.</p>
+    <div class="alarm"><b>경보</b> — 티씨케이·하나머티리얼즈 매출 성장률이 원익QnC 쿼츠 성장률을 지속 상회 · 고객사 SiC 채택 확대 보도</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (2026년 3~6월 기준)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:10%"><div class="tick"></div><div class="price">15,250원</div><div class="lbl">'25.4월 실측 저점<br>(사이클+모멘티브 공포)</div></div>
+      <div class="mk" style="left:48%"><div class="tick"></div><div class="price">34,000~36,000</div><div class="lbl">'26.5월 조정 구간<br>2026F PER 14.6배</div></div>
+      <div class="mk" style="left:66%"><div class="tick"></div><div class="price">39,300</div><div class="lbl">'26.3월 고점<br>('24.6월 최고 41,000 근접)</div></div>
+      <div class="mk" style="left:89%"><div class="tick"></div><div class="price">3.6~4.5만</div><div class="lbl">목표가 (컨센~신한)<br>Peer 25배 대비 할인 지속</div></div>
+    </div>
+  </div>
+  <p class="note">2026F PER 14.6배는 역사 밴드(9~35배)의 중단, Peer(티씨케이·하나머티리얼즈 등) 평균 25배 대비 40%+ 할인 —
+  할인의 정체는 모멘티브 희석 + SiC 잠식 + 순익 변동성. 즉 이 종목의 리레이팅은 사이클이 아니라 <b>「모멘티브 정상화의 지속 증명」</b>에 달려 있다.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>2026년 +73~94% 증익에서, 무엇이 진짜이고 무엇이 기저인가?</h4>
+    <p>절반(모멘티브 기저)은 '27년에 소멸하고, 절반(가동률·물량)은 지속하되 그 안에 「재고 2배」라는 일시 수요가 섞여 있다.
+    즉 헤드라인 증익률이 시리즈 최고(+94%)로 보이지만 <b>증익의 질은 시리즈 최하위권</b>이다 — 한솔(전 항목 지속형)과 정반대 극.</p>
+    <p>판정법: 분기마다 ① 본업 OP와 모멘티브 OP를 분리 집계하고, ② 장비사 컨콜에서 재고 발언을 정독하라.
+    본업 OP가 분기 200억+ 안착 + 모멘티브 흑자 지속이면 '27년 +26%는 달성 가능한 숫자다.</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>시리즈 5종에서 원익QnC의 존재 이유는?</h4>
+    <p>「분산」이다. 미국 매출 48%, TSMC 직접 베타, 장비사 채널, 차량·조명 전방(모멘티브)까지 —
+    국내 메모리 단일 팩터인 소재 4사와 상관이 가장 낮다. 소재 코어(한솔 또는 솔브레인)에 원익QnC를 얹는 조합이
+    시리즈 내에서 유일하게 「진짜 분산」이 되는 이유.</p>
+    <p>이탈 규율: 공통 경보(현물-고정가) + 부품 고유 트리거 —
+    <b style="color:#A7D7B8">장비사 재고 축소 발언(채찍의 방향 전환), 모멘티브 적자 재전환.</b>
+    이 둘은 메모리 가격이 멀쩡해도 이 종목만 먼저 꺾을 수 있는 변수다.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>부품의 수요 공식은 다르다</h4>
+      <ul><li>웨이퍼 투입 × 공정 강도 <b>÷ 부품 수명</b> + First-fit</li><li>「재고」 마디가 껴서 <b>채찍효과가 사이클을 증폭</b> — 소재에 없는 리스크</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>연결 숫자는 두 회사의 합</h4>
+      <ul><li>본업(반도체 부품) + 모멘티브(차량·조명 원재료)</li><li>'25년 순익 9.6억의 교훈: <b>반드시 분리해서 읽을 것</b></li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>시리즈 유일의 진짜 분산</h4>
+      <ul><li>미국 48%·TSMC·장비사 채널 — 국내 메모리 팩터와 최저 상관</li><li>소재 코어 + QnC 새틀라이트가 <b>정합적 포트폴리오</b></li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ 부록: 시리즈 5종 최종 지도 ═══════════ -->
+<section>
+  <div class="eyebrow">APPENDIX · SERIES 5종 완결</div>
+  <h2>소재 4사 + 부품 1사 — 최종 지도</h2>
+  <div class="scrollx"><table>
+    <tr><th></th><th>솔브레인<br>(방어자)</th><th>이엔에프테크<br>(도전자)</th><th>동진쎄미켐<br>(몽상가)</th><th>한솔케미칼<br>(우등생)</th><th>원익QnC<br>(분산자·부품)</th></tr>
+    <tr><td>유형</td><td>화학 소재</td><td>화학 소재</td><td>화학 소재</td><td>화학 소재</td><td><b>교체형 부품</b></td></tr>
+    <tr><td>'25년 매출 / OPM</td><td class="num">9,233억 / 14%</td><td class="num">6,709억 / 11.6%</td><td class="num">1.19조 / 14.4%</td><td class="num">~8,860억 / ~19%</td><td class="num">9,436억 / 6.3%</td></tr>
+    <tr><td>'26E 증익 / 질</td><td class="num">+41~62% / 절반 일회성</td><td class="num">+24~30% / 지속형</td><td class="num">1Q +39% / 검증 중</td><td class="num">+36% / <b>전 항목 지속</b></td><td class="num"><b>+73~94%</b> / 절반 기저+재고</td></tr>
+    <tr><td>밸류 (최신 확인)</td><td class="num">2026F 21.9배</td><td class="num">12.5배</td><td class="num">27.5배</td><td class="num">Fwd ~14배</td><td class="num">2026F 14.6배 (Peer 25배)</td></tr>
+    <tr><td>수요 함수</td><td>물량×단수</td><td>물량(디램)</td><td>레이어 수</td><td>가동률+선단화</td><td>가동률×강도<b>÷수명</b>+재고</td></tr>
+    <tr><td>글로벌 노출</td><td>초입</td><td>초입</td><td>축소(中매각)</td><td>TSMC·인텔 (소재)</td><td><b>미국 48%·TSMC·장비사</b></td></tr>
+    <tr><td>고유 관전포인트</td><td>'27 성장 감속</td><td>2H26 HSN 퀄</td><td>상속·OPM 지속</td><td>프리커서 궤도·LNG</td><td>장비사 재고·모멘티브·SiC</td></tr>
+  </table></div>
+  <p class="note">최종 설계도: <b>코어</b> = 한솔(지속성) 또는 솔브레인(순도) / <b>새틀라이트</b> = 이엔에프(HSN 옵션)·동진(국산화 옵션) /
+  <b>분산</b> = 원익QnC(글로벌·장비사·부품 축). 5종 공통의 1차 경보는 여전히 하나 — 메모리 현물-고정가 괴리(현재 +72%)의 축소.</p>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·증권사 리포트(유안타·신한·키움 등)·언론 보도 기반의 정리 자료이며 투자 권유가 아닙니다.
+  2025년 연간·4Q25·1Q26 영업이익은 확정 공시 기준이나, 본업/모멘티브 분해와 2026~27년 전망은 증권사 추정입니다.
+  부문별 매출 비중은 2025년 사업보고서·1Q26 분기보고서 기준 최신치입니다. 주가·목표가는 2026년 3~6월 기준.
+  기준일: 2026년 7월 5일. 자매 리포트: 솔브레인 · 이엔에프테크놀로지 · 동진쎄미켐 · 한솔케미칼.
+</footer>
+
+</div>
+</body>
+</html>

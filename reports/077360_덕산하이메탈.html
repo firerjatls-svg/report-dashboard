@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>덕산하이메탈 (077360) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#86198F; --accent-soft:#F7E8F9; --accent-deep:#641B70;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(134,25,143,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#E3A6E8;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#E9B4ED;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#E3A6E8;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 후공정 접합 소재 · 시리즈 9 — 세 번째 팩터: 패키징</div>
+  <h1>덕산하이메탈<span class="ticker">KOSDAQ 077360</span></h1>
+  <div class="sub">칩과 기판을 잇는 금속 구슬 — MSB 과점(점유율 70%)의 믹스 개선, 원자재 연동제 전환, 그리고 자회사 노이즈의 청산</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 07</b></div>
+    <div>주가<b class="figures">12,990원 (5/30 · 52주 3,965~21,100)</b></div>
+    <div>2025년 실적<b class="figures">연결 매출 2,364억 (확정) · OP ~121억 (추정)</b></div>
+    <div>2026E (별도)<b class="figures">매출 1,623억 (+29%) · OP 222억 (+42%)</b></div>
+    <div>핵심 관전<b class="figures">MSB 매출 282→417→563억 ('25→'27, 메리츠)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 덕산하이메탈은 시리즈의 세 번째 팩터를 연다. 소재 4사가 「전공정 CapEx·가동률」, 파두가 「글로벌 eSSD」였다면,
+  이 회사는 <b>「후공정 물량 — FC-BGA 기판 · HBM 적층 · HDD」</b>를 탄다. 본업은 반도체 패키징용 접합 소재(솔더볼·페이스트) 세계 2위,
+  그중 성장축인 <b>MSB(마이크로솔더볼)는 덕산과 일본 센주 둘만 만드는 과점(덕산 점유율 ~70%)에 이익률 ~40%짜리 제품</b>이다.
+  스토리는 삼중: ① FC-BGA 업사이클('27년까지)발 MSB 믹스 개선, ② 3월부터 확대된 원자재 연동제·가격 인상으로
+  주석·은 급등 부담의 전가 개시, ③ 2025년 실적을 파괴한 자회사(에테르씨티) 충당금의 소멸·환입.
+  단 이 회사의 연결 손익은 <b>본업+방산+수소가 뒤섞인 3중 구조</b>라, 원익QnC처럼 「분해해서 읽는 기술」이 필수다.
+  <b>[개정 1판]</b> 전방 이비덴의 가이던스 +32% 상향으로 MSB 스토리가 공식 확인된 반면, 5월 말 <b>일반 SB 담합 의혹 검찰 압수수색</b>이라는 비영업 리스크가 새로 점등 — 이익의 본체(MSB)는 담합 구도 밖이라는 분해가 그래서 더 중요해졌다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">1999년 설립. 본업은 솔더볼 — 칩과 기판(또는 패키지와 메인보드)을 전기적·기계적으로 잇는 미세 금속 구슬.
+  반도체가 조립되는 모든 곳에 들어가는 후공정 필수 소재로, 국내 점유율 60~70%·세계 2위. 최대주주 덕산홀딩스 외 우호지분 57.7%.</div>
+
+  <h3>매출 구성 (2025년 3분기 누적 연결 ~1,630억 기준)</h3>
+  <div class="stackbar">
+    <div style="flex:56;background:#86198F">반도체 소재 (솔더볼·MSB·페이스트) 56%</div>
+    <div style="flex:25;background:#B554BC">고압가스·수소용기 (에테르씨티) 25%</div>
+    <div style="flex:19;background:#DCA3E0">항법·방산 (넵코어스) 19%</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#86198F">본업 — SB(일반 솔더볼)·MSB(마이크로솔더볼)·CSB·페이스트. 고객: 삼성전자·SK하이닉스·국내외 OSAT(스테츠칩팩 등)·일본 HDD 업체</span>
+    <span style="--c:#B554BC">'23년 인수 — 특수가스·수소 운송용 고압용기 (국내 점유율 95% 주장). '25년 중국 태양광발 충당금으로 연결 실적 파괴의 주범</span>
+    <span style="--c:#DCA3E0">'21년 인수 — PNT(위치·항법·시각) 기술, 유도무기·위성·무인기 부품. K-방산 수출 수혜</span>
+  </div>
+  <p class="note">비중은 3Q25 누적 기준 (반도체 911억 / 용기 408억 / 항법 311억). 원재료 수직계열화로 DS미얀마(주석 제련)도 보유 —
+  <b>사실상 반도체 소재사 + 방산주 + 수소주가 한 지붕에 있는 구조</b>다. 본업 가치 판단과 자회사 가치 판단을 분리해야 한다.</p>
+
+  <h3>제품의 위계 — 같은 구슬이 아니다</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">SB (일반 솔더볼)</div>
+      <h4>캐시카우 <span class="pill up">가동률 90% 풀캐파</span></h4>
+      <ul>
+        <li>용도 <b>메모리 패키지(BGA)와 기판의 접합</b> — 메모리 출하량에 동행</li>
+        <li>현황 <b>가동률 ~90% = 사실상 풀캐파 (SK증권)</b>, 2Q26부터 +30% 증설분 가동</li>
+        <li>성격 <b>범용에 가까워 마진 평이 — 물량 장사</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">MSB (마이크로솔더볼)</div>
+      <h4>성장축 · 이익률 ~40% <span class="pill up">2사 과점</span></h4>
+      <ul>
+        <li>용도 <b>FC-BGA(AI 가속기·서버용 고밀도 기판)·HBM 등 첨단 패키징의 극미세 접합</b> — 40µm 상용화 기술</li>
+        <li>구조 <b>덕산(점유율 ~70%)과 일본 센주금속 둘만 공급하는 과점</b> (현대차증권)</li>
+        <li>궤적 <b>매출 '25년 282억 → '26E 417억 → '27E 563억</b> · 비중 20%('24)→26%('26E)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">숨은 카드 · HDD향 MSB</div>
+      <h4>단독 공급 <span class="pill up">이익 기여 최고</span></h4>
+      <ul>
+        <li>배경 <b>AI 서버의 대용량 HDD 수요 폭증</b> (니어라인 부족 — 파두 리포트의 eSSD 대체 사슬과 같은 뿌리)</li>
+        <li>지위 <b>덕산 단독 대응 — 비중은 작지만 이익 기여도 매우 높음</b> (유안타)</li>
+        <li>의미 <b>실적 성장의 핵심 축으로 부상 전망</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>개정판 · MSB vs SB 손익 분해 (별도 기준, 추정)</h3>
+  <div class="scrollx"><table>
+    <tr><th>(별도)</th><th>매출 '25</th><th>매출 비중</th><th>이익 기여 (이익률 ~40% 적용)</th><th>'26E</th></tr>
+    <tr class="hl"><td><b>MSB</b></td><td class="num">282억</td><td class="num">~22%</td><td class="num" style="color:var(--up)"><b>~113억 = 별도 이익의 55~75%</b></td><td class="num">417억 × 40% ≈ 167억 = OP 222억의 ~75%</td></tr>
+    <tr><td>SB·파우더·페이스트</td><td class="num">~970억</td><td class="num">~78%</td><td class="num">OPM 한 자릿수 — 박리 물량 사업</td><td class="num">증설 +30%의 물량 기여</td></tr>
+  </table></div>
+  <p class="note">다올의 "이익률 40%"가 OPM인지 GPM인지 불명확(확실하지 않음) — GPM이면 MSB 기여는 55~65%로 하향되나
+  「이익의 본체는 이미 MSB」라는 구조는 유지. 이 분해에서 세 결론이 나온다: ① 담합 의혹(일반 SB 시장)과 이익 본체(MSB)가 분리된다는 방어 논리,
+  ② 증설 배정에서 MSB가 우선돼야 하는 이유, ③ SB 박리 구조가 담합 유인의 배경이었을 가능성.
+  <b>센주 구도 보충</b>: MSB 과점 상대 센주금속은 일본 <b>비상장</b>(가이던스 부재)이며 고객 축이 인텔·암코어·대만 생태계 —
+  덕산(삼성·하이닉스·삼성전기·중국 OSAT)과 영토 분할 구도다. 센주가 조용할수록 업사이클 증분은 덕산 몫.</p>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">시리즈 최초의 「원자재 연동형」 소재사 — 원가의 핵심이 LNG(한솔)도 형석(솔브레인)도 아닌, 거래소에서 시세가 찍히는 주석(Tin)과 은(Silver)이다.</div>
+
+  <div class="formula">매출     = 후공정 물량(패키지 수 × 볼 수) × 판가(원자재 연동 ± 협상)
+매출원가 = <b>주석·은 등 금속 원자재 (시세 변동 직격)</b> + 가공비
+영업이익 = 물량 × 믹스(MSB 비중) × <b>원자재 전가 성공률</b>
+
+'26년의 전환: 3월부터 원자재 연동제 적용 범위 확대 + 일부 제품 가격 인상 단행 (메리츠)
+⇒ 12~1월 은·주석 급등을 1Q에 얻어맞고(1Q26E OP 17억, −46% YoY), 2Q부터 전가가 따라잡는 구조</div>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 변수·약점 (−)</th></tr>
+    <tr>
+      <td>① MSB 과점 (2사) — 수요 급증 국면에서 <b>"공격적 가격 인상 사이클 진입 가능 조건"</b> (현대차증권)<br>
+      ② MSB 이익률 ~40% — 비중 상승이 곧 전사 마진 상승 (믹스 개선형: 한솔 프리커서와 동형)<br>
+      ③ HDD향 단독 공급의 프리미엄<br>
+      ④ DS미얀마 주석 제련 수직계열화 — 원재료 수급 안정</td>
+      <td>① 주석·은 시세 급등 시 전가 시차만큼 마진 압착 — 1Q26 실증<br>
+      ② SB(일반볼)는 범용 — 고객(대형 IDM·OSAT) 대상 협상력 한계<br>
+      ③ 미얀마 정정 불안 — 수직계열화의 지정학 비용<br>
+      ④ 연결 마진은 자회사가 좌우 — '25년 에테르씨티 충당금이 전사 이익 파괴</td>
+    </tr>
+  </table></div>
+  <p class="note">시리즈 비교: 이 회사의 분기 마진 추정에는 <b>LME 주석·은 시세 차트가 필수 입력값</b>이다 — 7종 소재·부품 어디에도 없던 변수.
+  반대로 말하면, 원자재가 안정되고 연동제가 자리 잡는 순간 마진의 예측 가능성이 구조적으로 개선된다.</p>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 본업 사이클과 자회사 노이즈의 이중주</h2>
+  <div class="lead">2024년 대호황 → 2025년 급감의 롤러코스터. 단, 2025년 급감의 주범은 본업 반쪽(FC-BGA 다운사이클)과 자회사 충당금의 합작이다.</div>
+
+  <h3>연간 실적 (연결, 억원)</h3>
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>매출</th><th>YoY</th><th>영업이익</th><th>OPM</th><th>해설</th></tr>
+    <tr><td>2021</td><td class="num">927억</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td>넵코어스 인수 (방산 편입)</td></tr>
+    <tr><td>2022</td><td class="num">1,644억</td><td class="num">+77%</td><td class="num">—</td><td class="num">—</td><td>외형 급성장기</td></tr>
+    <tr><td>2023</td><td class="num">1,445억</td><td class="num" style="color:var(--down)">−12%</td><td class="num" style="color:var(--down)">−110억 적자</td><td class="num">—</td><td>반도체 다운사이클 + 에테르씨티 인수</td></tr>
+    <tr><td>2024</td><td class="num">2,359억</td><td class="num" style="color:var(--up)"><b>+63%</b></td><td class="num" style="color:var(--up)">186억 흑전</td><td class="num">7.9%</td><td>업사이클 + 자회사 온기 반영의 대호황</td></tr>
+    <tr class="hl"><td>2025</td><td class="num"><b>2,364억 (확정)</b></td><td class="num">+0.2%</td><td class="num" style="color:var(--down)"><b>~121억 (−35%)</b></td><td class="num">~5.4%</td><td>상반기 OP 12억(−89%) 쇼크 → 하반기 회복. 범인: FC-BGA 부진 + <b>에테르씨티 실란 충당금 분기 반복</b></td></tr>
+    <tr><td>2026E</td><td class="num">별도 1,623억 (+29%)</td><td class="num">—</td><td class="num" style="color:var(--up)"><b>별도 222억 (+42%)</b></td><td class="num">13.7%</td><td>다올 전망 · 에테르씨티 흑전(현대차 +37억)·충당금 환입 기대 별도</td></tr>
+  </table></div>
+
+  <h3>2025~26년 분기 흐름 — V자의 해부</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>실적</th><th>비고</th></tr>
+    <tr><td>1H25</td><td class="num">매출 1,016억 (−16%) · OP 12억 (−89%) · 순손실 전환</td><td>FC-BGA 다운 + 충당금 — 바닥 구간</td></tr>
+    <tr><td>2H25</td><td class="num"><b>4Q25 매출 734억 (+29% YoY · +19% QoQ) 확정</b> · MSB 가동률 11월 60%→12월 70%</td><td>「Pull-in 숨 고르기」 우려를 뒤집은 4Q 매출 서프라이즈 — 캐파 제약 속 증수</td></tr>
+    <tr class="hl"><td>1Q26E</td><td class="num">별도 매출 420억 (+60.5%) · OP 17억 (−46.5%)</td><td><b>매출 급증 + 이익 급감의 기현상</b> — 12~1월 은·주석 급등의 전가 시차 (메리츠·다올)</td></tr>
+    <tr><td>2Q26~</td><td class="num">연동제 확대 + 가격 인상 효과 + SB 증설 30% 가동</td><td>마진 정상화 경로의 검증 구간</td></tr>
+  </table></div>
+  <p><b>평가:</b> 이 회사의 손익표는 세 개의 서로 다른 이야기가 합산된 결과라 헤드라인만 보면 반드시 오독한다.
+  2025년 −35%는 「본업 붕괴」가 아니라 <b>본업 절반(FC-BGA)의 사이클 + 자회사 일회성</b>이었고, 메모리향 SB는 내내 풀가동이었다.
+  마찬가지로 1Q26의 이익 급감도 수요 문제가 아니라 원자재 전가 시차다. 원익QnC(모멘티브)·한솔아이원스(4Q 일회성)에서 확립한 원칙의
+  3중 적용판: <b>본업/방산/수소를 분리하고, 본업 안에서도 SB(메모리)와 MSB(FC-BGA·HDD)를 분리해서 읽어라.</b></p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 후공정이라는 세 번째 강</h2>
+  <div class="lead">전공정 소재(웨이퍼 투입)·eSSD(비트 출하)와 달리, 솔더볼의 변수는 「패키지가 몇 개 조립되는가 × 패키지당 볼이 몇 개인가」다.</div>
+
+  <h3>사슬 A · AI 서버 → FC-BGA 기판 → MSB <span class="pill up">'27년까지 업사이클 (메리츠)</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">AI 가속기·서버 CPU의 대형화 → FC-BGA 기판 수요 폭증 + 기판 대면적화·고다층화</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">기판이 커지고 미세해질수록 <b>패키지당 극미세 볼 수 급증</b> — MSB 수요의 승수 구조</div></div>
+    <div class="step"><div class="n"><i>3</i></div><div class="body">공급은 덕산·센주 2사뿐 — <b>"수요 급증에 대응 여력이 제한적" = 가격 인상 사이클의 조건</b> (현대차증권)</div></div>
+    <div class="step final"><div class="n"><i>4</i></div><div class="body">MSB 가동률 60%→70% 상승 중 · 매출 '26E +48%, '27E +35% — <b>믹스 개선(이익률 40%)으로 증폭되어 전사 이익 견인</b></div></div>
+  </div>
+  <p class="note"><b>개정판 · 전방의 공식 확인 (이비덴 CY1Q26 컨콜, 5월)</b> — 분기 매출 1,176억엔(+19%)·OP 175억엔(+37%),
+  FY26 기판 사업 OP 가이던스 <b>+32% 상향(750억엔·OPM 23%)</b>, FY27 역대 최고 OPM(29%) 경신 전망, <b>FY30 OPM 목표 35%</b> 제시.
+  '26~28년 5,000억엔(4.7조원) 투입, FY28까지 캐파 2배 — <b>고객 선수금 기반</b>(엔비디아·하이퍼스케일러가 캐파를 선점 중이라는 증거).
+  이비덴 스스로 "경쟁사 증설 유입 전인 <b>2028년 이전까지 절대적으로 우호적인 가격 환경</b>"이라고 시한을 그어줬다 —
+  MSB 스토리의 1차 유효기간('27년)과 '28년 재평가 구간의 공식 근거. 단 이비덴은 2023년 가이던스를 1분기 만에 번복한 전례가 있어
+  가이던스 하향은 1급 경보로 유지. 신규 팹 램프업의 수율 부진도 기판 출하 지연 = MSB 발주 지연으로 전이되는 감시 항목.
+  참고: 신코전기는 JIC 인수로 <b>비상장화 — 컨콜 추적 불가</b>, 대만 기판사 월간 매출로 대체 (섹션 5).</p>
+
+  <h3>사슬 B · 메모리 출하 → SB <span class="pill up">풀캐파 + 증설</span> / 사슬 C · AI HDD → MSB 단독 <span class="pill up">숨은 카드</span></h3>
+  <div class="scrollx"><table>
+    <tr><th>사슬</th><th>구조</th><th>시점·상태</th></tr>
+    <tr><td>B. 메모리</td><td>메모리 출하 증가 + HBM 적층 고도화 → 패키징 볼 수요. 가동률 90% 풀캐파 — <b>증설 +30%가 '26년 2Q부터 물량 해방</b></td><td>업황 호조 지속 (메리츠 "SB·MSB·CSB 전반 성장")</td></tr>
+    <tr><td>C. HDD</td><td>AI 데이터센터의 니어라인 HDD 부족·증산 — <b>파두 리포트의 eSSD 사슬과 같은 뿌리에서 갈라진 형제 수요</b>. 덕산 단독 공급, 이익 기여 최고</td><td>비중 아직 낮으나 핵심 축 부상 전망 (유안타)</td></tr>
+    <tr><td>D. 방산 (넵코어스)</td><td>K-방산 수출·위성항법 — 반도체와 무관한 사이클</td><td>수주잔고 확대 중</td></tr>
+    <tr><td>E. 수소 (에테르씨티)</td><td>'25년 중국 태양광발 충당금의 주범 → '26년 흑전(+37억 전망) + <b>충당금 환입 옵션</b> + 하반기 수소트럭·OEM 수주 기대</td><td>회복 초입 — 검증 필요</td></tr>
+  </table></div>
+  <p class="note"><b>팩터 선언</b>: 덕산하이메탈은 「후공정 물량」 팩터다. 전공정 CapEx(시리즈 1~7)와 상관은 있지만 위상이 다르다 —
+  전공정이 꺾여도 조립·출하가 유지되면 솔더볼은 팔리고, 반대로 FC-BGA·HDD처럼 전공정과 무관한 수요가 실적을 흔든다.
+  파두(글로벌 eSSD)와는 「AI 스토리지 수요」라는 최상류를 공유하는 사촌 관계다.</p>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 원자재 시세가 추가된 첫 대시보드</h2>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처 · 주기 · 무료</th><th>현재 상태 (2026.7월 초)</th></tr>
+    <tr><td><span class="dot y"></span><b>LME 주석 · 은 시세</b></td><td>원가 직결 — 전가 시차만큼 분기 마진을 선결정</td><td>LME·시세 사이트 · 일간 · 무료</td><td>12~1월 급등이 1Q 마진 압착 — 이후 추이 확인 필요</td></tr>
+    <tr><td><span class="dot g"></span><b>MSB 라인 가동률</b></td><td>믹스 개선(이익률 40%)의 실측</td><td>증권사 탐방노트 · 수시</td><td class="num">'25.11월 60% → 12월 70% 상승 중 (다올)</td></tr>
+    <tr><td><span class="dot g"></span><b>이비덴 분기 실적·가이던스</b></td><td>MSB 전방의 공식 프리뷰 (신코는 비상장화로 추적 불가)</td><td>분기 실적 · 무료</td><td class="num">FY26 가이던스 +32% 상향 · FY30 OPM 35% 목표 · 캐파 2배</td></tr>
+    <tr><td><span class="dot g"></span><b>대만 기판사 월간 매출 (유니마이크론·Zhen Ding·난야PCB)</b></td><td>FC-BGA 사슬의 최고 빈도 무료 지표</td><td>대만 공시 (매월 10일 전후) · 무료</td><td>증설 장비 발주 개시 — 동반 확장 국면</td></tr>
+    <tr><td><span class="dot g"></span>글로벌 HDD 3사 (씨게이트·WD·도시바) 출하·가이던스</td><td>HDD향 MSB 단독 공급분의 전방</td><td>분기 실적 · 무료</td><td>AI 데이터센터발 니어라인 호조</td></tr>
+    <tr><td><span class="dot g"></span>메모리 출하·HBM 적층 (공통 대시보드)</td><td>SB 물량의 동행 변수</td><td>트렌드포스 · 무료</td><td>공통 녹색 — 풀캐파 지속</td></tr>
+    <tr><td><span class="dot y"></span><b>에테르씨티 분기 손익·충당금</b></td><td>연결 노이즈의 진원 — 환입 시 서프라이즈</td><td>분기보고서 주석 · 분기</td><td>'26년 흑전 전망 — 1Q 확정치로 검증 필요</td></tr>
+    <tr><td><span class="dot g"></span>넵코어스 방산 수주</td><td>자회사 가치의 별도 트랙</td><td>공시·뉴스 · 수시</td><td>K-방산 수출 확대 수혜</td></tr>
+    <tr><td><span class="dot y"></span>원자재 연동제·가격 인상 공지</td><td>마진 정상화의 스위치</td><td>실적발표·리포트 · 분기</td><td>3월부터 적용 확대 — 2Q26 효과 검증이 관건</td></tr>
+    <tr><td><span class="dot y"></span><b>담합 수사 진행 (검찰·공정위)</b></td><td>SB 가격 인상 자유도·과징금 리스크의 진원</td><td>DART·법조 보도 · 수시 · 무료</td><td><b>5월 말 압수수색 (수사 초기)</b> — 기소·처분 미확정</td></tr>
+  </table></div>
+
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li><b>LME 주석·은 시세</b> (마진의 선행 입력값)</li><li>메모리·FC-BGA 시황 기사</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>낸드·디램 고정가 (공통)</li><li>MSB 가동률·증설 진행 언급 검색</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY — 한 세트</div>
+      <ul><li>이비덴·신코 실적 (MSB 프리뷰) → HDD 3사 → 덕산 분기보고서 (부문 분해 + 에테르씨티 주석)</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 물량 × 믹스 × 전가의 3단 곱</h2>
+  <div class="lead">이 회사의 레버리지는 단일 스위치가 아니라 세 변수의 곱이다 — 그래서 1Q26처럼 「매출 +60%에 이익 −46%」라는 기현상이 가능하다.</div>
+
+  <h3>실측: 연결 구간별 (자회사 오염 주의)</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>Δ매출</th><th>Δ영업이익</th><th>판정</th></tr>
+    <tr><td>2023→2024</td><td class="num">+914억</td><td class="num" style="color:var(--up)">+296억 (적자→186억)</td><td>Inc. margin ~32% — 업사이클 + 자회사 온기의 합작</td></tr>
+    <tr><td>2024→2025</td><td class="num">−110억</td><td class="num" style="color:var(--down)">−65억</td><td>역방향 59% — FC-BGA 다운 + 충당금 증폭</td></tr>
+    <tr class="hl"><td>1Q26E (별도, YoY)</td><td class="num">+158억 (+60.5%)</td><td class="num" style="color:var(--down)"><b>−15억 (−46.5%)</b></td><td><b>레버리지 음전 — 원자재 급등이 물량 레버리지를 통째로 삼킴</b></td></tr>
+    <tr><td>2025→2026E (별도)</td><td class="num">+368억 (+29%)</td><td class="num" style="color:var(--up)">+66억 (+42%)</td><td class="num">Inc. margin ~18% — 보수적 (전가 정상화 가정)</td></tr>
+  </table></div>
+
+  <div class="formula">레버리지 공식: 물량(가동률·증설) × 믹스(MSB 비중 20→26%) × 원자재 전가(연동제)
+— 셋이 정렬되면: 매출 +10% → 이익 +25~35% / 매출 +20% → 이익 +50~70% (믹스 개선 동반 시)
+— 하나라도 역방향이면: 1Q26처럼 물량 레버리지가 상쇄·음전
+
+여력: SB 가동률 90% 풀캐파 → <b>2Q26부터 증설 +30% 가동 = 물량 상한 해방</b>
+      MSB 가동률 70% → 30%p의 순수 가동 레버리지 잔여 + 캐파 ~50% 확충 추진 (유안타)</div>
+
+  <h3>개정판 · 증설의 경제학 — 회수 1.5~4년의 경량 CAPEX</h3>
+  <p>신규시설투자 공시 금액은 미확인(설비 증설+효율 제고 성격 — 확실하지 않음). 프레임 추정: SB +30% 증설 = 연매출 캐파 +400억 내외,
+  솔더볼 라인 자본집약도(매출/유형자산 1~1.5배 가정)로 필요 CAPEX ~250~400억. 증분 이익은 SB 위주 시 연 +60~100억(<b>회수 3~4년</b>),
+  MSB 라인 배정 시 같은 매출에 연 +160억(<b>회수 1.5~2.5년</b>) — ROIC 20~30%. 팹·화학 플랜트와 달리 수요 확인 후 따라가는
+  후행 증설이 가능한 경량 구조라 증설 리스크 자체는 시리즈 최소 축. 뒤집힌 함의: 풀캐파(90%) 상태에서 증설이 2Q26에야 나온다는 건
+  '25년 하반기~'26년 초의 초과 수요를 일부 놓치고 있다는 뜻(4Q25 +19% QoQ에도 캐파 제약). <b>IR 확인 포인트: 캐파 50% 확충분 중
+  MSB 라인의 비중과 투자 금액 — 이 답 하나로 회수 기간이 3~4년짜리인지 2년짜리인지 갈린다.</b></p>
+
+  <p><b>핵심 판별법:</b> 이 종목의 분기 이익은 「매출 성장률」이 아니라 <b>「스프레드(판가−원자재) × MSB 비중」</b>으로 예측해야 한다.
+  2Q26이 결정적 검증 분기다 — 연동제 확대와 가격 인상이 3월부터 적용됐으므로, 2Q에 별도 OPM이 두 자릿수로 복원되면
+  「전가 능력 입증 → '26E OP 222억(OPM 13.7%) 경로 유효」, 복원 실패면 원자재 리스크를 구조적 디스카운트로 남겨야 한다.</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+
+  <div class="risk r1">
+    <span class="impact r1i">마진 압착 −30~50%</span>
+    <h4>① 원자재 역습 — 은·주석의 시세 리스크 + 미얀마</h4>
+    <p>1Q26이 실증한 이 회사 고유의 하방이다. 은은 귀금속 수급, 주석은 미얀마·인니 공급 이슈로 급등할 수 있는 원자재이고,
+    연동제가 확대됐어도 전가에는 시차와 협상이 따른다. 여기에 수직계열화의 축인 DS미얀마가 정정 불안 지역에 있다는
+    지정학 비용이 겹친다. 원자재 급등 + 전가 지연 + 미얀마 차질이 동시에 오는 시나리오가 최악.</p>
+    <div class="alarm"><b>경보</b> — LME 주석·은 월간 +15% 이상 급등 · 미얀마 정세 뉴스 · 분기 별도 GPM 하락 지속</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">이익 임팩트 −40~60%</span>
+    <h4>② FC-BGA 사이클 반전 — MSB 성장 스토리의 전방 리스크</h4>
+    <p>'26E 증익의 엔진인 MSB는 FC-BGA 업황('27년까지 업사이클 전망)에 걸려 있다. AI 서버 투자가 조정되면
+    기판 → MSB로 파급이 빠르고, 2025년 상반기(OP −89%)가 그 실측치다. 과점(2사)이라 물량 회복 시 탄력도 크지만,
+    다운턴에서 가격 인상 사이클이 역전될 수 있다는 대칭성도 있다. 4Q25의 조기발주(Pull-in) 같은 수요 선반영도
+    분기 변동성을 키우는 요인.</p>
+    <div class="alarm"><b>경보</b> — 이비덴·신코 가이던스 하향 · MSB 가동률 상승 정체 · 하이퍼스케일러 CapEx 조정 (파두와 공유 경보)</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">연결 왜곡 + 구조 리스크</span>
+    <h4>③ 자회사 노이즈 재발 + 기술 대체 — Cu Post의 그림자</h4>
+    <p>단기: 에테르씨티 충당금이 '25년 연결을 파괴한 전례 — '26년 흑전·환입 시나리오가 어긋나면 본업 회복이 또 가려진다.
+    장기: 첨단 패키징에서 솔더볼을 Cu Post(구리 기둥) 등 차세대 접합으로 대체하는 기술 전환이 예상보다 빠르면
+    본업의 영토 자체가 줄어든다 — 원익QnC의 SiC 리스크와 동형의 구조 리스크. MSB 40µm 상용화 같은 극미세화 대응이
+    이 리스크에 대한 회사의 답이다.</p>
+    <div class="alarm"><b>경보</b> — 에테르씨티 분기 적자·추가 충당금 · 고객사의 Cu Post 채택 확대 보도 · MSB 신규 고객 확보 지연</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">실적 무관 −10~20% + 과징금·환수 · 부분 점등</span>
+    <h4>④ (개정판 신설) 일반 SB 담합 수사 — 검찰 압수수색 (2026.5.28~29)</h4>
+    <p>서울중앙지검 <b>범죄수익환수부</b>가 덕산하이메탈·엠케이전자·엘티메탈(옛 희성금속) 국내 3사를 공정거래법 위반 혐의로 압수수색 —
+    SK하이닉스 등 향 소재의 납품 가격·물량 사전 협의 의혹. 검찰이 보는 대상이 「단가 인상·조정 과정」이라는 점에서 이 리포트의
+    강세 논리(연동제 확대·가격 인상)와 정면으로 얽히며, 범죄수익환수부 트랙은 과징금+부당이득 환수+임원 형사책임, 나아가
+    고객사 민사 손배까지 열려 있다. 당일 주가 −9.7%. <b>방어선: 담합 의혹은 국내 3사 구도의 일반 SB 시장이고, 이익의 본체
+    MSB(덕산·센주 2사 과점, 이익 기여 55~75%)는 이 구도 밖이다.</b> 센주는 일본 기업(인텔·대만 축)이라 국내 담합 구도에 없다.
+    수사는 초기(압수수색) 단계 — 기소·처분 미확정.</p>
+    <div class="alarm"><b>경보</b> — 공정위 심사보고서 보도 · 검찰 기소 공시 · 분기보고서 우발부채(충당금) 주석 신설 · 고객사 손배 청구</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (2026년 5월 말 기준)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:8%"><div class="tick"></div><div class="price">3,965원</div><div class="lbl">52주 저점<br>(본업 가치 미반영 구간)</div></div>
+      <div class="mk" style="left:46%"><div class="tick"></div><div class="price">12,990원</div><div class="lbl">5/30 현재 — 담합 압수수색<br>15,410 → 12,990 급락</div></div>
+      <div class="mk" style="left:72%"><div class="tick"></div><div class="price">21,100</div><div class="lbl">52주 고점<br>(저점 대비 5.3배)</div></div>
+      <div class="mk" style="left:93%"><div class="tick"></div><div class="price">21,000</div><div class="lbl">목표주가 평균<br>여력 +62% (급락 반영 후)</div></div>
+    </div>
+  </div>
+  <p class="note">밸류 논리는 SOTP(부분합산)형 — 본업(솔더볼)만으로 시총 설명 + 방산·수소는 플러스알파라는 게 강세론(유안타·니드인포).
+  담합 급락으로 목표가 대비 여력이 +62%로 벌어졌으나, 이 여력의 일부는 「담합 리스크의 가격」이다 — 수사 경과가 할인의 정당성을 판가름한다. 7월 현재가 재확인 필수.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>2Q26에 전가 능력이 증명되는가 — 이 종목의 올해 단일 관문</h4>
+    <p>매출 성장(1Q +60%)은 이미 증명됐다. 남은 질문은 그 성장이 이익이 되느냐이고, 열쇠는 3월 확대된 원자재 연동제·가격 인상이
+    2Q 별도 마진을 두 자릿수로 복원하는지다. 복원되면 「물량(증설 30%) × 믹스(MSB 26%) × 전가」 3단 곱이 완성되어
+    '26E OP 222억(+42%) 경로가 열리고, 실패하면 원자재 리스크가 멀티플 디스카운트로 고착된다.
+    <b>2Q26 실적 발표가 이 종목의 올해 최대 이벤트</b>다.</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>시리즈 지도에서 덕산의 자리는 — 세 번째 팩터의 대표 선수</h4>
+    <p>전공정 CapEx(1~7편)·글로벌 eSSD(8편)에 이은 「후공정 물량」 팩터의 첫 종목. 전공정과 위상이 달라 분산 가치가 있고,
+    특히 <b>파두와 「AI 스토리지」 최상류를 공유하는 사촌</b>(eSSD↔HDD)이라 두 종목을 겹쳐 보면 AI 스토리지 수요의
+    양 갈래를 모두 커버한다. MSB 과점+믹스 개선이라는 구조는 한솔케미칼의 프리커서와 동형이되, 원자재·자회사라는
+    변수 두 개가 더 붙는다 — 세 질문 프레임으로는 강도 ★★★ / 룸 중상(본업 미반영 평가 vs '26E 선반영 논쟁) / 변수 다수.</p>
+    <p>이탈 규율: <b style="color:#E3A6E8">원자재 급등+전가 실패 2분기 연속 · 이비덴/신코 가이던스 하향 · 에테르씨티 충당금 재발.</b>
+    반대로 원자재발 분기 쇼크는 수요가 멀쩡하면(가동률·수주 확인) 검토 기회다.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>레버리지가 3단 곱이다</h4>
+      <ul><li>물량 × 믹스 × <b>원자재 전가</b> — 하나라도 역방향이면 음전 (1Q26 실증)</li><li>분기 예측의 입력값에 <b>LME 시세</b>가 들어가는 시리즈 유일 종목</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>MSB = 후공정의 프리커서</h4>
+      <ul><li>2사 과점 · 점유율 70% · 이익률 40% · 비중 20→26%</li><li>믹스 개선형 증익 — <b>한솔케미칼과 동형의 질 좋은 성장축</b></li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>파두의 사촌이다</h4>
+      <ul><li>AI 스토리지 수요의 두 갈래: eSSD(파두) ↔ <b>HDD(덕산 MSB 단독)</b></li><li>같은 최상류·다른 하류 — 겹쳐 보면 수요 검증이 상호 보강</li></ul></div>
+  </div>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·증권사 리포트(다올·메리츠·현대차·SK·유안타)·언론 보도 기반의 정리 자료이며 투자 권유가 아닙니다.
+  2025년 연간 매출 2,364억은 확정 공시, OP ~121억은 추정치이고, 2021~22년 영업이익·1Q26 확정치는 미확인입니다.
+  부문 비중은 3Q25 누적 기준, 주가는 2026년 5월 30일 종가(12,990원) 기준으로 현재와 다를 수 있습니다. 담합 수사는 압수수색 단계로 혐의 확정이 아닙니다. MSB 점유율·가동률은 증권사 추정입니다.
+  기준일: 2026년 7월 7일 · <b>개정 1판</b> (4Q25 확정치 · 담합 수사 · 이비덴 가이던스 · MSB/SB 손익 분해 · 센주 구도 · 증설 경제학 반영). 자매 리포트: 솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두.
+</footer>
+
+</div>
+</body>
+</html>
