@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>케이씨텍 (281820) 기업분석 리포트 · 2026-07-14</title>
+<style>
+:root{
+  --bg:#F2F6F5; --paper:#FFFFFF; --ink:#182422; --muted:#62716E; --line:#D9E4E1;
+  --accent:#0B7A75; --accent2:#4EAAA4; --accent-soft:#E4F3F1; --accent-deep:#075A57;
+  --copper:#B36A2E; --copper-soft:#F8ECE2; --blue:#356D92; --blue-soft:#E7F0F6;
+  --up:#187451; --up-soft:#E4F2EB; --warn:#A56714; --warn-soft:#F8EEDB;
+  --down:#B33D4A; --down-soft:#F8E6E9; --dark:#142826;
+  --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-deep);text-decoration-thickness:1px;text-underline-offset:3px}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 18px 88px}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.cover{background:linear-gradient(135deg,#112927,#173B37 58%,#204943);color:#F1FAF8;border-radius:18px;padding:42px 38px 34px;position:relative;overflow:hidden}
+.cover:before{content:"";position:absolute;width:350px;height:350px;right:-140px;top:-155px;border:46px solid rgba(78,170,164,.28);border-radius:50%}
+.cover:after{content:"";position:absolute;width:180px;height:180px;right:60px;bottom:-120px;background:rgba(179,106,46,.20);transform:rotate(34deg);border-radius:30px}
+.cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#9CD6D1;margin-bottom:14px;position:relative;z-index:1}
+.cover h1{font-size:38px;line-height:1.18;letter-spacing:-.035em;position:relative;z-index:1}
+.cover .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#A8D9D5;margin-left:8px}
+.cover .sub{font-size:15.5px;color:#CEE3E0;margin-top:12px;max-width:760px;position:relative;z-index:1}
+.cover .meta{display:grid;grid-template-columns:repeat(5,minmax(110px,1fr));gap:17px;margin-top:29px;padding-top:22px;border-top:1px solid rgba(255,255,255,.15);position:relative;z-index:1}
+.cover .meta span{display:block;font-size:11.5px;color:#9FBAB6}
+.cover .meta b{display:block;font-size:16px;color:white;margin-top:3px}
+.cover .meta small{display:block;color:#A8D9D5;font-size:10.7px;margin-top:1px}
+.thesis{margin:24px 0 10px;background:var(--accent-soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:21px 24px;font-size:15.5px}
+.thesis b{color:var(--accent-deep)}
+.nav{position:sticky;top:9px;z-index:20;margin:18px 0 4px;padding:8px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:12px;backdrop-filter:blur(8px);display:flex;gap:5px;overflow-x:auto}
+.nav a{white-space:nowrap;text-decoration:none;font-size:12px;font-weight:800;color:var(--muted);padding:7px 10px;border-radius:8px}
+.nav a:hover,.nav a.active{background:var(--accent-soft);color:var(--accent-deep)}
+section{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:31px 31px 29px;margin-top:18px;scroll-margin-top:72px}
+.eyebrow{font-family:var(--mono);font-size:11px;font-weight:900;letter-spacing:.18em;color:var(--accent);margin-bottom:6px}
+h2{font-size:26px;line-height:1.35;letter-spacing:-.028em;margin-bottom:7px}
+h3{font-size:18.5px;letter-spacing:-.018em;margin:25px 0 10px}
+h4{font-size:16px;line-height:1.45}
+.lead{font-size:15.7px;color:#40504D;margin-bottom:18px}
+p+p{margin-top:9px}
+.small{font-size:12.4px;color:var(--muted)}
+.note{background:#F5F8F7;border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin:12px 0;font-size:13px;color:#44534F}
+.note.warn{background:var(--warn-soft);border-color:#E8D3AA}
+.note.danger{background:var(--down-soft);border-color:#E6BCC3}
+.note.good{background:var(--up-soft);border-color:#BBDCCA}
+.note.copper{background:var(--copper-soft);border-color:#E7C9AE}
+.pill{display:inline-block;border-radius:999px;padding:3px 8px;font-size:10.5px;font-weight:900;vertical-align:1px}
+.pill.fact{background:var(--up-soft);color:var(--up)}
+.pill.est{background:var(--warn-soft);color:var(--warn)}
+.pill.risk{background:var(--down-soft);color:var(--down)}
+.pill.nr{background:var(--blue-soft);color:var(--blue)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:13px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}
+.card .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--accent);font-weight:900;margin-bottom:5px}
+.card h4{margin-bottom:7px}
+.card ul{padding-left:17px;font-size:13.2px;color:#465450}
+.card li+li{margin-top:4px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.kpi{background:#F5F8F7;border:1px solid var(--line);border-radius:11px;padding:13px}
+.kpi span{display:block;color:var(--muted);font-size:11.4px}
+.kpi b{display:block;font-family:var(--mono);font-size:20px;margin-top:3px;color:var(--accent-deep)}
+.kpi small{display:block;font-size:10.8px;color:var(--muted)}
+.scrollx{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13.05px;min-width:660px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:#EAF1EF;color:#344743;font-weight:900;text-align:left;padding:10px 11px;border-bottom:1px solid var(--line)}
+td{padding:9px 11px;border-bottom:1px solid #E8EFED;vertical-align:top}
+tr:last-child td{border-bottom:0}
+tr.hl td{background:var(--accent-soft)}
+td.num,th.num{text-align:right;white-space:nowrap}
+.factrow td:first-child:before{content:"확정";font-size:9px;font-weight:900;color:var(--up);background:var(--up-soft);border-radius:99px;padding:2px 5px;margin-right:5px}
+.estrow td:first-child:before{content:"추정";font-size:9px;font-weight:900;color:var(--warn);background:var(--warn-soft);border-radius:99px;padding:2px 5px;margin-right:5px}
+.stack{display:flex;height:49px;border-radius:9px;overflow:hidden;margin:12px 0 8px;color:white;font-size:12px;font-weight:900}
+.stack>div{display:flex;align-items:center;justify-content:center;text-align:center;padding:4px;min-width:3px}
+.legend{display:flex;flex-wrap:wrap;gap:9px 16px;font-size:12.4px;color:var(--muted)}
+.legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;background:var(--c);margin-right:6px}
+.formula{font-family:var(--mono);white-space:pre-wrap;background:#17312E;color:#ECF8F6;border-radius:11px;padding:18px 19px;font-size:13.4px;margin:12px 0}
+.formula b{color:#9FDCD6}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;margin:16px 0;align-items:stretch}
+.node{position:relative;background:#F5F9F8;border:1px solid var(--line);border-radius:11px;padding:14px 12px;min-height:137px}
+.node:not(:last-child):after{content:"→";position:absolute;right:-18px;top:42%;color:var(--accent);font-size:23px;font-weight:900}
+.node .n{font-family:var(--mono);font-size:10px;color:var(--accent);font-weight:900}
+.node .t{font-size:14px;font-weight:900;margin-top:4px}
+.node .d{font-size:11.5px;color:var(--muted);margin-top:5px}
+.node .check{font-size:10.5px;color:var(--accent-deep);margin-top:7px;font-weight:800}
+.contracts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:12px 0}
+.contract{border:1px solid var(--line);border-radius:12px;padding:16px;background:#FBFDFC}
+.contract .who{font-size:12px;font-weight:900;color:var(--accent)}
+.contract strong{font-family:var(--mono);font-size:21px;display:block;color:var(--dark)}
+.contract .period{font-size:11.5px;color:var(--muted)}
+.rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:13px 0}
+.rhythm .box{border-radius:11px;padding:14px 15px}
+.rhythm .w{background:var(--accent-soft)}
+.rhythm .m{background:var(--blue-soft)}
+.rhythm .q{background:var(--warn-soft)}
+.rhythm .freq{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;font-weight:900;margin-bottom:5px}
+.rhythm ul{font-size:12.5px;padding-left:17px}
+.journey{margin:13px 0}
+.jrow{display:grid;grid-template-columns:140px 1fr 68px;gap:9px;align-items:center;margin:9px 0}
+.jlabel{font-size:11.5px;text-align:right;color:#485652}
+.jtrack{height:33px;background:#E8EFED;border-radius:7px;display:flex;overflow:hidden;position:relative}
+.jtrack.reverse{outline:1px dashed #D4A9B0}
+.jcost{background:#9FB8B4;display:flex;align-items:center;justify-content:center;font-size:10.5px;color:#1C312E}
+.jprofit{background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10.5px;color:white;font-weight:900}
+.jloss{background:var(--down);display:flex;align-items:center;justify-content:center;font-size:10.5px;color:white;font-weight:900}
+.hatched{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.28) 0,rgba(255,255,255,.28) 5px,transparent 5px,transparent 10px)}
+.jmetric{font-family:var(--mono);font-size:11px;font-weight:900}
+.gaugebox{border:1px solid var(--line);border-radius:12px;padding:20px 20px 15px;margin:13px 0}
+.gauge{position:relative;height:72px;margin:12px 12px 0}
+.gline{position:absolute;left:0;right:0;top:31px;height:9px;background:linear-gradient(90deg,#DCE7E4,#83BDB8,#0B7A75);border-radius:99px}
+.tick{position:absolute;top:44px;font-family:var(--mono);font-size:9px;color:var(--muted);transform:translateX(-50%)}
+.marker{position:absolute;top:2px;transform:translateX(-50%);text-align:center}
+.marker:after{content:"";display:block;width:3px;height:37px;background:currentColor;margin:3px auto 0;border-radius:2px}
+.marker b{font-family:var(--mono);font-size:12px;white-space:nowrap;background:white;border:1px solid currentColor;border-radius:6px;padding:2px 5px}
+.marker.opm{color:var(--blue)}
+.marker.cm{color:var(--accent-deep)}
+.risks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+.risk{border-radius:12px;padding:16px;border-top:4px solid var(--down);background:#FFF9FA}
+.risk:nth-child(2){border-top-color:var(--warn);background:#FFFBF5}
+.risk:nth-child(3){border-top-color:var(--accent);background:#F8FCFB}
+.risk .impact{font-size:10px;font-weight:900;letter-spacing:.08em;color:var(--down)}
+.risk h4{margin:4px 0 7px}
+.risk p{font-size:12.7px}
+.alarm{margin-top:9px;padding-top:8px;border-top:1px dashed #DCCFD2;font-size:11.5px;color:#5D5558}
+.band{position:relative;height:128px;margin:22px 10px 8px}
+.bandline{position:absolute;left:2%;right:2%;top:54px;height:11px;border-radius:99px;background:linear-gradient(90deg,#DCEBE5 0 24%,#E4F2F0 24% 57%,#F5EBD8 57% 82%,#F2DDE1 82% 100%)}
+.bandpoint{position:absolute;top:19px;transform:translateX(-50%);text-align:center}
+.bandpoint:after{content:"";display:block;width:2px;height:50px;background:#394743;margin:3px auto 0}
+.bandpoint b{display:block;font-family:var(--mono);font-size:11px;white-space:nowrap}
+.bandpoint small{display:block;font-size:9.5px;color:var(--muted);white-space:nowrap}
+.bandpoint.current{color:var(--accent-deep)}
+.bandpoint.current:after{width:4px;background:var(--accent)}
+.bandpoint.target{color:var(--copper)}
+.bandpoint.target:after{width:4px;background:var(--copper)}
+.bandlabels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);padding:0 2%}
+.matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:13px 0}
+.matrix .m{border:1px solid var(--line);border-radius:11px;padding:15px;background:#FBFDFC}
+.matrix .score{font-family:var(--mono);font-weight:900;color:var(--accent);font-size:18px}
+.qbox{border:1px solid var(--line);border-radius:11px;padding:16px 18px;margin:11px 0;background:#FAFCFB}
+.qbox .q{font-family:var(--mono);font-size:10px;letter-spacing:.15em;font-weight:900;color:var(--accent)}
+.qbox h4{font-size:17px;margin:4px 0 6px}
+.questions{margin-top:18px;background:#F0F7F5;border-radius:10px;padding:13px 16px;font-size:12.8px}
+.questions b{color:var(--accent-deep)}
+.questions div+div{margin-top:5px}
+.source{font-size:10px;vertical-align:super;font-weight:900;text-decoration:none}
+.footnotes{font-size:12px;color:#4E5C58}
+.footnotes li+li{margin-top:7px}
+.footnotes code{font-family:var(--mono);font-size:10.5px}
+footer{padding:25px 7px 0;color:var(--muted);font-size:11.5px}
+footer b{color:#3D4B47}
+.footergrid{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
+.printbtn{border:1px solid var(--line);background:white;color:var(--accent-deep);border-radius:9px;padding:7px 10px;font-weight:900;cursor:pointer}
+@media(max-width:780px){
+  .wrap{padding:12px 10px 58px}
+  .cover{padding:29px 22px 24px}
+  .cover h1{font-size:30px}
+  .cover .ticker{display:block;margin:5px 0 0}
+  .cover .meta{grid-template-columns:repeat(2,1fr);gap:13px}
+  section{padding:23px 17px}
+  h2{font-size:22px}
+  .cards,.risks,.rhythm,.contracts,.matrix{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .flow{grid-template-columns:1fr;gap:11px}
+  .node{min-height:auto}
+  .node:not(:last-child):after{content:"↓";right:auto;left:48%;top:auto;bottom:-20px}
+  .jrow{grid-template-columns:94px 1fr 50px}
+  .jlabel{font-size:10px}
+  .footergrid{grid-template-columns:1fr}
+}
+@media print{
+  body{background:white}
+  .wrap{max-width:none;padding:0}
+  .nav,.printbtn{display:none}
+  section{break-inside:avoid;border-color:#DDD;margin-top:10px}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="cover">
+  <div class="tag">INVESTMENT RESEARCH · 2026.07.14 · FIRST EDITION</div>
+  <h1>케이씨텍 <span class="ticker">281820 · KOSPI</span></h1>
+  <div class="sub">메모리 CAPEX의 장비 매출과 웨이퍼 가동률의 슬러리 매출을 동시에 타는 구조. 핵심은 “2026년 이익 급증”이 아니라 장비 승인·납품과 소재 점유율이 2027년까지 이어지는가다.</div>
+  <div class="meta">
+    <div><span>확인 종가</span><b>90,000원</b><small>2026-07-13 KRX 종가</small></div>
+    <div><span>시가총액</span><b>1.782조원</b><small>19,798,661주 기준</small></div>
+    <div><span>1Q26 매출 / OP</span><b>1,561 / 348억원</b><small>OPM 22.3%</small></div>
+    <div><span>2026E 매출 / OP</span><b>6,528 / 1,462억원</b><small>단일기관 컨센서스</small></div>
+    <div><span>목표가 / 기관 수</span><b>127,000원 / 1곳</b><small>DB증권 2026-06-30</small></div>
+  </div>
+</header>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 케이씨텍은 순수 장비주가 아니다. CMP·세정장비는 삼성전자·SK하이닉스의 발주와 검수에 따라 외형이 계단식으로 움직이고, CMP 슬러리는 고객사 웨이퍼 투입량과 CMP 공정 횟수에 따라 반복 매출이 발생한다. 1Q26 반도체 매출 비중은 94.3%까지 상승했고, 영업이익률은 22.3%로 과거 5년 평균을 크게 넘어섰다. 긍정론은 <b>메모리 CAPEX 확대 × 공정 스텝 증가 × 국산 장비 승인</b>이고, 부정론은 <b>고객 집중 × 검수 시점 변동 × 단일 추정치에 의존한 이익 기대</b>다. 현재 가격은 2026E PER 13.9배로 숫자상 부담이 낮아졌지만, 그 분모인 2026E 순이익이 전년 대비 약 143% 증가한다는 강한 가정 위에 서 있다.
+</div>
+
+<nav class="nav" id="nav">
+  <a href="#s1">1 사업</a><a href="#s2">2 수익</a><a href="#s3">3 실적</a><a href="#s4">4 전방</a>
+  <a href="#s5">5 트래킹</a><a href="#s6">6 레버리지</a><a href="#s7">7 리스크·밸류</a><a href="#s8">8 종합</a><a href="#appendix">부록·출처</a>
+</nav>
+
+<section id="s1">
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">한 회사 안에 “발주형 장비”와 “반복형 소재”가 공존한다. 공시는 반도체·디스플레이 두 부문만 공개하며, CMP 장비·세정장비·슬러리의 최신 세부 매출은 공개하지 않는다.</div>
+
+  <h3>매출 구성</h3>
+  <div class="stack" aria-label="2025 매출 구성">
+    <div style="flex:90.3;background:#0B7A75">반도체 90.3%</div>
+    <div style="flex:9.7;background:#B36A2E">디스플레이 9.7%</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#0B7A75">2025 반도체 3,457억원</span>
+    <span style="--c:#B36A2E">디스플레이 370억원</span>
+  </div>
+  <div class="stack" aria-label="2026 1분기 매출 구성">
+    <div style="flex:94.3;background:#0B7A75">반도체 94.3%</div>
+    <div style="flex:5.7;background:#B36A2E">디스플레이 5.7%</div>
+  </div>
+  <p class="small">1Q26: 반도체 1,472억원, 디스플레이 89억원. 반도체 매출은 전분기 대비 약 114% 증가한 것으로 보인다. 세부 제품별 매출은 공시되지 않아 장비와 소재의 정확한 비중은 <b>미확인</b>. <a class="source" href="#src1">[S1]</a><a class="source" href="#src2">[S2]</a></p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="k">SEMICONDUCTOR EQUIPMENT</div>
+      <h4>CMP 장비</h4>
+      <ul>
+        <li><b>CMP</b>: 화학 반응과 기계적 연마를 결합해 웨이퍼 표면을 평탄화하는 공정</li>
+        <li>미세화·다층화·배선 복잡도 증가 시 공정 반복 횟수와 장비 수요가 늘어남</li>
+        <li>국내에서 CMP 장비를 양산 공급하는 대표 업체로 평가</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">WET CLEANING SYSTEM</div>
+      <h4>세정 장비</h4>
+      <ul>
+        <li>약액 처리·린스·건조로 잔류물과 오염을 제거</li>
+        <li>배치형과 싱글형 등 공정·고객별 구성이 다름</li>
+        <li>공개 리서치 기준 SK하이닉스향 노출이 상대적으로 큼</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">RECURRING MATERIALS</div>
+      <h4>CMP 슬러리</h4>
+      <ul>
+        <li>연마입자와 화학액으로 구성된 소모성 소재</li>
+        <li>세리아·실리카 계열 등 막질별 레시피가 다름</li>
+        <li>웨이퍼 투입량과 CMP 공정 스텝이 반복 매출을 결정</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>직접 고객과 최종 수요</h3>
+  <div class="scrollx"><table>
+    <tr><th>제품</th><th>직접 고객</th><th>최종 수요</th><th>판매 구조·확실성</th></tr>
+    <tr><td>CMP 장비</td><td>삼성전자, SK하이닉스</td><td>DRAM·NAND·HBM·파운드리 웨이퍼 생산</td><td>고객사에 직접 납품 → 셋업·검수 → 잔금. 2026년 양사 계약 공시로 직접 확인</td></tr>
+    <tr><td>세정 장비</td><td>주요 메모리 소자업체</td><td>미세공정 전후 세정·잔류물 제거</td><td>고객·공정별 승인. 공개 리서치상 SK하이닉스 중심이나 정확한 매출 비중은 미공개</td></tr>
+    <tr><td>CMP 슬러리</td><td>삼성전자·SK하이닉스 등 반도체 제조사</td><td>웨이퍼 가동률 × CMP 횟수</td><td>직접 소모성 공급. 제품별 인증과 레시피 잠금 효과가 있으나 점유율은 막질·라인별로 다름</td></tr>
+    <tr><td>디스플레이 장비</td><td>국내외 패널 제조사</td><td>OLED·LCD 패널, IT OLED</td><td>프로젝트 발주·검수형. 1Q26 매출 비중 5.7%로 축소</td></tr>
+  </table></div>
+
+  <h3>제품별 경쟁 구도 — 한 표로 섞으면 오판한다</h3>
+  <div class="scrollx"><table>
+    <tr><th>시장</th><th>경쟁사·구도</th><th>케이씨텍의 위치</th><th>간접 추적법</th></tr>
+    <tr><td>CMP 장비</td><td>Applied Materials·Ebara가 글로벌 중심. 국내 고객 내 장비 선정은 공정·라인별</td><td>국내 양산 공급 레퍼런스와 현장 대응력이 강점. 글로벌 전체 점유율은 공개 수치가 없어 확정 불가</td><td>고객사 공급계약, 신규 장비 퀄 통과, SEMICON 전시 제품, 고객사 팹별 반입·셋업 시점</td></tr>
+    <tr><td>세정 장비</td><td>SEMES·SCREEN·TEL·ACM Research 등 장비 방식별 경쟁</td><td>배치/습식 세정과 고객 맞춤 공정. CMP보다 경쟁 구도가 더 분절적</td><td>SK하이닉스·삼성전자 계약 공시, 초임계 세정 장비 고객 테스트/납품 여부</td></tr>
+    <tr><td>CMP 슬러리</td><td>솔브레인·동진쎄미켐·SK엔펄스 및 글로벌 소재사. 막질별 경쟁사가 다름</td><td>세리아·실리카 레시피와 고객 공동개발 경험. “슬러리 전체 점유율” 하나로 표현하면 부정확</td><td>특허·국책과제, 고객사 품질 인증, 소재 매출 성장률, 재고·원재료 변화</td></tr>
+    <tr><td>디스플레이 장비</td><td>Wet Station·Coater·Cleaner별 국내외 장비사</td><td>기존 고객 레퍼런스가 있으나 실적의 주축은 반도체로 이동</td><td>8.6세대 IT OLED 투자 발표, 대형 계약 공시, 계약자산 증가</td></tr>
+  </table></div>
+
+  <p class="note warn"><b>핵심 데이터 공백:</b> 회사는 반도체 부문 안의 CMP 장비·세정장비·슬러리 매출과 영업이익을 분리 공시하지 않는다. 따라서 “소재가 몇 %, 장비가 몇 %”라는 최신 숫자를 단정하면 추정치를 사실로 바꾸는 오류다.</p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 1Q26 반도체 매출 1,472억원 중 CMP 장비·세정장비·슬러리 비중은 각각 얼마인가?</div><div><b>더 파볼 질문 2</b> — 신규 CMP 및 초임계 세정 장비는 어느 고객·어느 공정에서 양산 승인까지 완료됐는가?</div></div>
+</section>
+
+<section id="s2">
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">장비는 발주·인도·검수의 함수이고, 슬러리는 웨이퍼 투입량과 공정 횟수의 함수다. 같은 반도체 매출이라도 이익의 지속성이 다르다.</div>
+
+  <div class="formula">장비 매출 = 납품 대수 × 장비 ASP × 검수 인식률
+슬러리 매출 = 웨이퍼 투입량 × 웨이퍼당 CMP 스텝 × 스텝당 사용량 × ASP
+
+영업이익 = [장비 매출 × 장비 매출총이익률]
+         + [슬러리 매출 × 소재 매출총이익률]
+         − R&D − 인건비 − 감가상각 − 기타 판관비</div>
+
+  <h3>가격 결정 구조</h3>
+  <div class="scrollx"><table>
+    <tr><th>제품</th><th>가격 구조 분류</th><th>원가 상승 전가 가능성</th><th>실제 방어 수단</th></tr>
+    <tr><td>반도체·디스플레이 장비</td><td><b>수주 시 고정형</b>에 가까움. 사양 변경 시 추가 협상</td><td>발주 후 원가 상승은 즉시 전가가 어렵다</td><td>견적 단계 원가 반영, 부품 표준화, 납기·수율 관리, 고부가 사양 믹스</td></tr>
+    <tr><td>CMP 슬러리</td><td><b>분기·연간 협상형</b>. 고객 인증 제품의 반복 공급</td><td>원재료와 경쟁상황에 따라 일부 가능하나 고객 구매력 강함</td><td>레시피 차별화, 결함률·수율 개선 가치, 사용량 증가, 제품 믹스</td></tr>
+    <tr><td>서비스·부품</td><td>유지보수·교체 주기형</td><td>장비 설치 기반이 늘수록 협상력이 상대적으로 안정</td><td>설치대수 확대, 서비스 대응 속도, 부품 국산화</td></tr>
+  </table></div>
+
+  <h3>매출 비중과 이익 비중은 다르다</h3>
+  <div class="scrollx"><table>
+    <tr><th>사업</th><th>공개 매출 비중</th><th>이익 기여 판정</th><th>확실성</th></tr>
+    <tr><td>반도체</td><td>2025 90.3% → 1Q26 94.3%</td><td>전사 이익의 대부분. 1Q26 OPM 22.3% 상승을 주도</td><td><span class="pill fact">높음</span> 부문 매출과 전사 이익 확인</td></tr>
+    <tr><td>CMP·세정 장비</td><td>세부 미공개</td><td>대형 계약·검수 시 높은 증분이익 발생 가능. 분기 변동성 큼</td><td><span class="pill est">추정</span> 제품별 OP 미공개</td></tr>
+    <tr><td>CMP 슬러리</td><td>세부 미공개</td><td>반복 매출로 장비보다 실적 가시성이 높고, 가동률 상승기에 이익 질을 개선</td><td><span class="pill est">추정</span> 제품별 마진 미공개</td></tr>
+    <tr><td>디스플레이</td><td>2025 9.7% → 1Q26 5.7%</td><td>프로젝트 인식에 따라 변동. 현재 전사 이익 핵심은 아님</td><td><span class="pill fact">중간</span></td></tr>
+  </table></div>
+
+  <h3>원가와 마진의 방향</h3>
+  <div class="scrollx"><table>
+    <tr><th>항목</th><th>마진에 플러스</th><th>마진 훼손 요인</th></tr>
+    <tr><td>장비 믹스</td><td>CMP·신규 세정 장비 비중 상승, 고객 승인 완료 후 반복 발주</td><td>저마진 사양, 셋업 지연, 초도 비용, 긴급 조달</td></tr>
+    <tr><td>슬러리</td><td>고객 가동률 상승, CMP 스텝 증가, 고기능 레시피 믹스</td><td>가격 인하, 경쟁사 진입, 원료 가격·폐기 손실, 품질 이슈</td></tr>
+    <tr><td>고정비</td><td>매출 급증 시 782명 인력과 R&D 기반의 영업 레버리지</td><td>매출 공백에도 R&D·인건비·감가상각 지속</td></tr>
+    <tr><td>지역·고객</td><td>국내 고객 대응과 국산화 프리미엄</td><td>국내 매출 89.2%와 삼성·SK 집중, 특정 팹 일정 지연</td></tr>
+  </table></div>
+
+  <div class="kpis">
+    <div class="kpi"><span>2025 R&D</span><b>525억원</b><small>매출의 13.71%</small></div>
+    <div class="kpi"><span>2025 급여 총액</span><b>539억원</b><small>기말 인원 782명</small></div>
+    <div class="kpi"><span>2025 D&A proxy</span><b>169억원</b><small>EBITDA−OP 역산</small></div>
+    <div class="kpi"><span>1Q26 매출총이익률</span><b>약 37.9%</b><small>DART 기반 집계치</small></div>
+  </div>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 장비와 슬러리의 매출총이익률 차이는 몇 %p이며, 1Q26 마진 상승의 몇 %가 믹스 효과인가?</div><div><b>더 파볼 질문 2</b> — 슬러리 가격은 원재료 연동인지, 연간 단가 협상인지, 고객별 계약 구조가 다른가?</div></div>
+</section>
+
+<section id="s3">
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 사이클과 구조적 개선을 분리</h2>
+  <div class="lead">2023년 다운사이클 뒤 2024~2025년에 회복했고, 1Q26에는 장비와 소재가 동시에 확대되며 새로운 이익 레벨을 기록했다.</div>
+
+  <h3>최근 5년 연간 실적</h3>
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th class="num">순이익</th><th>판독</th></tr>
+    <tr class="factrow"><td>2021</td><td class="num">3,445</td><td class="num">521</td><td class="num">15.1%</td><td class="num">419</td><td>메모리 투자 호조</td></tr>
+    <tr class="factrow"><td>2022</td><td class="num">3,782</td><td class="num">603</td><td class="num">15.9%</td><td class="num">553</td><td>과거 고점 이익</td></tr>
+    <tr class="factrow"><td>2023</td><td class="num">2,869</td><td class="num">327</td><td class="num">11.4%</td><td class="num">317</td><td>메모리 CAPEX 축소·장비 공백</td></tr>
+    <tr class="factrow"><td>2024</td><td class="num">3,854</td><td class="num">498</td><td class="num">12.9%</td><td class="num">527</td><td>매출 +34.3%, 장비 회복. 순이익이 OP 상회</td></tr>
+    <tr class="factrow hl"><td>2025</td><td class="num">3,829</td><td class="num">600</td><td class="num">15.7%</td><td class="num">534</td><td>외형 정체에도 믹스·원가·소재 개선으로 증익</td></tr>
+    <tr class="estrow"><td>2026E</td><td class="num">6,528</td><td class="num">1,462</td><td class="num">22.4%</td><td class="num">1,296</td><td>단일기관 추정. 매출 +70.5%, OP +143.8%</td></tr>
+    <tr class="estrow"><td>2027E</td><td class="num">8,724</td><td class="num">2,011</td><td class="num">23.1%</td><td class="num">1,676</td><td>신규 장비군·메모리 투자 지속 가정</td></tr>
+  </table></div>
+  <p class="small">단위: 억원. 2024까지 개별 중심, 2025부터 KCTech America 연결 반영. 2026E·2027E는 2026-06-30 DB증권 추정이 사실상 최근 3개월 컨센서스의 전부다. <a class="source" href="#src1">[S1]</a><a class="source" href="#src6">[S6]</a><a class="source" href="#src7">[S7]</a></p>
+
+  <h3>최근 5개 분기</h3>
+  <div class="scrollx"><table>
+    <tr><th>분기</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th class="num">순이익</th><th>질적 판독</th></tr>
+    <tr class="factrow"><td>1Q25</td><td class="num">777</td><td class="num">78</td><td class="num">10.0%</td><td class="num">78</td><td>장비 인식 공백·낮은 고정비 흡수</td></tr>
+    <tr class="factrow"><td>2Q25</td><td class="num">975</td><td class="num">156</td><td class="num">16.0%</td><td class="num">110</td><td>CMP 장비 인식 확대</td></tr>
+    <tr class="factrow"><td>3Q25</td><td class="num">960</td><td class="num">149</td><td class="num">15.5%</td><td class="num">150</td><td>소재 개선과 장비 견조</td></tr>
+    <tr class="factrow"><td>4Q25</td><td class="num">1,117</td><td class="num">217</td><td class="num">19.4%</td><td class="num">196</td><td>연말 장비 인식 집중. 비용 급증 패턴은 보이지 않음</td></tr>
+    <tr class="factrow hl"><td>1Q26</td><td class="num">1,561</td><td class="num">348</td><td class="num">22.3%</td><td class="num">316</td><td>반도체 매출 94.3%, 장비+슬러리 동시 확대</td></tr>
+    <tr class="estrow"><td>2Q26E</td><td class="num">1,626</td><td class="num">366</td><td class="num">22.5%</td><td class="num">미공개</td><td>삼성·SK 장비 공급과 슬러리 가동률 상승 가정</td></tr>
+  </table></div>
+
+  <h3>증익의 질: 구조적 vs 일회성</h3>
+  <div class="scrollx"><table>
+    <tr><th>구분</th><th>2025~1Q26 관찰</th><th>판정</th></tr>
+    <tr><td>물량</td><td>1Q26 반도체 매출 전년 대비 약 2배, 대형 장비 계약 확인</td><td><span class="pill fact">구조적 가능</span> 고객 CAPEX가 이어지는 동안</td></tr>
+    <tr><td>믹스</td><td>반도체 비중 90.3% → 94.3%, 전사 OPM 15.7% → 22.3%</td><td><span class="pill est">핵심 추정</span> 제품별 마진 미공개</td></tr>
+    <tr><td>단가</td><td>장비 ASP·슬러리 단가 공개 없음</td><td><span class="pill nr">미확인</span></td></tr>
+    <tr><td>일회성</td><td>공개 자료에서 1Q26 대규모 충당금 환입·자산처분익은 확인되지 않음</td><td><span class="pill fact">영업 본질 중심</span> 다만 검수 시점 효과는 존재</td></tr>
+    <tr><td>4분기 패턴</td><td>4Q25 OPM 19.4%로 비용 쇼크가 아니라 장비 인식 집중</td><td>“3Q 누적이 실력”보다 <b>장비 인식 전후 2~4개 분기 평균</b>이 적절</td></tr>
+  </table></div>
+
+  <p class="note"><b>순이익 괴리:</b> 2024년 순이익 527억원이 영업이익 498억원을 29억원 상회했다. 현금성 자산에서 발생한 금융손익·기타손익 영향이 포함됐을 가능성이 있으나, 공개 검색만으로 세부 항목을 완전 분해하지 못했다. 밸류에이션은 비영업 변동이 적은 <b>영업이익·EBITDA와 정상화 EPS를 함께</b> 보는 편이 안전하다.</p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 1Q26 영업이익 348억원에서 장비 검수 집중 효과를 제거한 정상화 이익은 얼마인가?</div><div><b>더 파볼 질문 2</b> — 2024년 순이익이 영업이익을 상회한 금융·기타손익의 세부 내역과 반복 가능성은?</div></div>
+</section>
+
+<section id="s4">
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 메모리 투자와 공정 강도의 교차점</h2>
+  <div class="lead">팩터 선언: <b>“국내 메모리 업체의 신규·전환 CAPEX × CMP/세정 공정 스텝 증가 × 웨이퍼 가동률”</b>. 장비와 소재가 서로 다른 시간축으로 실적에 들어온다.</div>
+
+  <h3>인과사슬 다이어그램</h3>
+  <div class="flow">
+    <div class="node"><div class="n">01 · AI DEMAND</div><div class="t">AI 서버·HBM·고용량 메모리</div><div class="d">HBM4, 1c DRAM, 고용량 NAND 수요 증가</div><div class="check">확인: 메모리 업체 실적·출하·가격</div></div>
+    <div class="node"><div class="n">02 · CAPEX</div><div class="t">삼성·SK 증설·전환</div><div class="d">M15X, 평택·화성 라인, EUV·인프라 장비 확보</div><div class="check">확인: CAPEX 가이던스·발주 공시</div></div>
+    <div class="node"><div class="n">03 · PROCESS</div><div class="t">CMP·세정 스텝 증가</div><div class="d">미세화·배선 다층화로 평탄화와 세정 난이도 상승</div><div class="check">확인: 장비 퀄·공정 적용 범위</div></div>
+    <div class="node"><div class="n">04 · KCTECH</div><div class="t">장비 납품 + 슬러리 소비</div><div class="d">장비는 발주 후 검수, 소재는 웨이퍼 투입에 연동</div><div class="check">확인: 계약·계약자산·반도체 매출</div></div>
+    <div class="node"><div class="n">05 · EARNINGS</div><div class="t">매출 성장 + 레버리지</div><div class="d">고정비 흡수와 고부가 믹스로 OPM 상승</div><div class="check">확인: OPM·증분마진·현금흐름</div></div>
+  </div>
+
+  <h3>전방 교차 검증</h3>
+  <div class="scrollx"><table>
+    <tr><th>마디</th><th>최신 확인</th><th>의미</th><th>신뢰 한계</th></tr>
+    <tr><td>SK하이닉스 수요·투자</td><td>1Q26 사상 최대 실적, M15X 램프업·용인 인프라·EUV 장비 확보 중심으로 투자 대폭 증가 언급</td><td>CMP·세정 발주와 슬러리 가동률의 동시 우호 요인</td><td>메모리 가격 급등기 실적은 후행적이며, 2027~28 공급과잉 우려 가능</td></tr>
+    <tr><td>삼성전자</td><td>1Q26 DS 성장, 2025 DS·SDC 포함 시설투자 52.7조원. 2Q26 잠정 실적은 큰 폭 개선</td><td>삼성향 CMP 장비 발주 가시성 보강</td><td>전체 실적에서 메모리·파운드리 세부 CAPEX는 최종 실적발표 확인 필요</td></tr>
+    <tr><td>케이씨텍 계약</td><td>삼성 227억원, SK하이닉스 698억원 — 2026년 계약 공시 합계 925억원</td><td>2025 매출의 약 24.2%에 해당하는 공개 발주</td><td>모든 계약이 공시되는 것은 아니며, 계약액과 분기 매출 인식은 일치하지 않음</td></tr>
+    <tr><td>신규 공정</td><td>빌드업필름 CMP 국책과제, 신규 CMP·초임계 세정 장비 개발·고객 평가</td><td>웨이퍼 전공정 밖 첨단패키징으로 TAM 확장 가능</td><td>개발·평가와 양산 매출은 별개. 기본 실적에 선반영 금지</td></tr>
+  </table></div>
+
+  <h3>수주 → 매출 시차와 2026 빈티지 지도</h3>
+  <div class="contracts">
+    <div class="contract">
+      <div class="who">SAMSUNG ELECTRONICS · EQUIPMENT</div>
+      <strong>226.8억원</strong>
+      <div class="period">계약 2026-01-05 → 종료 2026-07-30 · 납품 90%, 검수 10% 지급</div>
+    </div>
+    <div class="contract">
+      <div class="who">SK HYNIX · EQUIPMENT</div>
+      <strong>698.4억원</strong>
+      <div class="period">계약 2026-03-09 → 종료 2026-10-06 · 약 7개월 공급 기간</div>
+    </div>
+  </div>
+  <div class="scrollx"><table>
+    <tr><th>수주 빈티지</th><th>발주·계약</th><th>예상 매출 반영 창</th><th>추적 포인트</th></tr>
+    <tr><td>1Q26 삼성</td><td>227억원 CMP/반도체 장비</td><td>2Q26~3Q26 중심 가능성</td><td>7월 30일 종료·검수, 2Q/3Q 매출과 계약자산 감소</td></tr>
+    <tr><td>1Q26 SK하이닉스</td><td>698억원 반도체 장비</td><td>2Q26~4Q26 분산 가능성</td><td>10월 6일 종료, M15X·전환 투자와 연계 여부</td></tr>
+    <tr><td>신규 CMP·세정</td><td>고객 평가·초도 발주</td><td>퀄 통과 후 2~4분기 이상</td><td>PO·단일판매 계약, 제품군별 매출 기여</td></tr>
+    <tr><td>슬러리</td><td>인증 후 반복 구매</td><td>웨이퍼 가동률과 거의 동행</td><td>소재 매출·재고·고객 가동률</td></tr>
+  </table></div>
+  <p class="note copper"><b>수주잔고:</b> 회사가 장비 수주잔고를 투자자가 바로 쓸 수 있는 형태로 일관되게 공개하지 않아 “몇 년 치” 계산은 불가능하다. 공개된 2026년 두 계약만 합치면 925억원으로 2025 매출의 24.2%지만, 이는 전체 잔고가 아니라 <b>공시 임계치를 넘은 일부 계약</b>이다.</p>
+
+  <h3>기존 분석 종목과 팩터 비교</h3>
+  <div class="scrollx"><table>
+    <tr><th>종목</th><th>주요 팩터</th><th>케이씨텍과의 관계</th><th>분산 가치</th></tr>
+    <tr><td>네오티스</td><td>AI PCB 고다층화·마이크로비트 소모·공급 제약</td><td>둘 다 AI 하드웨어와 소모품 노출. 다만 네오티스는 PCB 가공강도, 케이씨텍은 메모리 팹 CAPEX·웨이퍼 가동률</td><td>부분 분산</td></tr>
+    <tr><td>한화엔진</td><td>선박 수주잔고·ASP 빈티지·장기 인도</td><td>한화엔진은 2~4년 장기 수주, 케이씨텍 장비는 수개월 검수 + 소재 반복매출</td><td>높은 분산</td></tr>
+  </table></div>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 공개된 925억원 계약 중 2Q26·3Q26·4Q26 매출 인식 비중은 각각 얼마인가?</div><div><b>더 파볼 질문 2</b> — 2027년 이익 2,011억원에는 신규 CMP/초임계 세정의 신규 매출이 얼마나 포함됐는가?</div></div>
+</section>
+
+<section id="s5">
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 지표 — 이벤트와 추세를 함께 관리</h2>
+  <div class="lead">이 종목은 <b>지표 추세형 55% + 이벤트 캘린더형 45%</b>다. 메모리 가격·가동률은 추세이고, 계약·검수·퀄 통과는 날짜가 있는 이벤트다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처</th><th>주기</th><th>무료</th><th>현재 수치·방향</th></tr>
+    <tr><td>삼성·SK 메모리 CAPEX</td><td>장비 발주 1~3분기 선행</td><td>회사 IR·사업보고서·컨콜</td><td>분기</td><td>예</td><td>2026 투자 확대 방향. SK는 M15X·용인·EUV 중심 증가 명시</td></tr>
+    <tr><td>케이씨텍 대형 계약</td><td>장비 매출 인식의 가장 직접적 신호</td><td>KIND/DART</td><td>수시</td><td>예</td><td>2026 누적 공개 925억원, 종료 7월·10월</td></tr>
+    <tr><td>반도체 부문 매출</td><td>장비·소재 합산 실현치</td><td>분기보고서</td><td>분기</td><td>예</td><td>1Q26 1,472억원, 비중 94.3%, 강한 상승</td></tr>
+    <tr><td>전사 OPM</td><td>장비 믹스·소재 가동률·고정비 흡수의 결과</td><td>분기보고서</td><td>분기</td><td>예</td><td>1Q25 10.0% → 1Q26 22.3%</td></tr>
+    <tr><td>계약자산·재고·매출채권</td><td>납품 전후와 현금 전환의 선행/후행 신호</td><td>DART 재무주석</td><td>분기</td><td>예</td><td>최신 세부 비교는 후속 검증 필요</td></tr>
+    <tr><td>DRAM·NAND 가격</td><td>고객 수익성·가동률·CAPEX 의사결정</td><td>TrendForce 무료 보도자료</td><td>주간/월간</td><td>일부</td><td>2026 상반기 강세 방향, 과열·피크 여부 병행 점검</td></tr>
+    <tr><td>신규 장비 퀄</td><td>시장점유율 확장의 문턱</td><td>전시회·회사 인터뷰·계약 공시</td><td>수시</td><td>예</td><td>신규 CMP·초임계 세정 평가/공급 관련 보도, 양산 규모 확인 필요</td></tr>
+    <tr><td>주가·밸류</td><td>실적보다 기대가 먼저 과열되는지 확인</td><td>KRX·FnGuide</td><td>일간</td><td>예</td><td>7/13 90,000원, 52주 고점 124,800원 대비 -27.9%</td></tr>
+    <tr><td>공매도 비중</td><td>고평가·실적 피크 우려의 단기 온도계</td><td>KRX/무료 시세</td><td>일간</td><td>예</td><td>7/13 3.33%, 6월 말~7월 초 변동성 확대</td></tr>
+  </table></div>
+
+  <h3>실전 체크리스트</h3>
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY</div><ul><li>DRAM/NAND 가격 방향</li><li>삼성·SK 장비 발주 뉴스</li><li>공매도·거래대금·52주 고점 대비 위치</li><li>신규 장비 퀄·전시회 발언</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div><ul><li>고객사 팹 램프업 일정</li><li>반도체 장비 수출·SEMI billings</li><li>컨센서스 EPS 수정 방향</li><li>고객사 HBM·DRAM 생산 계획</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY</div><ul><li>반도체 매출·OPM</li><li>계약자산·재고·매출채권</li><li>R&D·인건비·영업현금흐름</li><li>고객 CAPEX 가이던스와 번복 여부</li></ul></div>
+  </div>
+
+  <h3>이벤트 캘린더</h3>
+  <div class="scrollx"><table>
+    <tr><th>시점</th><th>이벤트</th><th>판단 기준</th></tr>
+    <tr><td>2026-07-22 예정</td><td>SK하이닉스 2Q26 실적</td><td>CAPEX 상향 지속, M15X 램프업·장비 발주 속도</td></tr>
+    <tr><td>2026-07 말</td><td>삼성전자 2Q26 확정 실적·컨콜</td><td>메모리 CAPEX·1c DRAM/HBM 투자 구체화</td></tr>
+    <tr><td>2026-07-30</td><td>삼성전자 227억원 계약 종료일</td><td>2Q/3Q 매출 인식 및 검수 잔금</td></tr>
+    <tr><td>2026-08 중순</td><td>케이씨텍 반기보고서</td><td>2Q26 매출 1,626억원·OP 366억원 추정 충족 여부</td></tr>
+    <tr><td>2026-10-06</td><td>SK하이닉스 698억원 계약 종료일</td><td>3Q/4Q 매출 인식과 추가 발주</td></tr>
+  </table></div>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 계약자산·재고·매출채권 중 어느 항목이 케이씨텍 장비 매출을 가장 잘 1분기 선행했는가?</div><div><b>더 파볼 질문 2</b> — 메모리 가격이 상승해도 고객 CAPEX가 멈췄던 과거 구간의 조건은 무엇이었는가?</div></div>
+</section>
+
+<section id="s6">
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 증분 매출 100원의 여정</h2>
+  <div class="lead">최근 분기 실측에서 증분 영업이익률은 약 30~43%였다. 현재 OPM보다 높아 외형 증가가 이익률을 끌어올렸지만, 장비 검수 믹스가 달라지면 배율은 급변한다.</div>
+
+  <h3>고정비·변동비 구조</h3>
+  <div class="scrollx"><table>
+    <tr><th>구조</th><th>근거</th><th>판정</th></tr>
+    <tr><td>R&D</td><td>2025 525억원, 매출의 13.71%. 전액 비용 처리</td><td>높은 고정·준고정비</td></tr>
+    <tr><td>인건비</td><td>2025 급여 539억원, 1Q26 인원 782명</td><td>단기 고정비, 중장기 생산·개발 인력에 따라 증가</td></tr>
+    <tr><td>감가상각</td><td>2025 EBITDA 769억원−OP 600억원 ≈ 169억원</td><td>고정비 성격, 매출 증가 시 흡수</td></tr>
+    <tr><td>재료·외주</td><td>장비 부품·슬러리 원료·가공</td><td>매출에 연동되는 변동비</td></tr>
+    <tr><td>설치·검수</td><td>고객 현장 셋업과 초도 대응</td><td>프로젝트별 준변동비</td></tr>
+  </table></div>
+
+  <h3>최근 구간별 증분마진</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th class="num">Δ매출</th><th class="num">Δ영업이익</th><th class="num">증분마진</th><th>해석</th></tr>
+    <tr><td>1Q25 → 2Q25</td><td class="num">+198</td><td class="num">+78</td><td class="num">39.4%</td><td>장비 매출 재개와 고정비 흡수</td></tr>
+    <tr><td>2Q25 → 3Q25</td><td class="num">−15</td><td class="num">−7</td><td class="num">46.7%</td><td>역방향 구간. 작은 매출 감소에 이익도 하락</td></tr>
+    <tr><td>3Q25 → 4Q25</td><td class="num">+157</td><td class="num">+68</td><td class="num">43.3%</td><td>장비 인식 집중·믹스 개선</td></tr>
+    <tr><td>4Q25 → 1Q26</td><td class="num">+444</td><td class="num">+131</td><td class="num">29.5%</td><td>대규모 외형 증가와 함께 비용도 확대</td></tr>
+    <tr class="hl"><td>1Q25 → 1Q26</td><td class="num">+784</td><td class="num">+270</td><td class="num">34.4%</td><td>연간 비교상 가장 안정적인 레버리지 관측</td></tr>
+  </table></div>
+
+  <h3>시각화 ① — 증분 매출 100원의 여정</h3>
+  <div class="journey">
+    <div class="jrow"><div class="jlabel">1Q25→2Q25</div><div class="jtrack"><div class="jcost" style="width:60.6%">비용 60.6</div><div class="jprofit" style="width:39.4%">OP 39.4</div></div><div class="jmetric">39.4%</div></div>
+    <div class="jrow"><div class="jlabel">2Q25→3Q25 ↓</div><div class="jtrack reverse"><div class="jcost" style="width:53.3%">비용↓ 53.3</div><div class="jloss hatched" style="width:46.7%">OP↓ 46.7</div></div><div class="jmetric">역방향</div></div>
+    <div class="jrow"><div class="jlabel">3Q25→4Q25</div><div class="jtrack"><div class="jcost" style="width:56.7%">비용 56.7</div><div class="jprofit" style="width:43.3%">OP 43.3</div></div><div class="jmetric">43.3%</div></div>
+    <div class="jrow"><div class="jlabel">4Q25→1Q26</div><div class="jtrack"><div class="jcost" style="width:70.5%">비용 70.5</div><div class="jprofit" style="width:29.5%">OP 29.5</div></div><div class="jmetric">29.5%</div></div>
+    <div class="jrow"><div class="jlabel">YoY 1Q25→1Q26</div><div class="jtrack"><div class="jcost" style="width:65.6%">비용 65.6</div><div class="jprofit" style="width:34.4%">OP 34.4</div></div><div class="jmetric">34.4%</div></div>
+  </div>
+  <p class="small">일회성 제거 전/후: 회사가 제품별 이익 및 조정 영업이익을 공시하지 않아 정량 조정치 산출 불가. 공개 자료에서 확인되는 대규모 일회성 영업항목은 없지만, 장비 검수 시점 효과는 본질적으로 분기 믹스 왜곡을 만든다. 이익 증분이 매출 증분 100을 넘는 구간은 관찰되지 않았다.</p>
+
+  <h3>시각화 ② — 배율 게이지</h3>
+  <div class="gaugebox">
+    <div><b>증분 공헌이익률 proxy 37%</b> vs <b>1Q26 OPM 22.3%</b> → 레버리지 배율 약 <b>1.66배</b></div>
+    <div class="gauge">
+      <div class="gline"></div>
+      <span class="tick" style="left:0%">0%</span><span class="tick" style="left:25%">12.5%</span><span class="tick" style="left:50%">25%</span><span class="tick" style="left:75%">37.5%</span><span class="tick" style="left:100%">50%</span>
+      <div class="marker opm" style="left:44.6%"><b>OPM 22.3%</b></div>
+      <div class="marker cm" style="left:74%"><b>공헌 37%</b></div>
+    </div>
+    <p class="small">OPM이 20%대 중반으로 상승하면 고정비 흡수 여지가 줄어 배율은 자연히 낮아진다. “과거 2배 레버리지”를 영구 공식으로 쓰면 안 된다.</p>
+  </div>
+
+  <h3>매출 성장 시나리오 — 1Q26 기준 단순 민감도</h3>
+  <div class="scrollx"><table>
+    <tr><th>시나리오</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th>전제</th></tr>
+    <tr><td>기준</td><td class="num">1,561</td><td class="num">348</td><td class="num">22.3%</td><td>1Q26 확정</td></tr>
+    <tr><td>매출 +10%</td><td class="num">1,717</td><td class="num">406</td><td class="num">23.6%</td><td>증분 공헌이익률 37%</td></tr>
+    <tr><td>매출 +20%</td><td class="num">1,873</td><td class="num">464</td><td class="num">24.8%</td><td>믹스·가격·R&D 동일</td></tr>
+    <tr><td>보수적 +20%</td><td class="num">1,873</td><td class="num">442</td><td class="num">23.6%</td><td>증분마진 30%, 신규 장비 초도비용 반영</td></tr>
+  </table></div>
+  <p class="note"><b>곱의 구조:</b> 레버리지는 매출 증가 하나가 아니라 <b>장비 대수 × 장비 믹스 × 검수 시점</b>과 <b>웨이퍼 투입량 × CMP 스텝 × 슬러리 점유율</b>의 곱이다. 장비 매출이 늘어도 초도비용이 크면 OPM이 덜 오르고, 슬러리 비중이 늘면 반복성이 높아질 수 있다.</p>
+
+  <h3>가동률·증설·CAPEX 회수</h3>
+  <p>장비사는 고객 주문에 맞춰 생산하며, 회사가 “연간 장비 몇 대” 형태의 생산능력을 공개하지 않는다. 2026년 7월 14일까지 검색된 공시에서 자기자본 10% 이상 규모의 신규 공장 투자 공시는 확인하지 못했다. 따라서 자체 CAPEX의 확정 payback을 산출할 수 없다.</p>
+  <div class="scrollx"><table>
+    <tr><th>프레임 추정</th><th class="num">증분 CAPEX</th><th class="num">증분 매출</th><th class="num">공헌률</th><th class="num">세후 증분이익</th><th class="num">Payback / ROIC</th></tr>
+    <tr class="estrow"><td>설비·라인 확장 예시</td><td class="num">200억원</td><td class="num">300억원/년</td><td class="num">37%</td><td class="num">약 84억원</td><td class="num">2.4년 / 42%</td></tr>
+    <tr class="estrow"><td>보수적 초도 램프</td><td class="num">200억원</td><td class="num">200억원/년</td><td class="num">30%</td><td class="num">약 46억원</td><td class="num">4.3년 / 23%</td></tr>
+  </table></div>
+  <p class="small">법인세 24% 가정. 위 숫자는 회사 가이던스가 아니라 투자액 미공개 상황에서의 <b>의사결정 프레임</b>이다. 실제 투자액·감가연수·운전자본이 확인되면 전면 수정해야 한다.</p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 1Q26 증분마진 29.5%가 장비 초도비용 때문인지, 슬러리·장비 믹스 때문인지?</div><div><b>더 파볼 질문 2</b> — 2026~2027년 내부 CAPEX와 신규 장비 라인당 정상 매출·수율·payback은?</div></div>
+</section>
+
+<section id="s7">
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크와 밸류에이션 — 가격이 증명을 얼마나 앞서갔나</h2>
+  <div class="lead">주가는 1년간 222% 상승한 뒤 52주 고점에서 28% 조정됐다. 숫자상 2026E PER은 낮아졌지만, 이익 추정치 자체가 6월 말에 거의 두 배 상향된 직후다.</div>
+
+  <div class="risks">
+    <div class="risk">
+      <div class="impact">SCENARIO 1 · HIGH</div>
+      <h4>고객 CAPEX·검수 지연</h4>
+      <p>메모리 가격 피크 우려, 팹 일정 변경, 장비 셋업 문제로 매출 인식이 뒤로 밀린다. 고정비가 높아 매출 지연보다 이익 감소가 더 클 수 있다.</p>
+      <div class="alarm"><b>조기 경보:</b> 계약 종료 연장, 계약자산·재고 급증, 반도체 매출 QoQ 감소, 고객 CAPEX 가이던스 하향</div>
+    </div>
+    <div class="risk">
+      <div class="impact">SCENARIO 2 · MEDIUM-HIGH</div>
+      <h4>슬러리 점유율·가격 훼손</h4>
+      <p>막질별 경쟁사 인증, 고객 단가 인하, 품질 이슈로 반복 매출의 질이 낮아진다. 장비 호조가 소재 약화를 가릴 수 있다.</p>
+      <div class="alarm"><b>조기 경보:</b> 고객 가동률 상승에도 소재 매출 정체, 재고 폐기·충당금, 경쟁사 신규 공급 보도</div>
+    </div>
+    <div class="risk">
+      <div class="impact">SCENARIO 3 · VALUATION</div>
+      <h4>추정치 선반영·급격한 디레이팅</h4>
+      <p>단일 증권사 추정에 기반한 2026~2027 이익이 시장 가격에 빠르게 반영됐다. 작은 추정치 하향도 주가 변동성을 크게 만들 수 있다.</p>
+      <div class="alarm"><b>조기 경보:</b> 2Q26 OP 366억원 미달, 2026E EPS 하향, 신규 계약 공백, 52주 고점 재돌파 실패 후 거래량 감소</div>
+    </div>
+  </div>
+
+  <h3>비영업·거버넌스 점검</h3>
+  <div class="scrollx"><table>
+    <tr><th>항목</th><th>확인 결과</th><th>판정</th></tr>
+    <tr><td>공시 내부통제</td><td>2026-01-05 삼성 계약을 1월 7일 지연 공시해 불성실공시법인 지정</td><td><span class="pill risk">경계</span> 실적 훼손보다 공시관리 신뢰 문제</td></tr>
+    <tr><td>지배구조</td><td>케이씨 외 8인 56.38%. 2025년 최대주주 공개매수로 지배력 강화 시도</td><td>유통주식 43.29%, 대주주 영향력 높음</td></tr>
+    <tr><td>자사주·소각</td><td>2025년 171,233주, 2026년 891,662주 이익소각. 발행주식수 19,798,661주</td><td><span class="pill fact">긍정</span> 주당가치·자본환원</td></tr>
+    <tr><td>CB/BW 희석</td><td>최근 검색에서 대규모 CB/BW 발행 확인 안 됨</td><td>현재 직접 희석 위험 낮음, 공시 지속 점검</td></tr>
+    <tr><td>소송·담합·규제</td><td>실적을 훼손할 중대한 공개 사건을 확인하지 못함</td><td><span class="pill nr">미확인 위험은 잔존</span> 분기보고서 우발부채 재점검</td></tr>
+  </table></div>
+
+  <h3>현재 좌표</h3>
+  <div class="kpis">
+    <div class="kpi"><span>현재 확인가</span><b>90,000원</b><small>2026-07-13</small></div>
+    <div class="kpi"><span>시가총액</span><b>1.782조원</b><small>소각 후 주식수</small></div>
+    <div class="kpi"><span>2026E PER</span><b>13.9배</b><small>EPS 6,467원</small></div>
+    <div class="kpi"><span>2027E PER</span><b>10.6배</b><small>EPS 8,465원</small></div>
+  </div>
+
+  <div class="band" aria-label="52주 가격 밴드">
+    <div class="bandline"></div>
+    <div class="bandpoint" style="left:2%"><b>26,000</b><small>52주 저점</small></div>
+    <div class="bandpoint current" style="left:65%"><b>90,000</b><small>7/13 종가</small></div>
+    <div class="bandpoint" style="left:98%"><b>124,800</b><small>52주 고점</small></div>
+    <div class="bandpoint target" style="left:100%"><b>127,000</b><small>DB 목표가</small></div>
+  </div>
+  <div class="bandlabels"><span>저평가·사이클 저점</span><span>실적 확인 구간</span><span>강한 성장 선반영</span></div>
+
+  <div class="scrollx"><table>
+    <tr><th>기준</th><th class="num">값</th><th>해석</th></tr>
+    <tr><td>2025 trailing PER</td><td class="num">34.9배</td><td>과거 이익 기준으로는 매우 높음</td></tr>
+    <tr><td>2026E PER</td><td class="num">13.9배</td><td>2026 이익 143.8% 증가가 실현될 경우 부담 완화</td></tr>
+    <tr><td>2027E PER</td><td class="num">10.6배</td><td>2027 OP 2,011억원까지 이어질 경우 저평가</td></tr>
+    <tr><td>목표가 여력</td><td class="num">+41.1%</td><td>다만 추정기관 1곳. “컨센서스”의 폭이 좁음</td></tr>
+    <tr><td>52주 밴드 위치</td><td class="num">64.8%</td><td>저점~고점 구간의 약 3분의 2. 고점 대비 −27.9%</td></tr>
+  </table></div>
+
+  <h3>가격이 이미 반영한 것</h3>
+  <div class="cards">
+    <div class="card"><div class="k">PRICED-IN 01</div><h4>2026 장비 매출 급증</h4><p class="small">공개 계약 925억원과 1Q 실적을 통해 상당 부분 확인됐다.</p></div>
+    <div class="card"><div class="k">PRICED-IN 02</div><h4>OPM 20%대 정착</h4><p class="small">2026E OPM 22.4%, 2027E 23.1%가 추정에 들어 있다.</p></div>
+    <div class="card"><div class="k">PRICED-IN 03</div><h4>신규 장비군 확대</h4><p class="small">목표가 산정이 2027년으로 이동해 아직 검증 전 매출도 일부 포함될 가능성이 높다.</p></div>
+  </div>
+  <p class="note danger"><b>판정:</b> 가격은 2025년 이익을 명백히 앞서갔지만, 2026~2027 추정치가 맞는다면 과도한 수준은 아니다. 문제는 “비싸다/싸다”가 아니라 <b>6,528억원 매출과 1,462억원 영업이익이 단일 리포트의 공격적 숫자인지 실제 발주 데이터로 검증되는지</b>다.</p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 2026E 매출 6,528억원에서 이미 계약·PO로 확보된 금액과 아직 기대에 불과한 금액은?</div><div><b>더 파볼 질문 2</b> — 2027E PER 10.6배가 싸 보이지만, 메모리 CAPEX 피크의 정상화 이익을 적용하면 몇 배인가?</div></div>
+</section>
+
+<section id="s8">
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 무엇이 먼저 증명돼야 하는가</h2>
+  <div class="lead">투자 판단은 “AI 반도체가 성장한다”가 아니라, 케이씨텍의 장비·소재 매출이 컨센서스 경로로 연결되는지 순서대로 검증해야 한다.</div>
+
+  <div class="qbox"><div class="q">MOST IMPORTANT QUESTION 01</div><h4>2Q26 이후에도 20%대 OPM이 유지되는가?</h4><p>먼저 2Q26 매출 1,626억원·OP 366억원을 확인한다. 미달 시 계약 인식 시점 문제인지, 장비 믹스·초도비용 문제인지 분해한다.</p></div>
+  <div class="qbox"><div class="q">MOST IMPORTANT QUESTION 02</div><h4>2027년 성장의 근거가 기존 계약 연장인가, 신규 장비 승인인가?</h4><p>공개 계약은 2026년 안에 끝난다. 2027 OP 2,011억원을 정당화하려면 추가 CMP·세정 발주 또는 소재 점유율 확대가 먼저 보여야 한다.</p></div>
+
+  <h3>검증 순서</h3>
+  <div class="flow">
+    <div class="node"><div class="n">STEP 1</div><div class="t">2Q 실적</div><div class="d">매출 1,626·OP 366억원 충족 여부</div><div class="check">8월 반기보고서</div></div>
+    <div class="node"><div class="n">STEP 2</div><div class="t">계약 인식</div><div class="d">삼성 7월·SK 10월 종료 계약의 매출화</div><div class="check">계약자산·매출채권</div></div>
+    <div class="node"><div class="n">STEP 3</div><div class="t">추가 발주</div><div class="d">2027년까지 이어질 신규 PO·공시</div><div class="check">KIND 수시공시</div></div>
+    <div class="node"><div class="n">STEP 4</div><div class="t">신규 퀄</div><div class="d">CMP·초임계 세정·패키징 CMP 양산</div><div class="check">고객 승인·초도 매출</div></div>
+    <div class="node"><div class="n">STEP 5</div><div class="t">현금 전환</div><div class="d">이익이 영업현금흐름으로 전환되는지</div><div class="check">재고·채권·OCF</div></div>
+  </div>
+
+  <h3>3질문 프레임 좌표</h3>
+  <div class="matrix">
+    <div class="m"><div class="score">① 8.5 / 10</div><h4>이익 업사이클 강도</h4><p class="small">2025 OP 600 → 2026E 1,462 → 2027E 2,011억원. 장비와 소재의 동시 수혜가 강하다.</p></div>
+    <div class="m"><div class="score">② 5.5 / 10</div><h4>주가 반영도·잔여 룸</h4><p class="small">1년 +222%, 고점 대비 조정. 목표가 여력 41%지만 기관 1곳이라 신뢰도 할인 필요.</p></div>
+    <div class="m"><div class="score">③ 6.5 / 10</div><h4>경로의 변수 개수</h4><p class="small">고객 CAPEX, 퀄, 검수, 장비 믹스, 슬러리 점유율, 가동률 등 변수가 6개 이상이다.</p></div>
+  </div>
+  <p class="note"><b>상대 위치:</b> 네오티스보다 실적 규모와 고객 발주 증거는 크지만, 고객 집중과 장비 검수 변수가 많다. 한화엔진보다 수주 시차는 짧고 소재 반복매출이 있어 회복이 빠르지만, 장기 잔고의 가시성은 낮다.</p>
+
+  <h3>이탈 규율 3단계</h3>
+  <div class="scrollx"><table>
+    <tr><th>단계</th><th>조건</th><th>행동</th></tr>
+    <tr><td><span class="pill est">경계</span></td><td>2Q26 OP가 330억원 미만 또는 OPM 20% 하회, 계약 종료 연장</td><td>원인이 인식 시점인지 수익성 훼손인지 확인 전 비중 확대 금지</td></tr>
+    <tr><td><span class="pill risk">축소</span></td><td>2개 분기 연속 반도체 매출 감소, 추가 발주 공백, 2026E OP 15% 이상 하향</td><td>사이클 피크 가능성 반영해 노출 축소</td></tr>
+    <tr><td><span class="pill risk">실적 무관 이탈</span></td><td>중대한 품질 사고·고객 승인 취소·회계/공시 내부통제 반복 위반</td><td>가격과 무관하게 투자 가정 폐기</td></tr>
+    <tr><td><span class="pill fact">노이즈성 급락 검토</span></td><td>고객 CAPEX·추정치·계약 일정 불변, 단순 시장 급락으로 2026E PER 10배 부근</td><td>현금흐름·추가 발주 확인 후 재평가</td></tr>
+  </table></div>
+
+  <h3>IR에 물어볼 단 하나의 질문</h3>
+  <div class="qbox"><div class="q">ONE DECISIVE IR QUESTION</div><h4>“2026년 반도체 매출 증가분을 기존 CMP 장비, 신규 세정/CMP 장비, CMP 슬러리로 나누면 각각 얼마이며, 그중 2027년에도 반복되는 매출은 얼마입니까?”</h4><p>이 답 하나로 성장의 질, 마진 지속성, 2027년 추정의 신뢰도를 동시에 판별할 수 있다.</p></div>
+
+  <h3>남은 숙제와 갱신 트리거</h3>
+  <div class="scrollx"><table>
+    <tr><th>미확인 데이터</th><th>왜 중요한가</th><th>다음 갱신 트리거</th></tr>
+    <tr><td>장비·슬러리 제품별 매출/이익</td><td>OPM 지속성의 핵심</td><td>반기 IR·회사 질의</td></tr>
+    <tr><td>전체 수주잔고·PO</td><td>2027 매출 가시성</td><td>추가 단일판매 계약·3Q 보고서</td></tr>
+    <tr><td>신규 CMP·초임계 세정 퀄 상태</td><td>점유율 확대 여부</td><td>SEDEX/SEMICON·고객 승인 보도</td></tr>
+    <tr><td>계약자산·재고·영업현금흐름</td><td>이익의 현금 전환</td><td>2026년 반기보고서</td></tr>
+    <tr><td>자체 증설 CAPEX·생산능력</td><td>ROIC·payback 계산</td><td>시설투자 공시·IR</td></tr>
+  </table></div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">DISCOVERY 01</div><h4>장비주를 소재주처럼, 소재주를 장비주처럼 보면 안 된다</h4><p class="small">같은 고객에게 팔아도 장비는 검수 이벤트, 슬러리는 가동률 추세다. 두 시간축을 분리해야 한다.</p></div>
+    <div class="card"><div class="k">DISCOVERY 02</div><h4>단일 컨센서스의 낮은 PER은 확신이 아니라 민감도다</h4><p class="small">PER 13.9배는 싸다는 결론이 아니라, EPS 6,467원이 틀릴 때 가격이 얼마나 취약한지 묻는 출발점이다.</p></div>
+    <div class="card"><div class="k">DISCOVERY 03</div><h4>공개 계약은 잔고가 아니라 최소 가시성이다</h4><p class="small">925억원은 전체 수주잔고가 아니라 공시된 하한선이다. 계약 종료일과 매출 인식의 연결이 더 중요하다.</p></div>
+  </div>
+</section>
+
+<section id="appendix">
+  <div class="eyebrow">APPENDIX</div>
+  <h2>글로벌 피어·자료 한계·출처</h2>
+
+  <h3>제품별 피어 비교</h3>
+  <div class="scrollx"><table>
+    <tr><th>영역</th><th>대표 피어</th><th>비교 포인트</th><th>케이씨텍 차별점</th></tr>
+    <tr><td>CMP 장비</td><td>Applied Materials, Ebara</td><td>글로벌 설치 기반, 공정 범위, R&D 규모</td><td>국내 고객 맞춤·현장 대응·국산화</td></tr>
+    <tr><td>세정 장비</td><td>SCREEN, TEL, SEMES, ACM Research</td><td>싱글/배치 방식, 공정별 세정 성능</td><td>메모리 고객 레퍼런스와 CMP 장비 교차판매</td></tr>
+    <tr><td>CMP 슬러리</td><td>Entegris/Cabot 계열, Fujimi, DuPont, 솔브레인, 동진쎄미켐, SK엔펄스</td><td>막질별 결함률·선택비·고객 인증</td><td>장비와 소재를 함께 개발·공급하는 통합 역량</td></tr>
+    <tr><td>국내 전공정 장비</td><td>원익IPS, 유진테크, 주성엔지니어링, PSK</td><td>고객·공정·메모리 노출과 밸류에이션</td><td>CMP 독자 포지션 + 슬러리 반복매출</td></tr>
+  </table></div>
+
+  <h3>확정·추정 구분</h3>
+  <ul class="footnotes">
+    <li><span class="pill fact">확정</span> 공시·회사 홈페이지·고객사 공식 IR에서 직접 확인한 수치.</li>
+    <li><span class="pill est">추정</span> 증권사 전망, 공개 정보로 역산한 D&A·공헌이익률, CAPEX 프레임.</li>
+    <li><span class="pill nr">미확인</span> 제품별 매출·영업이익, 전체 수주잔고, 정확한 생산능력, 신규 장비 양산 규모.</li>
+    <li>주가 기준은 데이터 충돌을 피하기 위해 <b>2026-07-13 KRX 정규시장 종가 90,000원</b>을 사용했다. 7월 14일 장중 검색값은 약 90,300~91,500원으로 제공처별 시점 차이가 있었다.</li>
+    <li>2026E·2027E는 최근 3개월 내 추정기관이 1곳이므로 일반적인 다기관 컨센서스보다 오차 범위를 크게 봐야 한다.</li>
+  </ul>
+
+  <h3>주요 출처</h3>
+  <ol class="footnotes">
+    <li id="src1"><b>케이씨텍 2025 사업보고서</b>, KIND, 2026-03-13 — 2025 부문 매출·연간 실적·사업 구조. <a href="https://kind.krx.co.kr/common/disclsviewer.do?acptno=20260313001794&docno=&method=search&viewerhost=" target="_blank" rel="noopener">원문</a></li>
+    <li id="src2"><b>케이씨텍 2026 1Q 분기보고서</b>, KIND, 2026-05-13 — 분기 실적·부문 매출. <a href="https://kind.krx.co.kr/common/disclsviewer.do?acptno=20260513000950&docno=&method=search&viewerhost=" target="_blank" rel="noopener">원문</a></li>
+    <li id="src3"><b>케이씨텍 공식 제품 페이지</b> — CMP, Wet Cleaning System, CMP Slurry. <a href="https://www.kctech.com/" target="_blank" rel="noopener">원문</a></li>
+    <li id="src4"><b>1Q26 실적 보도</b>, 디일렉, 2026-05-13 — 매출 1,561.1억원·OP 348.1억원. <a href="https://www.thelec.kr/news/articleView.html?idxno=56550" target="_blank" rel="noopener">원문</a></li>
+    <li id="src5"><b>FnGuide 기업개요·현황</b>, 기준 2026-07-13 — 주가·시총·주식수·R&D·인원·컨센서스. <a href="https://comp.wisereport.co.kr/company/c1010001.aspx?cmp_cd=281820&cn=" target="_blank" rel="noopener">원문</a></li>
+    <li id="src6"><b>DB증권 리포트 브리핑</b>, 뉴스핌, 2026-06-30 — 2Q26 및 2026~2027 영업이익 추정·목표가. <a href="https://www.newspim.com/news/view/20260630000565" target="_blank" rel="noopener">원문</a></li>
+    <li id="src7"><b>FnGuide 추정실적 검색값</b>, 2026-07 — 2026E 매출 6,528억원·OP 1,462억원·순이익 1,296억원, 2027E 매출 8,724억원·OP 2,011억원. <a href="https://comp.wisereport.co.kr/company/c1050001.aspx?cmp_cd=281820&cn=" target="_blank" rel="noopener">원문</a></li>
+    <li id="src8"><b>삼성전자 장비 공급 계약</b>, 2026-01-07 — 226.8억원, 종료 2026-07-30. <a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=619143" target="_blank" rel="noopener">원문</a></li>
+    <li id="src9"><b>SK하이닉스 장비 공급 계약</b>, KIND, 2026-03-10 — 698.4억원, 종료 2026-10-06. <a href="https://kind.krx.co.kr/common/disclsviewer.do?acptno=20260310000515&docno=&method=search&viewerhost=" target="_blank" rel="noopener">원문</a></li>
+    <li id="src10"><b>불성실공시법인 지정</b>, KIND, 2026-01-26 — 삼성 계약 지연 공시. <a href="https://kind.krx.co.kr/common/disclsviewer.do?acptno=20260126001054&docno=&method=search&viewerhost=" target="_blank" rel="noopener">원문</a></li>
+    <li id="src11"><b>SK하이닉스 1Q26 공식 실적</b>, 2026-04-22 — 투자 확대 및 M15X·용인·EUV 방향. <a href="https://news.skhynix.com/q1-2026-business-results/" target="_blank" rel="noopener">원문</a></li>
+    <li id="src12"><b>삼성전자 1Q26 공식 실적</b>, 2026-04-30. <a href="https://news.samsung.com/global/samsung-electronics-announces-first-quarter-2026-results" target="_blank" rel="noopener">원문</a></li>
+    <li id="src13"><b>삼성전자 2Q26 잠정실적</b>, 2026-07-07. <a href="https://news.samsung.com/global/samsung-electronics-announces-earnings-guidance-for-second-quarter-2026" target="_blank" rel="noopener">원문</a></li>
+    <li id="src14"><b>빌드업필름 CMP 국책과제</b>, 디일렉, 2026-05-07. <a href="https://www.thelec.kr/news/articleView.html?idxno=56177" target="_blank" rel="noopener">원문</a></li>
+    <li id="src15"><b>CMP·세정 고객 구조</b>, 뉴스핌, 2026-06-16. <a href="https://www.newspim.com/news/view/20260616000237" target="_blank" rel="noopener">원문</a></li>
+    <li id="src16"><b>최대주주 공개매수</b>, 매일경제, 2025-04-22. <a href="https://www.mk.co.kr/news/stock/11298738" target="_blank" rel="noopener">원문</a></li>
+    <li id="src17"><b>역대 실적</b>, 2024·2023 사업보고서 및 공시 기반 집계. <a href="https://kind.krx.co.kr/common/disclsviewer.do?acptNo=20250318001963&docno=&method=searchInitInfo" target="_blank" rel="noopener">2024 사업보고서</a></li>
+  </ol>
+</section>
+
+<footer>
+  <div class="footergrid">
+    <div>
+      <b>자료 한계</b><br>
+      본 리포트는 2026년 7월 14일까지 공개된 공시·회사 자료·1차 보도·증권사 추정치를 바탕으로 작성됐다. 비공개 고객별 매출, 제품별 마진, 전체 수주잔고, 신규 장비의 양산 승인 상태는 회사 확인 전까지 확정 사실이 아니다. 투자 판단과 손실 책임은 투자자에게 있다.
+    </div>
+    <div>
+      <b>시리즈 정보</b><br>
+      기준일: 2026-07-14 · 초판<br>
+      자매 리포트: 한화엔진 · 네오티스<br>
+      고유 액센트: Semiconductor Teal <span class="mono">#0B7A75</span><br><br>
+      <button class="printbtn" onclick="window.print()">인쇄 / PDF 저장</button>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+const links=[...document.querySelectorAll('.nav a')];
+const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-18% 0px -72% 0px',threshold:0});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

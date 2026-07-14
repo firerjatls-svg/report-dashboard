@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>현대로템 (064350) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#059669; --accent-soft:#E2F6EF; --accent-deep:#065F46;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(5,150,105,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#7FD4B4;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#92DCC0;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#7FD4B4;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 방산(기갑)·철도 복합 · 시리즈 20 — 방산 팩터 4편: K2가 끌고 철도가 미는 구조</div>
+  <h1>현대로템<span class="ticker">KOSPI 064350</span></h1>
+  <div class="sub">영업이익 1조 시대 — 디펜스 OPM 30%라는 방산 최고 마진, 잔고 5.1년치, 그리고 피크아웃 논쟁</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 14</b></div>
+    <div>2025년 확정<b class="figures">매출 5조 6,949억 (+33.4%) · OP 9,988억 (+120.3%)</b></div>
+    <div>1Q26 확정<b class="figures">매출 1조 4,575억 (+24%) · OP 2,242억 — 컨센 상회</b></div>
+    <div>수주잔고<b class="figures">29조 7,735억 ('25년 말) = 매출 5.1년치</b></div>
+    <div>재무<b class="figures">순현금 1조 2,000억 ('25년 말, +175%)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 현대로템은 방산 팩터의 네 번째 종목이자 세 번째 복합기업이다: <b>디펜스솔루션(K2 전차 — 이익의
+  본체) + 레일솔루션(철도 — 잔고 18.5조의 저마진 안정축) + 에코플랜트</b>. 이 종목의 첫 번째 특별함은 마진이다 —
+  디펜스 부문 OPM 30% 내외(대신), 1Q26 실측 27.2%로 <b>방산 3사(한화에어로·LIG·로템) 중 최고 수익성</b>이며, 그 결과
+  매출의 절반(디펜스 54%)이 이익의 95%를 만든다. 두 번째 특별함은 빈티지의 투명성 — K2 폴란드 1차(180대·34억$)의
+  인도 스케줄('22년 10 → '23년 18 → '24년 70 → '25년 82대)이 대수 단위로 공개돼 있고, 2차(65억$ ≈ 9조, 1차의 2배)가
+  '26년부터 본격 인식된다. 잔고 29.8조(디펜스 10.5조 +172%·레일 18.5조) 위에 '26년 영업이익 1.1조+ 경로가 서 있다.
+  그림자는 역설적이다 — <b>중동 전쟁이 LIG에는 프리미엄을, 로템에는 전차 계약 지연을 안기며 연초 대비 주가 약세</b>
+  ("방산 랠리에 나홀로 역행"). 같은 재무장 팩터 안에서도 무기·지역 축이 다르면 주가가 반대로 갈 수 있다는, 방산 내
+  분산의 살아 있는 실증이다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 전차가 벌고, 철도가 받친다</h2>
+  <div class="lead">1999년 철도 3사 통합으로 출범(현대정공 계보), 현대차그룹 계열. 국내 유일의 전차 체계업체이자 유일의
+  철도차량 대형사라는 이중 독점적 지위.</div>
+
+  <h3>부문 지도 (2024년 매출 기준 — 대신증권)</h3>
+  <div class="stackbar">
+    <div style="flex:54;background:#059669">디펜스솔루션 54%</div>
+    <div style="flex:34;background:#4DBB97">레일솔루션 34%</div>
+    <div style="flex:12;background:#A8E2CC">에코플랜트 12%</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#059669"><b>K2 전차·차륜형장갑차 — OPM 30% 내외, 이익의 ~95%</b></span>
+    <span style="--c:#4DBB97">고속철(SR·코레일)·전동차·우즈벡 고속철·호주 — BEP~저마진, 잔고 18.5조의 안정축</span>
+    <span style="--c:#A8E2CC">수소인프라·제철설비 — 소형</span>
+  </div>
+
+  <h3>부문별 구도 — 반드시 분리</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">디펜스 — K2 전차</div>
+      <h4>국내 유일 전차 체계업체 <span class="pill up">수출 독주</span></h4>
+      <ul>
+        <li>지위 <b>K2는 독일 레오파르트2의 실질 대체재 — 납기·가격 우위 (레오파르트 생산 적체가 K2의 창)</b></li>
+        <li>고객 <b>방사청(내수) + 폴란드(1·2차) — 페루·이라크·루마니아·폴란드 3차 파이프라인</b></li>
+        <li>구조 <b>2차부터 폴란드 현지 생산 병행 — 한화에어로 천무 JV와 같은 문법</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">레일 — 철도차량</div>
+      <h4>국내 사실상 독점, 세계에선 격전 <span class="pill neutral">체질 개선 중</span></h4>
+      <ul>
+        <li>구도 <b>글로벌은 알스톰·지멘스·CRRC의 과점 — 로템은 선별 수주로 전환</b></li>
+        <li>개선 <b>저가 수주 탈피 → 우즈벡 고속철·호주 전동차 등 고부가 해외</b></li>
+        <li>현실 <b>1Q26 OP 29억 (미국 신규사업 비용) — 연간 ~290억 수준 (신한)</b> — 아직 이익 기여 미미</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">이익 기여 분해</div>
+      <h4>매출 54%가 이익 95% <span class="pill up">마린솔루션 동형</span></h4>
+      <ul>
+        <li>1Q26 실측 <b>디펜스 매출 8,040억(55%) · OP 2,188억(전사 2,242억의 98%)</b></li>
+        <li>함의 <b>전사 헤드라인 대신 「디펜스 매출·디펜스 OPM」 두 줄 판독</b></li>
+        <li>레일은 이익이 아니라 <b>잔고(18.5조)와 현금흐름의 안정축</b>으로 읽는다</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 방산 3사 중 최고 마진의 해부</h2>
+
+  <div class="formula">매출     = 잔고 29.8조의 진행 기준 인식 (계약 시 고정 — 빈티지형)
+영업이익 ≈ 디펜스 (K2 수출 마진 — <b>OPM 30% 내외</b>) + 레일 (BEP~저마진) + 에코
+
+K2 마진이 높은 이유 (추정 포함):
+① 완성 체계 수출 — 부품·탄약 분리 계약이 아닌 전차 완제품 + 후속 군수지원 패키지
+② 폴란드 1차 잔고 소진 + <b>2차 초도물량의 이익률 상승 중</b> (신한 1Q26 확인)
+③ 경쟁 부재의 프라이싱 — 레오파르트2 적체 속 유일한 즉납 공급자
+가격 결정: 실행계약 고정 (빈티지) — 원가 상승 전가 불가, 방어는 환헤지·에스컬레이션 (세부 미공개)
+4Q 패턴: 4Q25 컨센 하회 (주가·목표가 주춤) — <b>시리즈 표준 4Q 함정 보유</b></div>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 변수·약점 (−)</th></tr>
+    <tr>
+      <td>① 디펜스 OPM 30% — 방산 3사 최고 (한화에어로 지상방산·LIG 수출 대비)<br>
+      ② 2차 계약(9조)의 빈티지 도래 — 1차 대비 단가·조건 개선 추정<br>
+      ③ 순현금 1.2조 — 이자수익 + 재무 리스크 부재<br>
+      ④ 레일 저가 수주 정리 완료 — 드래그 축소 방향</td>
+      <td>① 레일 미국 신규사업 비용 (1Q26 실증 — OP 급감)<br>
+      ② 폴란드 현지 생산 확대 시 마진 희석 가능성 (기술이전·현지화)<br>
+      ③ 4Q 일회성·컨센 미스 패턴 (4Q25 실증)<br>
+      ④ 에코플랜트 소형·변동</td>
+    </tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 2년 만에 이익 5배</h2>
+
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>매출</th><th>영업이익</th><th>OPM</th><th>해설</th></tr>
+    <tr><td>2023</td><td class="num">~3조 5,870억 (역산)</td><td class="num">~2,100억 (역산)</td><td class="num">~5.9%</td><td>K2 인도 18대 — 수출 초기</td></tr>
+    <tr><td>2024</td><td class="num">4조 2,484억 (+18.4%)</td><td class="num">4,551억 (+116.7%)</td><td class="num">10.7%</td><td>K2 70대 인도 — 레버리지 개시</td></tr>
+    <tr class="hl"><td>2025 (확정)</td><td class="num"><b>5조 6,949억 (+33.4%)</b></td><td class="num" style="color:var(--up)"><b>9,988억 (+120.3%)</b></td><td class="num"><b>17.5%</b></td><td>K2 82~90대 집중 인도 + 2차 초도 — 사상 최대. 4Q는 컨센 하회</td></tr>
+    <tr><td>2026 (진행)</td><td class="num">1Q 1조 4,575억 (+24%)</td><td class="num" style="color:var(--up)">1Q 2,242억 (+11%)</td><td class="num">15.4%</td><td>디펜스 OPM 27.2% · 레일 29억 — 연간 OP 1.1조+ 경로 (컨센)</td></tr>
+  </table></div>
+  <p><b>평가와 판독:</b> 2년 만에 영업이익 5배(2,100→9,988억)의 질은 순수하게 구조적이다 — K2 인도 대수(18→70→90대)라는
+  물량 곱하기 수출 마진. 1Q26의 겉보기 감속(+11%)은 디펜스가 아니라 <b>레일의 미국 신규사업 비용</b> 탓 —
+  디펜스만 보면 +13% 증익에 OPM 27.2%로 건재하다. 판독 규칙: ① <b>디펜스 매출·OPM 두 줄</b> (전사 헤드라인은 레일
+  비용에 오염), ② 4Q는 컨센 미스 패턴(4Q25 실증) — "3Q 누적이 실력" 시리즈 규칙 적용, ③ 레일은 연 290억 수준의
+  이익 가정으로 고정하고 잔고·현금만 본다.</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — K2 빈티지 지도와 피크아웃 논쟁</h2>
+  <div class="lead"><b>팩터 선언: 「글로벌 재무장 (유럽 기갑 축)」</b> — 한화에어로와 같은 유럽·폴란드 축, LIG(중동·방공)와는
+  지역이 다르다. 방산 3사의 축 지도: 한화에어로 = 화력(포병)·유럽, LIG = 방공(유도)·중동, <b>로템 = 기갑(전차)·유럽.</b></div>
+
+  <h3>K2 빈티지 지도 — 대수 단위로 공개된 시리즈 최고 해상도</h3>
+  <div class="scrollx"><table>
+    <tr><th>납품 연도</th><th>물량 (인도 대수)</th><th>계약 빈티지</th><th>판정</th></tr>
+    <tr><td>2022~23</td><td class="num">10 + 18대</td><td>1차 (180대·34억$, '22년)</td><td>초기 저물량 — OPM 한 자릿수</td></tr>
+    <tr><td>2024</td><td class="num">70대</td><td>1차</td><td class="num">OPM 10.7% 점프</td></tr>
+    <tr class="hl"><td>2025</td><td class="num"><b>82~90대 (1차 완납 구간)</b></td><td>1차 잔여 + <b>2차 초도 (65억$ ≈ 9조, 1차의 2배)</b></td><td class="num" style="color:var(--up)"><b>OPM 17.5% — 이익률 상승 중 (신한)</b></td></tr>
+    <tr><td>2026~</td><td class="num">2차 본격 (현지 생산 병행)</td><td>2차 중심</td><td class="num" style="color:var(--up)">OP 1.1조+ 경로 — 금액 2배의 빈티지</td></tr>
+  </table></div>
+
+  <h3>사슬 · 재무장 → 수주 → 인도 <span class="pill up">+ 피크아웃 논쟁의 정리</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">유럽 기갑 재무장 — 폴란드가 선봉, 레오파르트2 생산 적체가 K2의 기회 창 (열려 있는 동안이 승부처)</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">잔고 적립 — 디펜스 10.5조 (+172%, 2차 반영) · <b>파이프라인: 페루·이라크(연내 기대) → 루마니아·폴란드 3차('27) → 중동 시험평가(2H26)</b></div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">피크아웃 논쟁: 「2차 이후 공백」 우려 vs 「잔고 5.1년치 + 파이프라인 4건」 — <b>중동 전쟁발 계약 지연이 논쟁을 키웠으나, 지연이지 소멸이 아니라는 게 현재 컨센</b> (신한)</div></div>
+  </div>
+  <p class="note"><b>방산 내 상관의 발견</b>: 미·이란 전쟁이 LIG(방공 수요)에는 +49% 프리미엄을, 로템(전차 계약 지연)에는
+  주가 약세를 안겼다 — 같은 팩터 안에서 이벤트 반응이 반대였던 실측 사례. 방산 3사를 함께 들면 <b>무기 축 분산이
+  이벤트 변동성을 상쇄</b>한다는 포트폴리오 함의가 나온다. 레일 사슬(국내 발주·우즈벡·호주)은 이익이 아니라 잔고
+  안정성의 축으로 별도 감시.</p>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 이벤트 캘린더형 (계약 파이프라인이 심장박동)</h2>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처 · 주기 · 무료</th><th>현재 상태 (확인 시점)</th></tr>
+    <tr><td><span class="dot g"></span><b>K2 수출 계약 공시 (페루·이라크·루마니아·3차)</b></td><td>피크아웃 논쟁의 결론 — 잔고 연장의 원천</td><td>DART·뉴스 · 수시 · 무료</td><td>페루·이라크 연내 기대 · 3차 '27 (신한 4/27)</td></tr>
+    <tr><td><span class="dot g"></span><b>디펜스 분기 매출·OPM</b></td><td>이익의 95% — 판독 두 줄</td><td>분기 실적 · 분기</td><td class="num">1Q26 8,040억 · OPM 27.2%</td></tr>
+    <tr><td><span class="dot y"></span><b>중동 정세 → 전차 계약 일정</b></td><td>지연의 원인 — LIG와 반대 방향 반응</td><td>외신 · 수시</td><td>전쟁으로 계약 지연 중 (신한) · 2H26 중동 시험평가</td></tr>
+    <tr><td><span class="dot g"></span>K2 인도 대수 (분기)</td><td>빈티지 진행의 실측 — 대수 공개 종목</td><td>리포트·뉴스 · 분기</td><td>'25년 82~90대 완료 → 2차 물량 개시</td></tr>
+    <tr><td><span class="dot y"></span>레일 미국 신규사업 비용</td><td>전사 헤드라인 오염원 — 판독 필터</td><td>분기 실적 · 분기</td><td>1Q26 실증 (OP 29억) — 연간 ~290억 가정</td></tr>
+    <tr><td><span class="dot g"></span>한화에어로·LIG 계약 뉴스 (페어)</td><td>같은 팩터 교차 검증 + 축 분산 확인</td><td>기존 대시보드</td><td>천무 3차·천궁 벨트 진행</td></tr>
+    <tr><td><span class="dot y"></span>4Q 컨센 미스 패턴</td><td>판독 노이즈 필터</td><td>4Q 실적 · 연간</td><td>4Q25 실증</td></tr>
+  </table></div>
+
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>DART 공시 알림 + 폴란드·중동 전차 계약 뉴스</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>페루·이라크·루마니아 파이프라인 진행 + 레오파르트2 적체 동향</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY — 한 세트</div>
+      <ul><li><b>디펜스 두 줄 → K2 인도 대수 → 신규 계약 → 레일 비용 필터 → 방산 3사 교차</b> · 8월 반기 실적</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 물량(대수) × 빈티지의 정직한 곱</h2>
+
+  <h3>실측: Incremental Margin</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>Δ매출</th><th>ΔOP</th><th>Inc. Margin</th><th>판정</th></tr>
+    <tr><td>'23→'24</td><td class="num">+6,614억</td><td class="num" style="color:var(--up)">+2,451억</td><td class="num"><b>37%</b></td><td>K2 18→70대 — 물량 레버리지 개시</td></tr>
+    <tr class="hl"><td>'24→'25 (확정)</td><td class="num">+1조 4,465억</td><td class="num" style="color:var(--up)"><b>+5,437억</b></td><td class="num"><b>38%</b></td><td>90대 집중 + 2차 초도 — 2년 연속 38%대의 안정 레버리지</td></tr>
+    <tr><td>1Q25→1Q26</td><td class="num">+2,814억</td><td class="num">+213억</td><td class="num">7.6%</td><td><b>레일 비용의 잠식 — 디펜스만은 ~17% 유지 (분해 필수 실증)</b></td></tr>
+  </table></div>
+
+  <style>
+    .levviz{margin:16px 0 6px}
+    .levrow{display:flex;align-items:center;gap:12px;margin:9px 0}
+    .levlab{flex:0 0 96px;font-size:12.5px;font-weight:700;color:var(--accent-deep);text-align:right}
+    .levbar{flex:1;display:flex;height:32px;border-radius:7px;overflow:hidden;background:#EEF1F5;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+    .levcost{background:#CBD3DD;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:#54637A;white-space:nowrap}
+    .levgain{background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11.5px;color:#fff;font-weight:700;white-space:nowrap}
+    .levpct{flex:0 0 110px;font-size:12.5px;font-weight:800;color:var(--accent)}
+    .gauge{margin:18px 0 4px;position:relative;height:56px}
+    .gauge .track{position:absolute;top:24px;left:0;right:0;height:10px;border-radius:5px;background:linear-gradient(90deg,#EEF1F5,var(--accent-soft))}
+    .gauge .fillB{position:absolute;top:24px;left:0;height:10px;border-radius:5px 0 0 5px;background:var(--accent);opacity:.25;width:38%}
+    .gauge .fillA{position:absolute;top:24px;left:0;height:10px;border-radius:5px;background:#94A3B8;width:17.5%}
+    .gauge .mkr{position:absolute;top:0;font-size:11.5px;font-weight:700;transform:translateX(-50%);text-align:center;line-height:1.25}
+    .gauge .mkr i{display:block;width:2px;height:14px;background:currentColor;margin:3px auto 0;font-style:normal}
+    @media(max-width:560px){.levlab{flex-basis:64px;font-size:11px}.levpct{flex-basis:64px;font-size:11px}}
+  </style>
+
+  <h3>한눈에 보기 · 증분 매출 100원의 여정</h3>
+  <div class="levviz">
+    <div class="levrow">
+      <div class="levlab">'23→'24</div>
+      <div class="levbar"><div class="levcost" style="width:63%">비용 63</div><div class="levgain" style="width:37%">이익 37</div></div>
+      <div class="levpct">이익 잔존 37%</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab"><b>'24→'25</b></div>
+      <div class="levbar"><div class="levcost" style="width:62%">비용 62</div><div class="levgain" style="width:38%">이익 38</div></div>
+      <div class="levpct">38%</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab">1Q26 YoY</div>
+      <div class="levbar"><div class="levcost" style="width:92%">비용 92 (레일 신규사업 비용 포함)</div><div class="levgain" style="width:8%">8</div></div>
+      <div class="levpct">7.6% ※레일 잠식</div>
+    </div>
+  </div>
+  <p class="note">2년 연속 38%의 증분 마진은 K2 수출의 공헌이익률 실측이다. 1Q26 막대의 회색 확대는 마린솔루션의 벙커링
+  희석과 동형 — <b>복합기업에서 저마진 부문의 비용·매출이 전사 레버리지를 가리는 착시</b>로, 부문 분해가 필수라는 시각적 증거.</p>
+
+  <h3>한눈에 보기 · 레버리지 배율 게이지</h3>
+  <div class="gauge">
+    <div class="track"></div>
+    <div class="fillB"></div>
+    <div class="fillA"></div>
+    <div class="mkr" style="left:17.5%;color:#64748B">현재 OPM<br>17.5% ('25)<i></i></div>
+    <div class="mkr" style="left:38%;color:var(--accent-deep)">증분 공헌이익률<br>~38%<i></i></div>
+  </div>
+  <p class="note" style="margin-top:14px">배율 ≈ 38 ÷ 17.5 ≈ <b>2.2배</b> — 매출 +10% → OP +20~22%. '26E OP 1.1조+(+10%대)는
+  매출 성장 둔화(2차 인식 속도) 가정과 정합. 레버리지는 곱 구조: <b>인도 대수(Q) × 2차 빈티지(P — 금액 2배 계약) ×
+  레일 비용(차감항)</b>. 캐파: 창원공장 전차 라인 — 폴란드 인도 90대/년 소화 실증, 2차 현지 생산 병행으로 국내 캐파
+  병목은 완화 (증설 CAPEX 세부 미확인, 확실하지 않음). 순현금 1.2조가 증설·M&A의 실탄.</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+
+  <div class="risk r1">
+    <span class="impact r1i">성장 절벽 (잔고 소진 후)</span>
+    <h4>① 피크아웃 — 2차 이후의 공백 시나리오</h4>
+    <p>이 종목을 둘러싼 핵심 논쟁이다. 폴란드 2차(9조)가 '26~'28년을 채우지만, 그 이후는 파이프라인(페루·이라크·
+    루마니아·3차·중동)의 성사에 달려 있다 — 그리고 그 계약들이 지금 <b>중동 전쟁으로 지연되는 중</b>이다(신한).
+    지연이 길어지면 '27년쯤 「잔고 성장 정체」가 가시화되며 멀티플이 먼저 반응한다. 레오파르트2 적체가 해소되는
+    시점(독일 증산)도 기회 창이 닫히는 방향의 변수.</p>
+    <div class="alarm"><b>경보</b> — 페루·이라크 계약 연내 불발 · 2H26 중동 시험평가 결과 부진 · 디펜스 잔고 QoQ 감소 전환</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">마진 정점 논쟁</span>
+    <h4>② OPM 30%의 지속성 — 현지 생산과 믹스의 침식</h4>
+    <p>디펜스 OPM 30%는 1차 잔고 소진 + 2차 초도의 이례적 고마진 구간일 수 있다 — 2차는 폴란드 현지 생산(기술이전)
+    비중이 커서 대당 마진이 낮아질 가능성이 있고, 신규 시장(페루·이라크)은 가격 경쟁이 개입된다. 마진이 25%대로
+    내려앉아도 훌륭하지만, 시장이 30%를 기준으로 컨센을 쌓으면 「좋은 실적의 미스」가 반복된다. 레일의 미국
+    신규사업 비용도 '26년 내내 차감항.</p>
+    <div class="alarm"><b>경보</b> — 디펜스 OPM 25% 하회 분기 · 현지 생산 비중 가이던스 상향 · 레일 분기 적자 전환</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">수급 · 그룹</span>
+    <h4>③ 비영업 점검 — 그룹 구조와 4Q 패턴</h4>
+    <p>현대차그룹 계열(최대주주 현대자동차 33.77% 내외 — 정확 지분 미확인, 확실하지 않음)로 지배구조는 안정적이나,
+    그룹 지배구조 개편 시 지분 매각·역할 재편의 수급 이벤트 가능성은 상존. 순현금 1.2조라 증자 리스크는 사실상 없음
+    (한화에어로와 대조적). CB/BW·소송 뇌관 미확인 (확실하지 않음 — 사업보고서 확인 필요). 4Q 컨센 미스 패턴(4Q25)은
+    반복 가능한 판독 함정.</p>
+    <div class="alarm"><b>경보</b> — 그룹 지분 변동 공시 · 대형 소송·제재 공시 · 4Q 가이던스 없는 비용 급증</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (2026년 4월 국면 — 현재가·목표가 미확인, 재확인 필수)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:10%"><div class="tick"></div><div class="price">'23년</div><div class="lbl">OP 2,100억 시절</div></div>
+      <div class="mk" style="left:55%"><div class="tick"></div><div class="price">'25년 랠리</div><div class="lbl">OP 1조 · 잔고 30조 반영</div></div>
+      <div class="mk" style="left:80%"><div class="tick"></div><div class="price">'26년 조정</div><div class="lbl">"방산 랠리에 나홀로 역행 — 저평가"<br>(4/16 보도 · 중동발 계약 지연)</div></div>
+    </div>
+  </div>
+  <p class="note"><b>판정: 방산 3사 중 유일하게 「가격이 증명에 뒤처진」 국면일 가능성.</b> 근거 — 연초 대비 주가 약세
+  속에 1Q26은 컨센 상회, 잔고 5.1년치·순현금 1.2조·디펜스 OPM 27%는 건재. 눌린 이유(중동발 계약 지연)는 실적이 아니라
+  파이프라인 기대의 문제다. 단 현재 주가·PER·목표가 컨센 미확인이라 정량 판정은 보류 — 재확인 필수. 확인 포인트:
+  한화에어로(PER 46.7배)·LIG(사상 최고가) 대비 상대 밸류 갭의 크기.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>파이프라인의 첫 계약 — 피크아웃 논쟁을 끝낼 한 방</h4>
+    <p>실적(2차 빈티지)은 '28년까지 예약돼 있다. 열려 있는 것은 그 다음 — <b>페루·이라크·루마니아·폴란드 3차·중동 중
+    어느 하나의 계약 공시</b>가 피크아웃 우려를 잔고 연장으로 바꾼다. 검증 순서: ① 2Q26(8월) 디펜스 OPM 25%+ 유지 →
+    ② 연내 페루 또는 이라크 계약 → ③ 2H26 중동 시험평가 통과 → ④ '27년 루마니아·3차. ②가 연내 불발되면
+    '27년 성장 컨센부터 흔들린다.</p>
+    <p><b>IR에 물어볼 핵심 질문 하나:</b> "폴란드 2차의 연도별 인도 대수 계획과 현지 생산분의 마진 차이" —
+    이 답으로 '26~'28년 이익과 마진 정점 논쟁이 동시에 계산된다.</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>방산 4종의 최종 배치 — 축 분산의 완성</h4>
+    <p>3질문 좌표: ①강도 ★★★ (2년 연속 배율 38% 실측 + 2차 빈티지 2배) / ②룸 <b>방산 3사 중 최선 가능성</b>
+    (나홀로 조정 — 단 정량 미확인) / ③변수 중간 (파이프라인 지연 + 마진 정점 + 레일 비용). 방산 팩터의 완성 배치:
+    <b>한화에어로(화력·유럽·가이던스형) + LIG(방공·중동·믹스형) + 로템(기갑·유럽·물량형) + 퍼스텍(Tier-2 새틀라이트)</b> —
+    무기 축 3개가 서로 다른 이벤트에 반응하므로(미·이란 전쟁의 상반 반응 실증) 팩터 내 분산이 실제로 작동한다.
+    셋 중 하나만 고른다면: 가시성은 LIG(6.1배), 마진은 로템(30%), 규모·옵션은 한화에어로.</p>
+    <p>이탈 규율 3단계: <b style="color:#7FD4B4">경계 = 디펜스 OPM 25% 하회 또는 파이프라인 계약 연내 전무 · 축소 = 잔고
+    감소 전환 + 레오파르트 증산 확인 동반 · 실적 무관 이탈 = 그룹 지분 이벤트.</b> 노이즈 판별: 레일 비용발 전사 미스와
+    4Q 쇼크는 디펜스 두 줄이 멀쩡하면 검토 기회 — 지금(중동발 조정)이 그 판별의 실전 케이스다.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>같은 팩터, 반대 반응</h4>
+      <ul><li>미·이란 전쟁: LIG +49% vs 로템 계약 지연 약세 — <b>무기 축이 다르면 이벤트 부호가 반대</b></li><li>방산 내 분산은 이론이 아니라 실측 — 3사 동시 보유의 근거</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>인도 대수가 공개된 종목의 특권</h4>
+      <ul><li>K2 대수(10→18→70→90)로 이익이 산수가 됨 — <b>마린엔진 빈티지 %와 같은 금맥</b></li><li>물량 공개 수주기업 = 컨센 검증이 가장 쉬운 유형</li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>저마진 부문은 필터로 처리하라</h4>
+      <ul><li>레일(이익 3%)은 전망 대상이 아니라 <b>고정 가정 + 헤드라인 오염 필터</b></li><li>복합기업 3사(코오롱·한화에어로·로템) 공통 — 이익 부문에 분석을 집중</li></ul></div>
+  </div>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시(사업보고서 3/19)·증권사 리포트(신한 4/27·대신 11/4·SK)·언론 보도(데이터뉴스·한국신용신문) 기반의
+  정리 자료이며 투자 권유가 아닙니다. 2024~25년 연간·1Q25·1Q26은 확정/보도 기준, 2023년은 증감률 역산, 2026E(OP 1.1조+)는 컨센 요약 인용입니다.
+  부문 매출 비중은 2024년 기준(대신), 디펜스 OPM 30%는 증권사 추정. 현재 주가·시총·PER·목표가 컨센·최대주주 정확 지분·CB/BW·우발부채는
+  미확인 — 재확인 필수. 다음 갱신 트리거: <b>8월 반기 실적 (디펜스 OPM 검증)</b> · 페루·이라크 계약 공시 · 2H26 중동 시험평가 · 폴란드 3차 협상.
+  기준일: 2026년 7월 14일. 자매 리포트: 솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두 ·
+  덕산하이메탈 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 이오테크닉스 · 원익IPS · 브이엠 · 코오롱인더 ·
+  한화에어로스페이스 · LIG디펜스앤에어로 · 퍼스텍(방산 Tier-2).
+</footer>
+
+</div>
+</body>
+</html>

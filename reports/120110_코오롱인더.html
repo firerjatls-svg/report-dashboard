@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코오롱인더 (120110) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#0284C7; --accent-soft:#E3F2FB; --accent-deep:#075985;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(2,132,199,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#93CBEA;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#A5D5F0;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#93CBEA;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 화학·소재 복합기업 · 시리즈 17 — 첫 컨글로머릿: 팩터 4개가 한 지붕 아래</div>
+  <h1>코오롱인더<span class="ticker">KOSPI 120110</span></h1>
+  <div class="sub">4년 감익의 바닥에서 — 아라미드 턴어라운드, 타이어코드 세계 2위, 그리고 AI 기판 속으로 들어간 mPPO</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 10</b></div>
+    <div>2025년 확정<b class="figures">영업이익 1,151억 (−27%) — 4년 연속 감익의 바닥</b></div>
+    <div>2026E (유안타)<b class="figures">OP 1,945억 (+69%) → 2027E 2,450억</b></div>
+    <div>부문 구성<b class="figures">산업자재 · 화학 · 필름 · 패션 (+지분법)</b></div>
+    <div>목표가<b class="figures">83,000원 (유안타 2/10 상향) — 현재가 미확인</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 코오롱인더는 시리즈 최초의 복합기업이다: 한 지붕 아래 <b>산업자재(타이어코드 세계 2위 + 아라미드
+  세계 3위), 화학(석유수지 + mPPO), 필름, 패션</b>이라는 서로 다른 팩터 4개가 산다. 그래서 분석의 제1원칙이 다르다 —
+  단일 종목처럼 전사 숫자를 읽으면 안 되고, <b>부문별로 분해해 각각의 사이클 위치를 따로 매겨야</b> 한다.
+  2025년 OP 1,151억은 2021년(2,527억)부터 4년 연속 감익의 바닥이자 의도된 바닥이다(패션 브랜드 정리·아라미드 재고정리의
+  구조조정 해). 2026년 +69% 회복의 재료는 셋 — ① 아라미드의 적자 축소(가동률 70→80%, 광케이블 수요 회복 + 듀폰 매각발
+  경쟁 완화, 2H26 흑전 도전), ② 타이어코드 수익성 회복(EV용 하이브리드 코드), ③ <b>mPPO 증설(2Q26 완공) — AI 반도체
+  CCL용 저유전 레진</b>으로, 이 시리즈의 이비덴·덕산 사슬과 같은 전방을 화학으로 타는 숨은 연결고리다.
+  질문은 「턴어라운드 3재료 중 몇 개가 시간표대로 오는가」다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 4개의 회사가 한 지붕 아래</h2>
+  <div class="lead">코오롱그룹의 주력 사업회사. 부문별로 제품·고객·경쟁·사이클이 전부 다르므로, 여기서는 처음부터 분해해서 본다.</div>
+
+  <h3>부문 지도 (3Q25 분기 실측 기준)</h3>
+  <div class="stackbar">
+    <div style="flex:54;background:#0284C7">산업자재 ~54% (5,933억)</div>
+    <div style="flex:29;background:#4BA3D9">화학 ~29% (3,167억)</div>
+    <div style="flex:21;background:#8FC4E4">패션 ~21% (2,276억)</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#0284C7">타이어코드·아라미드·에어백·자동차소재 — 3Q OP 222억 (+129% QoQ)</span>
+    <span style="--c:#4BA3D9">석유수지·페놀수지·<b>mPPO</b> — 3Q OP 241억 (OPM 8.9%로 전사 최고 질)</span>
+    <span style="--c:#8FC4E4">코오롱스포츠 등 — 3Q −165억 (비수기) ↔ 4Q 성수기 흑자 — 계절 진폭 극심. +필름·기타</span>
+  </div>
+
+  <h3>부문별 경쟁 구도 — 반드시 분리해서</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">타이어코드</div>
+      <h4>세계 2위 (점유 ~15%) <span class="pill up">회복 국면</span></h4>
+      <ul>
+        <li>구도 <b>효성첨단소재(세계 1위)와 한국 2강</b> + 중국 추격</li>
+        <li>고객 <b>글로벌 타이어사 (미쉐린·굿이어 등 — 추정)</b></li>
+        <li>동력 <b>EV용 하이브리드 코드(아라미드 적용) — 무거운 전기차용 고부가</b> · 베트남 열처리 증설 300억</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">아라미드 (헤라크론)</div>
+      <h4>세계 3위·한국 1위 <span class="pill warn">적자 → 턴어라운드 도전</span></h4>
+      <ul>
+        <li>구도 <b>듀폰·테이진·도레이 + 국내 효성첨단·태광</b> — 글로벌 공급과잉으로 적자</li>
+        <li>변화 <b>듀폰이 아라미드 사업 매각 추진 — 경쟁사 물량 이탈의 우호 환경</b> (신한)</li>
+        <li>수요 <b>광케이블 회복 (미국 BEAD법 + 중국 5G)</b> · 가동률 2Q 70% → 3Q 80%</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">mPPO — 신사업의 본진</div>
+      <h4>AI CCL용 저유전 레진 <span class="pill up">2Q26 증설 완공</span></h4>
+      <ul>
+        <li>용도 <b>AI 서버용 동박적층판(CCL)의 절연 레진 — 에폭시 대비 전기차단 3~5배·저유전</b></li>
+        <li>증설 <b>김천 2공장 2,000톤 (340억) 2Q26 완공 — 매출 '25년 800억 → 2배, 컨콜 "연매출 1,000억+"</b></li>
+        <li>수익성 <b>OPM 20%대 추산 — 화학부문(8.9%)의 2배</b>, 유안타는 12배 멀티플 별도 적용</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">석유수지(화학의 본체)는 판가 인하 마무리로 안정, 패션은 골프웨어 호황 종료 후 브랜드 구조조정 완료 국면 +
+  코오롱스포츠차이나 지분법(분기 ~75억)이 별도 라인. <b>직접 고객 vs 최종 수요</b>: 산업자재는 타이어사·케이블사를 거쳐
+  자동차·통신 인프라가 최종 수요, mPPO는 CCL사를 거쳐 AI 서버가 최종 수요 — 전부 다단 구조다.</p>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 부문마다 다른 손익 공식</h2>
+
+  <div class="formula">전사 영업이익 = Σ 부문 이익 — 단일 공식이 없다는 것 자체가 이 종목의 공식
+
+산업자재: 이익 = (판가 − 원료·고정비) × 물량 — <b>아라미드는 가동률 문턱형</b> (70→80% 상승이 적자 축소의 정체)
+화학:     이익 = 스프레드(제품가 − 나프타계 원료) × 물량 — 시황 연동형 + mPPO 고마진 믹스
+패션:     이익 = 시즌 매출 − 고정비 — <b>3Q 적자·4Q 흑자의 계절 문턱형</b>
+가격 결정: 대부분 분기·연간 협상형 (B2B 소재) — 원료 전가는 시차를 두고 가능 (빈티지형 아님)</div>
+
+  <h3>부문별 이익 기여 분해 (연간, 유안타 추정)</h3>
+  <div class="scrollx"><table>
+    <tr><th>부문</th><th>2025년</th><th>2026E</th><th>스윙 (Δ)</th><th>스윙의 정체</th></tr>
+    <tr><td>화학</td><td class="num">1,102억</td><td class="num">1,359억</td><td class="num" style="color:var(--up)">+257억</td><td>mPPO 증설 효과 + 석유수지 수급 개선</td></tr>
+    <tr class="hl"><td><b>산업자재</b></td><td class="num">415억</td><td class="num"><b>829억</b></td><td class="num" style="color:var(--up)"><b>+414억 (최대 스윙)</b></td><td><b>아라미드 적자 축소 + 타이어코드 회복</b></td></tr>
+    <tr><td>패션</td><td class="num">4억</td><td class="num">61억</td><td class="num">+57억</td><td>구조조정 완료 후 정상화</td></tr>
+    <tr><td>기타 (필름 등)</td><td class="num">−378억</td><td class="num">−378억</td><td class="num">0</td><td>만성 드래그 — 보수 가정</td></tr>
+    <tr><td><b>전사</b></td><td class="num">1,151억 (확정)</td><td class="num"><b>1,945억 (+69%)</b></td><td class="num" style="color:var(--up)">+794억</td><td>증익의 52%가 산업자재 턴어라운드</td></tr>
+  </table></div>
+  <p class="note"><b>이익 기여의 함의</b>: '26년 증익 +794억의 절반 이상이 「아라미드가 덜 잃는 것」에서 나온다 —
+  즉 이 종목의 '26년은 성장 스토리가 아니라 <b>턴어라운드 스토리</b>이고, 검증 지표도 매출이 아니라 아라미드 가동률·판가다.
+  mPPO(+200~300억 잠재)는 그 위에 얹히는 질 좋은 옵션.</p>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 변수·약점 (−)</th></tr>
+    <tr>
+      <td>① 타이어코드 세계 2위의 규모·기술 (하이브리드 코드 프리미엄)<br>
+      ② 아라미드 가동률 레버리지 — 고정비형이라 물량 회복 = 적자 급축소<br>
+      ③ mPPO OPM 20%대 — 화학 믹스의 구조적 상향<br>
+      ④ 듀폰 이탈의 경쟁 완화 + 광케이블 수요의 정책 지원 (BEAD·5G)</td>
+      <td>① 아라미드 글로벌 공급과잉의 깊이 — 중국 증설이 회복을 상쇄할 수 있음<br>
+      ② 유가·나프타 변동의 화학 스프레드 노출<br>
+      ③ 패션의 소비 경기 민감 + 계절 진폭<br>
+      ④ 기타 부문 만성 적자 (−378억/년) + 탄소비용 (~90억/년, 유안타 ESG 반영)</td>
+    </tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 4년 감익의 해부</h2>
+
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>영업이익</th><th>해설</th></tr>
+    <tr><td>2021</td><td class="num">2,527억 (피크)</td><td>골프웨어 호황 + 화학 호황의 정점</td></tr>
+    <tr><td>2022~24</td><td class="num">연속 감익 ('24년 ~1,577억 역산)</td><td>아라미드 공급과잉 진입 + 화학 시황 둔화 + 골프웨어 종료</td></tr>
+    <tr class="hl"><td>2025 (확정)</td><td class="num"><b>1,151억 (−27%)</b></td><td><b>의도된 바닥 — 패션 브랜드 정리·아라미드/자동차소재 재고정리의 구조조정 해</b></td></tr>
+    <tr><td>2026E</td><td class="num" style="color:var(--up)">1,945억 (+69%)</td><td>유안타 — 삼성증권도 "5년 만에 성장 전환" 동조 (3/23)</td></tr>
+    <tr><td>2027E</td><td class="num" style="color:var(--up)">2,450억</td><td>'21년 피크 재도전 경로</td></tr>
+  </table></div>
+
+  <h3>분기 흐름 (2025년)</h3>
+  <div class="scrollx"><table>
+    <tr><th>분기</th><th>전사</th><th>핵심 관찰</th></tr>
+    <tr><td>1~2Q25</td><td class="num">산업자재 OP 분기 100억 안팎</td><td>바닥 구간 — 아라미드 가동률 70%</td></tr>
+    <tr><td>3Q25</td><td class="num">매출 1조 995억 · OP 269억 (컨센 +14%)</td><td>산업자재 222억 (+129% QoQ) · 아라미드 가동률 80% · 패션 −165억 (비수기)</td></tr>
+    <tr class="hl"><td>4Q25E</td><td class="num">559억 (+108% QoQ — 하나)</td><td><b>패션 성수기 +137억 — 이 회사의 4Q는 일회성 함정이 아니라 계절 성수기</b></td></tr>
+  </table></div>
+  <p><b>평가와 판독:</b> 시리즈 표준과 반대의 계절성이다 — 반도체·조선 종목들이 「4Q 일회성 함정」(성과급)을 가졌다면,
+  코오롱인더는 <b>패션 덕에 4Q가 구조적 성수기, 3Q가 구조적 저점</b>이다. YoY 비교는 반드시 같은 분기끼리.
+  순이익 라인에는 코오롱스포츠차이나 지분법(분기 ~75억)과 금융자산 가치 변동이 섞이므로 <b>영업이익 + 지분법을 분리해
+  읽는 것</b>을 권한다 (유안타의 목표가 상향 근거 절반이 "금융자산가치 상승"이었다는 점도 같은 맥락 — 영업 외 가치가
+  밸류에 들어와 있는 종목).</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 팩터 4개의 지도</h2>
+  <div class="lead"><b>팩터 선언: 단일 팩터가 없다 — 「자동차·타이어(산업자재) × 통신 인프라(아라미드) × AI 서버(mPPO) ×
+  소비(패션)」의 4중 노출.</b> 시리즈 기존 팩터와의 관계: mPPO만 반도체 나무(AI 기판)와 겹치고 나머지는 전부 신규 —
+  <b>복합기업 자체가 내장 분산</b>이다.</div>
+
+  <h3>사슬 A · 아라미드 턴어라운드 <span class="pill up">'26년 증익의 본진</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">수요 회복 — 미국 BEAD법(광대역 인프라) + 중국 5G 투자 → 광케이블용 아라미드 주문 증가</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">공급 완화 — <b>듀폰의 아라미드 사업 매각 추진 → 경쟁사 물량 이탈</b> (신한: "우호적 영업환경")</div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">가동률 70% → 80% (3Q25 실측) → 고정비 희석 → 적자 축소 → <b>2H26 흑자전환 도전</b> — 성사 시 부문 스윙 +414억의 핵심</div></div>
+  </div>
+
+  <h3>사슬 B · mPPO — 시리즈와 만나는 지점 <span class="pill up">AI 기판 사슬 합류</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">AI 서버·데이터센터 증설 → 고다층 CCL(동박적층판) 수요 — <b>이비덴 CapEx 5,000억엔·캐파 2배와 같은 전방</b> (덕산 MSB·이오테크 드릴러와 사슬 공유)</div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">AI용 CCL에서 에폭시 → 저유전 mPPO 레진 전환 개시 (통신 손실 최소화)</div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">김천 2,000톤 증설 2Q26 완공 → 매출 800억 → 1,600억+ · OPM 20%대 → <b>연 OP +200~300억 옵션</b> — 증설비 340억의 경량 투자 (payback ~1.5년 추정)</div></div>
+  </div>
+
+  <h3>사슬 C·D</h3>
+  <div class="scrollx"><table>
+    <tr><th>사슬</th><th>구조</th><th>상태</th></tr>
+    <tr><td>C. EV 타이어 → 하이브리드 코드</td><td>전기차 중량 증가 → 아라미드 보강 코드 채택 — 타이어코드와 아라미드의 시너지 접점</td><td class="num" style="color:var(--up)">3Q OP +129% QoQ 회복 실측</td></tr>
+    <tr><td>D. 소비 경기 → 패션</td><td>계절 성수기(4Q) + 중국 법인 지분법 — 골프웨어 호황 종료 후 정상화 국면</td><td>구조조정 완료 — 기저 회복</td></tr>
+  </table></div>
+  <p class="note"><b>시리즈 연결의 발견</b>: 이 시리즈에서 「AI 기판(FC-BGA·CCL)」 전방을 타는 종목이 셋이 됐다 —
+  덕산하이메탈(솔더볼), 이오테크닉스(드릴러), 코오롱인더(mPPO 레진). <b>이비덴·대만 기판사 월간 매출이라는 기존 대시보드를
+  세 종목이 공유</b>하며, 같은 전방을 소재·장비·화학이라는 다른 몸으로 타는 구조라 교차 검증이 서로 된다.</p>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 부문별 지표 추세형</h2>
+  <div class="lead">유형 판정: <b>지표 추세형</b> — 이벤트 뇌관(재판·수사)은 미확인. 대신 부문이 4개라 지표도 4갈래로 갈라진다 —
+  우선순위는 스윙 크기순: 아라미드 &gt; mPPO &gt; 타이어코드 &gt; 패션.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처 · 주기 · 무료</th><th>현재 상태 (확인 시점)</th></tr>
+    <tr><td><span class="dot g"></span><b>아라미드 가동률·판가 코멘트</b></td><td>'26년 증익의 52%가 걸린 본진</td><td>분기 컨콜·리포트 · 분기</td><td class="num">70% → 80% (3Q25) — 2H26 흑전 도전</td></tr>
+    <tr><td><span class="dot g"></span><b>듀폰 아라미드 매각 진행</b></td><td>공급 구도 재편 — 완화의 지속성 변수</td><td>외신·업계지 · 수시 · 무료</td><td>사모펀드 매각 추진 중 (3Q25 보도)</td></tr>
+    <tr><td><span class="dot g"></span><b>mPPO 증설 완공·수주</b></td><td>화학 믹스 개선의 관문 — 2Q26 완공 예정</td><td>컨콜·뉴스 · 분기</td><td>김천 2공장 순항 (회사, 3월) — 완공 확인이 다음 체크</td></tr>
+    <tr><td><span class="dot g"></span>이비덴·대만 기판사 (공유)</td><td>mPPO 전방 — 덕산·이오테크 대시보드 겸용</td><td>분기·월간 · 무료</td><td>FY26 +32% 상향 · 캐파 2배</td></tr>
+    <tr><td><span class="dot y"></span>유가·나프타</td><td>화학 스프레드의 원가축</td><td>일간 · 무료</td><td>중동 휴전 후 안정</td></tr>
+    <tr><td><span class="dot g"></span>미국 BEAD 집행·중국 5G 발주</td><td>광케이블 → 아라미드 수요의 정책축</td><td>외신 · 수시 · 무료</td><td>집행 진행 국면</td></tr>
+    <tr><td><span class="dot y"></span>타이어사 가동·자동차 판매</td><td>타이어코드·에어백 물량</td><td>월간 통계 · 무료</td><td>관세 타결 후 회복 기대 (하나)</td></tr>
+    <tr><td><span class="dot y"></span>패션 4Q 성수기 성적</td><td>계절 문턱 — 연간 이익의 분기 배분</td><td>4Q 실적 · 연간</td><td>4Q25E +137억 (하나)</td></tr>
+  </table></div>
+
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>유가·나프타 + 듀폰 매각·아라미드 업계 뉴스</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>대만 기판사 월간 매출 (mPPO 전방 — 기존 대시보드 겸용) + BEAD·5G 집행 뉴스</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY — 한 세트</div>
+      <ul><li><b>부문별 4줄 점검: 아라미드 가동률·흑전 거리 → mPPO 완공·수주 → 타이어코드 OPM → 패션 계절 조정</b></li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 복합기업의 레버리지는 「부문 스윙의 합」이다</h2>
+  <div class="lead">단일 사업 종목의 배율 공식이 여기선 왜곡된다 — 전사 OPM(~2%대)이 워낙 낮아 배율이 극대로 보이지만,
+  그 정체는 가동률 레버리지(아라미드)와 믹스(mPPO)와 계절(패션)의 합성이다. 그래서 시각화도 「매출 100원」이 아니라
+  「증분 이익의 출처」로 변형한다.</div>
+
+  <h3>실측: 이익 스윙의 분해</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>ΔOP</th><th>성격</th></tr>
+    <tr><td>'21→'25</td><td class="num" style="color:var(--down)">−1,376억 (4년)</td><td>아라미드 과잉 + 화학 둔화 + 골프웨어 종료 — 3개 부문 동시 하강의 복합 감익</td></tr>
+    <tr class="hl"><td>'25→'26E</td><td class="num" style="color:var(--up)"><b>+794억 (+69%)</b></td><td>매출 증가 기여는 미미 — <b>턴어라운드(적자 축소)와 믹스가 대부분</b></td></tr>
+    <tr><td>'26E→'27E</td><td class="num" style="color:var(--up)">+505억</td><td>mPPO 풀가동 + 아라미드 흑자 정착 경로</td></tr>
+  </table></div>
+
+  <style>
+    .levviz{margin:16px 0 6px}
+    .levrow{display:flex;align-items:center;gap:12px;margin:9px 0}
+    .levlab{flex:0 0 110px;font-size:12.5px;font-weight:700;color:var(--accent-deep);text-align:right}
+    .levbar{flex:1;display:flex;height:32px;border-radius:7px;overflow:hidden;background:#EEF1F5;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+    .levgain{background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11.5px;color:#fff;font-weight:700;white-space:nowrap}
+    .levgain.g2{background:#4BA3D9}.levgain.g3{background:#8FC4E4;color:#1E4E6B}
+    .levpct{flex:0 0 96px;font-size:12.5px;font-weight:800;color:var(--accent)}
+    .gauge{margin:18px 0 4px;position:relative;height:56px}
+    .gauge .track{position:absolute;top:24px;left:0;right:0;height:10px;border-radius:5px;background:linear-gradient(90deg,#EEF1F5,var(--accent-soft))}
+    .gauge .fillB{position:absolute;top:24px;left:0;height:10px;border-radius:5px 0 0 5px;background:var(--accent);opacity:.25;width:66%}
+    .gauge .fillA{position:absolute;top:24px;left:0;height:10px;border-radius:5px;background:#94A3B8;width:2.3%}
+    .gauge .mkr{position:absolute;top:0;font-size:11.5px;font-weight:700;transform:translateX(-50%);text-align:center;line-height:1.25}
+    .gauge .mkr i{display:block;width:2px;height:14px;background:currentColor;margin:3px auto 0;font-style:normal}
+    @media(max-width:560px){.levlab{flex-basis:74px;font-size:11px}.levpct{flex-basis:64px;font-size:11px}}
+  </style>
+
+  <h3>한눈에 보기 · '26년 증분 이익 +794억의 출처 분해</h3>
+  <div class="levviz">
+    <div class="levrow">
+      <div class="levlab"><b>산업자재</b></div>
+      <div class="levbar"><div class="levgain" style="width:52%">+414억 — 아라미드 적자 축소 + 타이어코드 회복</div></div>
+      <div class="levpct">52%</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab">화학</div>
+      <div class="levbar"><div class="levgain g2" style="width:32%">+257억 — mPPO 증설 + 석유수지</div></div>
+      <div class="levpct">32%</div>
+    </div>
+    <div class="levrow">
+      <div class="levlab">패션</div>
+      <div class="levbar"><div class="levgain g3" style="width:7%">+57억</div></div>
+      <div class="levpct">7%</div>
+    </div>
+  </div>
+  <p class="note">막대가 말하는 것: '26년 증익의 절반이 <b>「아라미드가 덜 잃는 것」</b>에서 온다 — 성장이 아니라 정상화가
+  스토리의 본체이며, 검증도 아라미드 한 부문에 집중하면 된다. mPPO(+257억의 일부)는 성장형 증분으로 질이 가장 좋다.</p>
+
+  <h3>한눈에 보기 · 배율 게이지 — 복합기업의 왜곡 주의</h3>
+  <div class="gauge">
+    <div class="track"></div>
+    <div class="fillB"></div>
+    <div class="fillA"></div>
+    <div class="mkr" style="left:4%;color:#64748B">전사 OPM<br>~2.3% ('25 추정)<i></i></div>
+    <div class="mkr" style="left:66%;color:var(--accent-deep)">'26E 증분 이익률<br>(외형 대비) 극대<i></i></div>
+  </div>
+  <p class="note" style="margin-top:14px">두 눈금의 간격이 극단으로 넓지만(표면 배율 수십 배), 이는 매출이 거의 안 늘면서
+  이익만 +69% 뛰는 <b>턴어라운드 구간의 착시</b>다 — 단일 사업의 공헌이익률 개념이 성립하지 않는다.
+  실전 시나리오는 부문별로: <b>아라미드 흑전 성공 시 +300~400억 · mPPO 풀가동 시 +200~300억 · 화학 스프레드 ±200억 —
+  베스트 조합 시 '27년 2,450억(피크 재도전), 워스트(아라미드 흑전 실패) 시 '26년 1,500억대 정체.</b>
+  가동률·증설: 아라미드 80%(추가 룸 20%p) + mPPO 김천 340억(payback ~1.5년 추정 — OP 200~300억 대비 초경량) +
+  베트남 타이어코드 300억 — 전부 소규모 고효율 투자라 재무 부담은 제한적 (부채비율 미확인 — 확실하지 않음).</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+
+  <div class="risk r1">
+    <span class="impact r1i">'26년 증익의 절반 무산</span>
+    <h4>① 아라미드 흑전 실패 — 중국 증설이 회복을 삼키는 시나리오</h4>
+    <p>턴어라운드의 본진이 걸린 리스크다. 수요 회복(BEAD·5G)과 듀폰 이탈은 순풍이지만, 중국 아라미드 증설이
+    그 공백을 채우면 판가 회복 없는 가동률 상승 — 즉 「바쁘기만 하고 못 버는」 상태가 연장된다. 회사가 공언한
+    2H26 흑전이 '27년으로 밀리면 '26E 1,945억의 절반이 흔들린다.</p>
+    <div class="alarm"><b>경보</b> — 분기 컨콜의 아라미드 판가 하락 재개 언급 · 중국 증설 가동 뉴스 · 가동률 80% 정체</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">신사업 기대 조정</span>
+    <h4>② mPPO의 관문들 — 완공·수주·경쟁의 3중 검증 대기</h4>
+    <p>mPPO 스토리는 아직 「증설 완공 전」이다 — 2Q26 준공, 고객 수주 확정, 그리고 글로벌 화학사(기존 mPPO 강자)와의
+    경쟁이라는 3개 관문이 남았다. AI CCL 시장의 개화 속도가 기대에 못 미치거나 퀄이 지연되면 화학 부문 증분(+257억)의
+    질 좋은 절반이 이연된다. 유안타가 mPPO에만 12배를 얹은 만큼, 이 부문은 밸류에도 직결된다.</p>
+    <div class="alarm"><b>경보</b> — 2Q26 준공 지연 · 컨콜의 mPPO 매출 가이던스 하향 · CCL 고객사 퀄 지연 언급</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">구조 · 밸류</span>
+    <h4>③ 복합기업 디스카운트 + 지주 구조 — 비영업 점검</h4>
+    <p>부문 4개의 합산 가치가 시장에서 통으로 할인받는 것이 컨글로머릿의 숙명이다 — 유안타의 SOTP(부분합산)도 부문별
+    5.5~12배를 가중하는 방식인데, 시장이 그 합산을 다 쳐주는 경우는 드물다. 밸류 근거의 일부가 「금융자산가치 상승」이라는
+    점(영업 외 가치 의존)도 유의. 그룹(코오롱) 지배구조·계열 거래는 상시 감시 항목이며, 소송·수사 등 뇌관은
+    미확인(확실하지 않음 — 사업보고서 우발부채 주석 확인 필요). 탄소비용 연 ~90억은 구조적 차감 요인.</p>
+    <div class="alarm"><b>경보</b> — 계열 지원성 거래 공시 · 금융자산 가치 급변 · 패션 소비 급랭 (내수 지표)</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (2026년 2월 기준 — 현재가 미확인, 재확인 필수)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:12%"><div class="tick"></div><div class="price">'25년</div><div class="lbl">4년 감익 바닥 — OP 1,151억<br>(구조조정의 해)</div></div>
+      <div class="mk" style="left:48%"><div class="tick"></div><div class="price">70,000원</div><div class="lbl">유안타 직전 목표가</div></div>
+      <div class="mk" style="left:82%"><div class="tick"></div><div class="price">83,000원</div><div class="lbl">유안타 상향 (2/10)<br>실적회복 + 금융자산가치</div></div>
+    </div>
+  </div>
+  <p class="note"><b>판정 보류 — 현재 주가 미확인으로 「가격이 증명을 앞서갔는가」 계산 불가.</b> 확보된 단서: 목표가 상향의
+  근거 절반이 영업 회복(+69%), 절반이 금융자산가치 — 후자는 시황 의존적이다. 부문별 적정 멀티플(타이어코드 5.5배·아라미드
+  8.5배·패션 7.5배·mPPO 12배)의 가중이라는 SOTP 구조상, <b>주가가 어디 있든 「무엇이 반영됐는지」는 부문별로 따져야 한다</b> —
+  통상 이런 종목은 턴어라운드 초입(지금)엔 회복분이 덜 반영되고, mPPO 같은 성장 옵션은 과잉 반영되는 비대칭을 보인다.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>아라미드 2H26 흑전 — 이 종목의 단일 관문</h4>
+    <p>부문이 4개지만 '26년의 관문은 하나다. 검증 순서: <b>① 4Q25 실적(패션 성수기 + 산업자재 개선 지속 확인) →
+    ② 1~2Q26 아라미드 가동률 85%+ 진입과 판가 안정 → ③ 2Q26 mPPO 준공 공시 → ④ 2H26 아라미드 부문 흑자 확인.</b>
+    ②가 꺾이면(중국 증설 흡수) 나머지가 다 좋아도 '26E 컨센은 못 지킨다.</p>
+    <p><b>IR에 물어볼 핵심 질문 하나:</b> "아라미드 현재 가동률과 손익분기 가동률의 갭, 그리고 판가 전제는" —
+    이 답으로 흑전 시점이 산수로 계산된다 (가동률 문턱형의 표준 질문).</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>3질문 좌표와 시리즈 내 자리 — 첫 복합기업의 취급법</h4>
+    <p>①강도 ★★ (+69%는 크지만 절반이 적자 축소 — 성장의 질은 mPPO만) / ②룸 판정 보류 (현재가 미확인 — 단 턴어라운드
+    초입 특유의 저반영 가능성) / ③변수 <b>시리즈 최다</b> (아라미드 수급 + mPPO 관문 3개 + 유가 + 소비 + 금융자산 —
+    부문 4개 × 변수 여러 개). 한솔케미칼의 정반대 극이다. 시리즈 내 역할: 반도체·조선과 무상관인 <b>자동차·통신인프라·
+    소비 노출의 내장 분산</b> + mPPO를 통한 AI 기판 사슬의 세 번째 탑승자. 취급법은 「종목」보다 「부문 바스켓」 —
+    아라미드 턴어라운드에 베팅하되 패션·화학이 완충하는 구조로 이해하는 것이 맞다.</p>
+    <p>이탈 규율 3단계: <b style="color:#93CBEA">경계 = 아라미드 판가 하락 재개 또는 mPPO 준공 지연 · 축소 = 아라미드 흑전
+    '27년 이연 공식화 · 실적 무관 이탈 = 계열 지원성 거래·거버넌스 이벤트.</b> 노이즈 판별: 3Q 패션 적자발 실적 실망은
+    계절성이므로 항상 노이즈 — 이 종목의 진짜 신호는 산업자재 부문 한 줄이다.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>복합기업은 부문 스윙 분해가 전부</h4>
+      <ul><li>전사 배율 게이지가 왜곡되는 유일한 유형 — <b>증분 이익의 「출처 분해」로 대체</b></li><li>'26년 +794억의 52%가 한 부문(산업자재) — 검증 대상이 저절로 압축된다</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>턴어라운드와 성장은 다른 스토리다</h4>
+      <ul><li>「덜 잃는 것」(아라미드)과 「더 버는 것」(mPPO)의 증분은 질이 다르다</li><li>전자는 수급(외생), 후자는 실행(내생) — <b>리스크의 성격도 경보도 다르게 설정</b></li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>AI 기판 사슬의 세 번째 탑승자</h4>
+      <ul><li>이비덴 전방을 덕산(볼)·이오테크(드릴러)·코오롱(레진)이 공유 — <b>하나의 대시보드로 세 종목 교차 검증</b></li><li>같은 전방·다른 몸의 조합은 팩터 중복 없는 사슬 분산이 된다</li></ul></div>
+  </div>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·증권사 리포트(유안타 2/10·삼성 3/23·하나·신한)·언론 보도(비즈니스포스트·커모디티스뉴스) 기반의
+  정리 자료이며 투자 권유가 아닙니다. 2025년 OP 1,151억·3Q25 부문 실적은 확정/공시 기준, 2024년 OP(~1,577억)는 증감률 역산,
+  부문별 '25~'26E 분해와 2026~27년 전망은 유안타 추정입니다. 연간 매출·부채비율·현재 주가·최신 목표가 컨센·CB/BW·우발부채는
+  미확인 — 재확인 필수. mPPO OPM 20%대·payback은 보도 기반 추산입니다. 4Q25 실적은 전망치(하나 559억)로 확정 공시 확인 필요.
+  다음 갱신 트리거: 4Q25 확정 실적 · <b>2Q26 mPPO 김천 준공</b> · 분기 컨콜 아라미드 가동률 · 듀폰 매각 결론.
+  기준일: 2026년 7월 10일. 자매 리포트: 솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두 ·
+  덕산하이메탈 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 이오테크닉스 · 원익IPS · 브이엠.
+</footer>
+
+</div>
+</body>
+</html>

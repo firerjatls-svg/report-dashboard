@@ -30,6 +30,11 @@
    "id": "def",
    "name": "방산",
    "factor": "팩터 5 · 방산 Tier-2 — 수주잔고 에코"
+  },
+  {
+   "id": "etc",
+   "name": "미분류 (자동 등록)",
+   "factor": "동기화 봇이 등록 — 섹터·스코어·촉매는 검수 후 master.json에서 수정"
   }
  ],
  "companies": [
@@ -367,8 +372,8 @@
     }
    ],
    "report": {
-    "file": "퍼스텍_기업분석_리포트.html",
-    "date": "2026-07-02"
+    "file": "010820_퍼스텍.html",
+    "date": "2026-07-14"
    }
   },
   {
@@ -469,6 +474,153 @@
    "report": {
     "file": "240810_원익IPS.html",
     "date": "2026-07-13"
+   }
+  },
+  {
+   "code": "388210",
+   "name": "씨엠티엑스",
+   "sector": "etc",
+   "seq": 18,
+   "ac": "#7C2D12",
+   "desc": "자동 등록 — 설명 검수 필요",
+   "tags": "씨엠티엑스",
+   "per": null,
+   "frame": {
+    "intensity": 2,
+    "variables": 2,
+    "note": "자동 등록 — 검수 전 기본값"
+   },
+   "catalysts": [],
+   "auto": true,
+   "report": {
+    "file": "388210_씨엠티엑스.html",
+    "date": "2026-07-14"
+   }
+  },
+  {
+   "code": "281820",
+   "name": "케이씨텍",
+   "sector": "etc",
+   "seq": 19,
+   "ac": "#1E3A8A",
+   "desc": "자동 등록 — 설명 검수 필요",
+   "tags": "케이씨텍",
+   "per": null,
+   "frame": {
+    "intensity": 2,
+    "variables": 2,
+    "note": "자동 등록 — 검수 전 기본값"
+   },
+   "catalysts": [],
+   "auto": true,
+   "report": {
+    "file": "281820_케이씨텍.html",
+    "date": "2026-07-14"
+   }
+  },
+  {
+   "code": "085910",
+   "name": "네오티스",
+   "sector": "etc",
+   "seq": 20,
+   "ac": "#3F3F46",
+   "desc": "자동 등록 — 설명 검수 필요",
+   "tags": "네오티스",
+   "per": null,
+   "frame": {
+    "intensity": 2,
+    "variables": 2,
+    "note": "자동 등록 — 검수 전 기본값"
+   },
+   "catalysts": [],
+   "auto": true,
+   "report": {
+    "file": "085910_네오티스.html",
+    "date": "2026-07-14"
+   }
+  },
+  {
+   "code": "079550",
+   "name": "LIG디펜스앤에어로",
+   "sector": "etc",
+   "seq": 21,
+   "ac": "#701A75",
+   "desc": "자동 등록 — 설명 검수 필요",
+   "tags": "LIG디펜스앤에어로",
+   "per": null,
+   "frame": {
+    "intensity": 2,
+    "variables": 2,
+    "note": "자동 등록 — 검수 전 기본값"
+   },
+   "catalysts": [],
+   "auto": true,
+   "report": {
+    "file": "079550_LIG디펜스앤에어로.html",
+    "date": "2026-07-14"
+   }
+  },
+  {
+   "code": "064350",
+   "name": "현대로템",
+   "sector": "etc",
+   "seq": 22,
+   "ac": "#14532D",
+   "desc": "자동 등록 — 설명 검수 필요",
+   "tags": "현대로템",
+   "per": null,
+   "frame": {
+    "intensity": 2,
+    "variables": 2,
+    "note": "자동 등록 — 검수 전 기본값"
+   },
+   "catalysts": [],
+   "auto": true,
+   "report": {
+    "file": "064350_현대로템.html",
+    "date": "2026-07-14"
+   }
+  },
+  {
+   "code": "012450",
+   "name": "한화에어로스페이스",
+   "sector": "etc",
+   "seq": 23,
+   "ac": "#7F1D1D",
+   "desc": "자동 등록 — 설명 검수 필요",
+   "tags": "한화에어로스페이스",
+   "per": null,
+   "frame": {
+    "intensity": 2,
+    "variables": 2,
+    "note": "자동 등록 — 검수 전 기본값"
+   },
+   "catalysts": [],
+   "auto": true,
+   "report": {
+    "file": "012450_한화에어로스페이스.html",
+    "date": "2026-07-14"
+   }
+  },
+  {
+   "code": "120110",
+   "name": "코오롱인더",
+   "sector": "etc",
+   "seq": 24,
+   "ac": "#0C4A6E",
+   "desc": "자동 등록 — 설명 검수 필요",
+   "tags": "코오롱인더",
+   "per": null,
+   "frame": {
+    "intensity": 2,
+    "variables": 2,
+    "note": "자동 등록 — 검수 전 기본값"
+   },
+   "catalysts": [],
+   "auto": true,
+   "report": {
+    "file": "120110_코오롱인더.html",
+    "date": "2026-07-14"
    }
   }
  ]

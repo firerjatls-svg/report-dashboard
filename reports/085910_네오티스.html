@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>네오티스 (085910) 기업분석 리포트 · 2026-07-14</title>
+<style>
+:root{
+  --bg:#F5F4F7; --paper:#FFFFFF; --ink:#1E2028; --muted:#676675; --line:#E1DEE8;
+  --accent:#7147A7; --accent2:#9D7BC7; --accent-soft:#F0EAF7; --accent-deep:#4D2D75;
+  --up:#1E7A58; --up-soft:#E5F3ED; --warn:#A96A16; --warn-soft:#FAF0DD;
+  --down:#B23C47; --down-soft:#F8E7EA; --blue:#376B96; --blue-soft:#E7F0F7;
+  --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-deep);text-decoration-thickness:1px;text-underline-offset:3px}
+.wrap{max-width:960px;margin:0 auto;padding:28px 18px 86px}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.cover{background:#211D29;color:#F7F1FC;border-radius:16px;padding:40px 36px 32px;position:relative;overflow:hidden}
+.cover:before{content:"";position:absolute;width:320px;height:320px;right:-110px;top:-120px;border:42px solid rgba(113,71,167,.35);border-radius:50%}
+.cover:after{content:"";position:absolute;width:150px;height:150px;right:50px;bottom:-100px;background:rgba(157,123,199,.18);transform:rotate(35deg);border-radius:28px}
+.cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#C9B4DF;margin-bottom:13px;position:relative;z-index:1}
+.cover h1{font-size:36px;line-height:1.2;letter-spacing:-.03em;position:relative;z-index:1}
+.cover .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#C9B4DF;margin-left:8px}
+.cover .sub{font-size:15.5px;color:#D8CDE3;margin-top:11px;max-width:710px;position:relative;z-index:1}
+.cover .meta{display:grid;grid-template-columns:repeat(5,minmax(110px,1fr));gap:18px;margin-top:27px;padding-top:21px;border-top:1px solid rgba(255,255,255,.14);position:relative;z-index:1}
+.cover .meta span{display:block;font-size:11.5px;color:#AD9CBC}
+.cover .meta b{display:block;font-size:16px;color:white;margin-top:3px}
+.cover .meta small{display:block;color:#C9B4DF;font-size:11px;margin-top:1px}
+.thesis{margin:24px 0 10px;background:var(--accent-soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:20px 23px;font-size:15.5px}
+.thesis b{color:var(--accent-deep)}
+.nav{position:sticky;top:10px;z-index:20;margin:18px 0 4px;padding:8px;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:12px;backdrop-filter:blur(8px);display:flex;gap:5px;overflow-x:auto}
+.nav a{white-space:nowrap;text-decoration:none;font-size:12px;font-weight:700;color:var(--muted);padding:7px 10px;border-radius:8px}
+.nav a:hover,.nav a.active{background:var(--accent-soft);color:var(--accent-deep)}
+section{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:30px 30px 28px;margin-top:18px;scroll-margin-top:72px}
+.eyebrow{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.18em;color:var(--accent);margin-bottom:6px}
+h2{font-size:26px;line-height:1.35;letter-spacing:-.025em;margin-bottom:7px}
+h3{font-size:18.5px;letter-spacing:-.015em;margin:24px 0 10px}
+h4{font-size:16px;line-height:1.45}
+.lead{font-size:15.7px;color:#454451;margin-bottom:18px}
+p+p{margin-top:9px}
+.small{font-size:12.5px;color:var(--muted)}
+.note{background:#F7F6F9;border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin:12px 0;font-size:13px;color:#4E4D5A}
+.note.warn{background:var(--warn-soft);border-color:#E9D4AA}
+.note.danger{background:var(--down-soft);border-color:#E7BEC4}
+.note.good{background:var(--up-soft);border-color:#BFDCCE}
+.pill{display:inline-block;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:800;vertical-align:1px}
+.pill.fact{background:var(--up-soft);color:var(--up)}
+.pill.est{background:var(--warn-soft);color:var(--warn)}
+.pill.risk{background:var(--down-soft);color:var(--down)}
+.pill.nr{background:var(--blue-soft);color:var(--blue)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:13px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}
+.card .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--accent);font-weight:800;margin-bottom:5px}
+.card h4{margin-bottom:7px}
+.card ul{padding-left:17px;font-size:13.5px;color:#4D4C58}
+.card li+li{margin-top:4px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.kpi{background:#F8F7FA;border:1px solid var(--line);border-radius:11px;padding:13px}
+.kpi span{display:block;color:var(--muted);font-size:11.5px}
+.kpi b{display:block;font-family:var(--mono);font-size:20px;margin-top:3px;color:var(--accent-deep)}
+.kpi small{display:block;font-size:11px;color:var(--muted)}
+.scrollx{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13.2px;min-width:640px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:#F0EDF4;color:#413B48;font-weight:800;text-align:left;padding:10px 11px;border-bottom:1px solid var(--line)}
+td{padding:9px 11px;border-bottom:1px solid #ECE9F0;vertical-align:top}
+tr:last-child td{border-bottom:0}
+tr.hl td{background:var(--accent-soft)}
+td.num,th.num{text-align:right;white-space:nowrap}
+.factrow td:first-child:before{content:"확정";font-size:9px;font-weight:900;color:var(--up);background:var(--up-soft);border-radius:99px;padding:2px 5px;margin-right:5px}
+.estrow td:first-child:before{content:"추정";font-size:9px;font-weight:900;color:var(--warn);background:var(--warn-soft);border-radius:99px;padding:2px 5px;margin-right:5px}
+.stack{display:flex;height:48px;border-radius:9px;overflow:hidden;margin:12px 0 8px;color:white;font-size:12px;font-weight:800}
+.stack>div{display:flex;align-items:center;justify-content:center;text-align:center;padding:4px;min-width:3px}
+.legend{display:flex;flex-wrap:wrap;gap:9px 16px;font-size:12.5px;color:var(--muted)}
+.legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;background:var(--c);margin-right:6px}
+.formula{font-family:var(--mono);white-space:pre-wrap;background:#25212D;color:#F1EAF7;border-radius:11px;padding:17px 19px;font-size:13.5px;margin:12px 0}
+.formula b{color:#D7BDF1}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;margin:16px 0;align-items:stretch}
+.node{position:relative;background:#F8F6FA;border:1px solid var(--line);border-radius:11px;padding:14px 12px;min-height:126px}
+.node:not(:last-child):after{content:"→";position:absolute;right:-18px;top:42%;color:var(--accent);font-size:23px;font-weight:900}
+.node .n{font-family:var(--mono);font-size:10px;color:var(--accent);font-weight:800}
+.node .t{font-size:14px;font-weight:800;margin-top:4px}
+.node .d{font-size:11.5px;color:var(--muted);margin-top:5px}
+.node .check{font-size:10.5px;color:var(--accent-deep);margin-top:7px;font-weight:700}
+.capacity{display:flex;align-items:flex-end;gap:13px;height:190px;padding:14px 8px 0;margin:11px 0;border-bottom:1px solid var(--line)}
+.capcol{flex:1;text-align:center;min-width:55px}
+.capbar{margin:0 auto;width:64%;background:linear-gradient(180deg,var(--accent2),var(--accent));border-radius:7px 7px 0 0;display:flex;align-items:flex-start;justify-content:center;color:#fff;font-family:var(--mono);font-size:11px;font-weight:800;padding-top:5px}
+.capcol small{display:block;font-size:10.5px;margin-top:5px;color:var(--muted)}
+.rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:13px 0}
+.rhythm .box{border-radius:11px;padding:14px 15px}
+.rhythm .w{background:var(--accent-soft)}
+.rhythm .m{background:var(--blue-soft)}
+.rhythm .q{background:var(--warn-soft)}
+.rhythm .freq{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;font-weight:900;margin-bottom:5px}
+.rhythm ul{font-size:12.5px;padding-left:17px}
+.journey{margin:13px 0}
+.jrow{display:grid;grid-template-columns:132px 1fr 62px;gap:9px;align-items:center;margin:9px 0}
+.jlabel{font-size:11.5px;text-align:right;color:#4E4C58}
+.jtrack{height:32px;background:#EEEAF2;border-radius:7px;display:flex;overflow:hidden;position:relative}
+.jtrack.reverse{outline:1px dashed #D6AAB0}
+.jcost{background:#B6A8C5;display:flex;align-items:center;justify-content:center;font-size:10.5px;color:#282230}
+.jprofit{background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10.5px;color:white;font-weight:800}
+.jloss{background:var(--down);display:flex;align-items:center;justify-content:center;font-size:10.5px;color:white;font-weight:800}
+.hatched{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.26) 0,rgba(255,255,255,.26) 5px,transparent 5px,transparent 10px)}
+.jmetric{font-family:var(--mono);font-size:11px;font-weight:800}
+.gaugebox{border:1px solid var(--line);border-radius:12px;padding:20px 20px 15px;margin:13px 0}
+.gauge{position:relative;height:68px;margin:12px 12px 0}
+.gline{position:absolute;left:0;right:0;top:30px;height:8px;background:linear-gradient(90deg,#E8E2EE,#BBA8CF,#7E56AD);border-radius:99px}
+.tick{position:absolute;top:42px;font-family:var(--mono);font-size:9px;color:var(--muted);transform:translateX(-50%)}
+.marker{position:absolute;top:2px;transform:translateX(-50%);text-align:center}
+.marker:after{content:"";display:block;width:3px;height:35px;background:currentColor;margin:3px auto 0;border-radius:2px}
+.marker b{font-family:var(--mono);font-size:12px;white-space:nowrap;background:white;border:1px solid currentColor;border-radius:6px;padding:2px 5px}
+.marker.opm{color:var(--blue)}
+.marker.cm{color:var(--accent-deep)}
+.risks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+.risk{border-radius:12px;padding:16px;border-top:4px solid var(--down);background:#FFF9FA}
+.risk:nth-child(2){border-top-color:var(--warn);background:#FFFBF5}
+.risk:nth-child(3){border-top-color:var(--accent);background:#FBF9FD}
+.risk .impact{font-size:10px;font-weight:900;letter-spacing:.08em;color:var(--down)}
+.risk h4{margin:4px 0 7px}
+.risk p{font-size:12.8px}
+.alarm{margin-top:9px;padding-top:8px;border-top:1px dashed #DCCFD2;font-size:11.5px;color:#5E555A}
+.band{position:relative;height:120px;margin:22px 10px 8px}
+.bandline{position:absolute;left:2%;right:2%;top:51px;height:10px;border-radius:99px;background:linear-gradient(90deg,#DCE8E3 0 24%,#ECE4F4 24% 60%,#F7E8D2 60% 82%,#F3DADF 82% 100%)}
+.bandpoint{position:absolute;top:19px;transform:translateX(-50%);text-align:center}
+.bandpoint:after{content:"";display:block;width:2px;height:48px;background:#3B3740;margin:3px auto 0}
+.bandpoint b{display:block;font-family:var(--mono);font-size:11px;white-space:nowrap}
+.bandpoint small{display:block;font-size:9.5px;color:var(--muted);white-space:nowrap}
+.bandpoint.current{color:var(--accent-deep)}
+.bandpoint.current:after{width:4px;background:var(--accent)}
+.bandlabels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);padding:0 2%}
+.qbox{border:1px solid var(--line);border-radius:11px;padding:16px 18px;margin:11px 0;background:#FBFAFC}
+.qbox .q{font-family:var(--mono);font-size:10px;letter-spacing:.15em;font-weight:900;color:var(--accent)}
+.qbox h4{font-size:17px;margin:4px 0 6px}
+.questions{margin-top:18px;background:#F6F3F9;border-radius:10px;padding:13px 16px;font-size:12.8px}
+.questions b{color:var(--accent-deep)}
+.questions div+div{margin-top:5px}
+.source{font-size:10px;vertical-align:super;font-weight:800;text-decoration:none}
+.footnotes{font-size:12px;color:#575562}
+.footnotes li+li{margin-top:7px}
+.footnotes code{font-family:var(--mono);font-size:10.5px}
+footer{padding:25px 7px 0;color:var(--muted);font-size:11.5px}
+footer b{color:#484550}
+.footergrid{display:grid;grid-template-columns:1.5fr 1fr;gap:20px}
+.printbtn{border:1px solid var(--line);background:white;color:var(--accent-deep);border-radius:9px;padding:7px 10px;font-weight:800;cursor:pointer}
+@media(max-width:760px){
+  .wrap{padding:12px 10px 58px}
+  .cover{padding:29px 22px 24px}
+  .cover h1{font-size:29px}
+  .cover .ticker{display:block;margin:5px 0 0}
+  .cover .meta{grid-template-columns:repeat(2,1fr);gap:13px}
+  section{padding:23px 17px}
+  h2{font-size:22px}
+  .cards,.risks,.rhythm{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .flow{grid-template-columns:1fr;gap:11px}
+  .node{min-height:auto}
+  .node:not(:last-child):after{content:"↓";right:auto;left:48%;top:auto;bottom:-20px}
+  .jrow{grid-template-columns:92px 1fr 48px}
+  .jlabel{font-size:10px}
+  .footergrid{grid-template-columns:1fr}
+}
+@media print{
+  body{background:white}
+  .wrap{max-width:none;padding:0}
+  .nav,.printbtn{display:none}
+  section{break-inside:avoid;border-color:#DDD;margin-top:10px}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="cover">
+  <div class="tag">INVESTMENT RESEARCH · 2026.07.14</div>
+  <h1>네오티스 <span class="ticker">085910 · KOSDAQ</span></h1>
+  <div class="sub">AI PCB의 고다층화가 “기판 출하량”보다 “홀 수 × 난이도 × 비트 마모”를 더 빠르게 키우는 구조 — 실적의 핵심은 마이크로비트 공급 부족이 증설 이후에도 유지되는지다.</div>
+  <div class="meta">
+    <div><span>현재가</span><b>17,330원</b><small>7/14 13:12 지연</small></div>
+    <div><span>시가총액</span><b>2,391억원</b><small>소각 후 주식수 계산</small></div>
+    <div><span>1Q26 매출 / OP</span><b>179 / 23억원</b><small>OPM 12.9%</small></div>
+    <div><span>2026E 매출 / OP</span><b>952 / 167억원</b><small>메리츠 추정</small></div>
+    <div><span>리스크 유형</span><b>추세 + 이벤트</b><small>수급·원재료·증설</small></div>
+  </div>
+</header>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 네오티스의 투자 논리는 단순한 “AI PCB 성장”이 아니다. 고다층·고경도 PCB는 가공해야 할 홀 수와 비트 소모량을 동시에 늘리고, 중국산의 품질·일본산의 납기 제약이 국내 공급자에게 가격·점유율 기회를 준다. 1Q26 마이크로비트 매출은 전분기 대비 20.9% 증가했고, 생산능력은 1H26 연 4,200만개에서 2H26 4,800만개, 2H27 7,200만개로 확대될 계획이다. 반면 주가는 52주 고점 대비 약 52% 하락했지만, 2027년 이익 추정치에는 아직 대규모 증설의 무결점 실행과 공급 부족 지속이 들어 있다. <b>싸졌다는 사실과 검증이 끝났다는 사실은 다르다.</b>
+</div>
+
+<nav class="nav" id="nav">
+  <a href="#s1">1 사업</a><a href="#s2">2 수익</a><a href="#s3">3 실적</a><a href="#s4">4 전방</a>
+  <a href="#s5">5 트래킹</a><a href="#s6">6 레버리지</a><a href="#s7">7 리스크·밸류</a><a href="#s8">8 종합</a><a href="#appendix">부록</a>
+</nav>
+
+<section id="s1">
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">세 사업이 섞여 있지만 투자 포인트는 동일하지 않다. 마이크로비트는 AI PCB 소모품, 샤프트는 자동차 부품, 렌즈연마기는 장비 사업이다.</div>
+
+  <h3>매출 구성</h3>
+  <div class="stack" aria-label="2025 매출 구성">
+    <div style="flex:33.5;background:#7147A7">마이크로비트 33.5%</div>
+    <div style="flex:36.5;background:#4E6C87">샤프트 36.5%</div>
+    <div style="flex:29;background:#A57949">렌즈연마기 29.0%</div>
+    <div style="flex:1;background:#8A8790"></div>
+  </div>
+  <div class="legend">
+    <span style="--c:#7147A7">2025 마이크로비트 230억원</span>
+    <span style="--c:#4E6C87">샤프트 251억원</span>
+    <span style="--c:#A57949">렌즈연마기 199억원</span>
+    <span style="--c:#8A8790">기타 8억원</span>
+  </div>
+  <div class="stack" aria-label="2026 1분기 매출 구성">
+    <div style="flex:45.3;background:#7147A7">마이크로비트 45.3%</div>
+    <div style="flex:29.6;background:#4E6C87">샤프트 29.6%</div>
+    <div style="flex:23.5;background:#A57949">렌즈 23.5%</div>
+    <div style="flex:1.6;background:#8A8790"></div>
+  </div>
+  <p class="small">1Q26: 마이크로비트 81억원, 샤프트 53억원, 렌즈연마기 42억원, 기타 3억원. 분기 기준 마이크로비트가 최대 사업으로 올라섰다. 금액은 반올림. <a class="source" href="#src1">[S1]</a></p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="k">PCB PRECISION TOOLS</div>
+      <h4>마이크로비트</h4>
+      <ul>
+        <li>PCB 홀 가공용 마이크로드릴, 외곽 절삭용 라우터·엔드밀</li>
+        <li>사용할수록 마모되는 <b>소모품</b>; PCB 난이도와 홀 수가 수요를 결정</li>
+        <li>국내 드릴비트 생산업체 중 사실상 유일한 상장 순수 노출</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">AUTOMOTIVE PARTS</div>
+      <h4>모터 샤프트</h4>
+      <ul>
+        <li>자동차용 모터의 회전축</li>
+        <li>완성차 생산량·차종 프로그램에 연동</li>
+        <li>단가 협상력이 마이크로비트보다 낮고, 품질·원가·가동률이 핵심</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">OPTICAL EQUIPMENT</div>
+      <h4>렌즈연마기</h4>
+      <ul>
+        <li>광학·카메라 렌즈 가공 장비</li>
+        <li>수주·검수 시점에 따라 분기 변동성이 큰 장비형 매출</li>
+        <li>웨어러블·카메라모듈 채택 확대가 회복 변수</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>고객 구조: 직접 고객과 최종 수요를 분리</h3>
+  <div class="scrollx"><table>
+    <tr><th>사업</th><th>직접 고객</th><th>최종 수요</th><th>확실성</th></tr>
+    <tr><td>마이크로비트</td><td>국내외 PCB·패키지기판 제조사</td><td>AI 서버·고속 스위치·FC-BGA·MLB·HDI·메모리 모듈</td><td>고객명은 대부분 비공개. 리포트는 국내 “D사”, 신규 MLB 고객으로 익명 표기</td></tr>
+    <tr><td>샤프트</td><td>모터·자동차 부품 Tier-1</td><td>내연기관·전동화 차량 생산</td><td>개별 프로그램·고객별 비중 미공개</td></tr>
+    <tr><td>렌즈연마기</td><td>광학렌즈·카메라모듈 생산업체</td><td>스마트폰·웨어러블·산업용 카메라</td><td>프로젝트 단위 수주, 고객명 미공개</td></tr>
+  </table></div>
+  <p class="note"><b>추정 고객명을 사실처럼 쓰면 안 된다.</b> 익명 “D사”를 특정 상장사로 단정할 근거는 공개 자료에 없다. 검증은 고객사 설비투자 공시, 품질 승인 시점, 납품 개시 월, 네오티스의 매출채권·수출 지역 변화로 해야 한다.</p>
+
+  <h3>제품별 경쟁 구도</h3>
+  <div class="scrollx"><table>
+    <tr><th>제품</th><th>경쟁 구도</th><th>네오티스의 우위</th><th>약점</th></tr>
+    <tr><td>PCB 드릴·라우터</td><td>일본 Union Tool, 대만 Topoint·Key Ware, 중국 Dtech·China Tungsten 등 글로벌 다수</td><td>국내 즉시 대응, 납기, 고객 맞춤, 공급망 다변화. 국내 드릴비트 약 30~40%, 라우터·엔드밀 약 60~70%로 업계에서 추정</td><td>절대 규모는 글로벌 선두보다 작고, 초미세·고난도 제품의 지속적 품질 검증 필요</td></tr>
+    <tr><td>자동차 샤프트</td><td>고객별 승인 벤더 다수, 장기 프로그램형</td><td>정밀가공·기존 고객 인증</td><td>가격 전가가 느리고 자동차 생산·고객 집중에 노출</td></tr>
+    <tr><td>렌즈연마기</td><td>국내외 광학가공장비 업체와 프로젝트 경쟁</td><td>광진정밀 인수로 제품군 확보</td><td>수주 시점·검수 지연에 따른 실적 변동</td></tr>
+  </table></div>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 신규 MLB 고객의 양산 승인 품목은 서버용 MLB인가, 범용 통신·산업용인가?</div><div><b>더 파볼 질문 2</b> — 마이크로비트 매출에서 드릴·라우터·엔드밀별 ASP와 수량 믹스는 어떻게 변했는가?</div></div>
+</section>
+
+<section id="s2">
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">마이크로비트는 수량·ASP·제품 난이도의 곱, 샤프트는 프로그램 물량과 단가, 렌즈연마기는 장비 인도·검수의 함수다.</div>
+
+  <div class="formula">마이크로비트 매출 = 출하 수량 × ASP(직경·코팅·난이도·고객 믹스)
+샤프트 매출       = 적용 차종 생산량 × 프로그램 단가
+렌즈연마기 매출   = 장비 인도·검수 대수 × 장비 ASP + 부품·서비스
+
+영업이익 = 매출총이익
+         − 인건비·감가상각·연구개발·판관비
+         = [판매단가 − 초경합금·가공·직접노무] × 수량 − 고정비</div>
+
+  <h3>가격 결정 구조</h3>
+  <div class="scrollx"><table>
+    <tr><th>사업</th><th>분류</th><th>원가 상승 전가</th><th>실제 방어 수단</th></tr>
+    <tr><td>마이크로비트</td><td><b>분기·수시 협상형</b>에 가까움. 장기 수주 빈티지형이 아님</td><td>공급 부족과 품질 차별화가 있을 때 가능. 2026년에는 텅스텐 가격 상승분의 고객 판가 전가가 진행된 것으로 리포트가 판단</td><td>고부가 제품 믹스, 신규 고객 인증, 짧은 납기, 재고 확보, 증설 전 풀가동</td></tr>
+    <tr><td>샤프트</td><td><b>연간·차종 프로그램 협상형</b></td><td>즉시 전가가 제한적일 가능성이 높음 <span class="pill est">추정</span></td><td>생산성·수율·자동화·차종 믹스</td></tr>
+    <tr><td>렌즈연마기</td><td><b>수주 시 고정형</b></td><td>수주 이후 원가 상승은 전가가 어려움</td><td>견적 단계 원가 반영, 사양 변경, 부품 조달, 검수·납기 관리</td></tr>
+  </table></div>
+
+  <h3>제품별 이익 기여 — 공시는 매출만, 영업이익은 미공개</h3>
+  <div class="scrollx"><table>
+    <tr><th>사업</th><th>2025 매출 비중</th><th>1Q26 매출 비중</th><th>이익 기여 판정</th></tr>
+    <tr><td>마이크로비트</td><td class="num">33.5%</td><td class="num"><b>45.3%</b></td><td><b>매출 비중보다 이익 기여가 높아졌을 가능성</b>. 2026년 전사 마진 상승의 주동력이라는 증권사 해석. 다만 사업부 OP는 미공개이므로 수치화 금지</td></tr>
+    <tr><td>샤프트</td><td class="num">36.5%</td><td class="num">29.6%</td><td>안정적 외형 축. 자동차 부품 특성상 가격 협상력과 마진은 마이크로비트보다 낮을 가능성 <span class="pill est">추정</span></td></tr>
+    <tr><td>렌즈연마기</td><td class="num">29.0%</td><td class="num">23.5%</td><td>2025년 회복이 전사 손익 개선에 기여했으나 장비 인도 시점에 따라 변동</td></tr>
+  </table></div>
+
+  <h3>마진의 원천과 훼손 요인</h3>
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진 훼손 요인 (−)</th></tr>
+    <tr>
+      <td>① AI PCB의 층수·홀 수·경도 상승으로 비트 소모량 증가<br>② 공급 부족 속 ASP 인상·원가 전가<br>③ 신규 고객 승인으로 가동률과 믹스 상승<br>④ 증설 전 풀가동에 따른 고정비 희석<br>⑤ 원/달러 상승 시 수출 채산성 우호 가능성</td>
+      <td>① 텅스텐·초경합금 가격 상승이 판가보다 빠를 때 스프레드 축소<br>② 증설 후 공급 과잉·가격 경쟁<br>③ 신규 설비 초기 수율 저하와 감가상각 증가<br>④ 렌즈연마기 수주·검수 지연<br>⑤ 자동차 샤프트 고객 생산 감소</td>
+    </tr>
+  </table></div>
+
+  <p class="note warn"><b>핵심 회계 한계:</b> 제품별 매출은 확인되지만 제품별 영업이익·ASP·출하량·가동률은 정기공시에서 충분히 분리되지 않는다. 따라서 “마이크로비트가 이익의 몇 %”라는 정밀 수치는 IR 답변 없이는 만들 수 없다.</p>
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 텅스텐 원가 인상분이 고객 판가에 반영되기까지 평균 몇 주가 걸리는가?</div><div><b>더 파볼 질문 2</b> — 2026년 마이크로비트 ASP 상승 중 순수 가격, 제품 믹스, 환율의 기여는 각각 얼마인가?</div></div>
+</section>
+
+<section id="s3">
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 회복은 확인, 가속은 아직 추정</h2>
+  <div class="lead">2023년 적자 이후 2024~2025년 회복했고, 2026년부터 마이크로비트 증설과 ASP 상승이 본격적인 이익 레버리지로 연결된다는 것이 시장의 가정이다.</div>
+
+  <h3>연간 실적</h3>
+  <div class="scrollx"><table>
+    <tr><th>십억원</th><th class="num">2021A</th><th class="num">2022A</th><th class="num">2023A</th><th class="num">2024A</th><th class="num">2025A</th><th class="num">2026E</th><th class="num">2027E</th></tr>
+    <tr><td>매출</td><td class="num">66.0</td><td class="num">80.4</td><td class="num">54.3</td><td class="num">54.3</td><td class="num"><b>68.7</b></td><td class="num">95.2</td><td class="num">149.5</td></tr>
+    <tr><td>영업이익</td><td class="num">9.7</td><td class="num">11.7</td><td class="num">-0.1</td><td class="num">3.2</td><td class="num"><b>7.8</b></td><td class="num">16.7</td><td class="num">29.2</td></tr>
+    <tr><td>OPM</td><td class="num">14.6%</td><td class="num">14.5%</td><td class="num">-0.1%</td><td class="num">5.9%</td><td class="num"><b>11.3%</b></td><td class="num">17.5%</td><td class="num">19.5%</td></tr>
+    <tr><td>당기순이익</td><td class="num">7.7</td><td class="num">6.7</td><td class="num">-3.3</td><td class="num">6.2</td><td class="num">6.3</td><td class="num">17.6</td><td class="num">23.1</td></tr>
+  </table></div>
+  <p class="small">A=확정, E=메리츠증권 2026-06-01 추정. 2025 잠정실적은 매출 686.8억원, OP 77.8억원, 순이익 62.9억원으로 공시됐으며 회사는 마이크로비트 수요 증가, 렌즈연마기 회복, 고환율을 개선 요인으로 제시했다. <a class="source" href="#src1">[S1]</a><a class="source" href="#src5">[S5]</a></p>
+
+  <h3>최근 분기</h3>
+  <div class="scrollx"><table>
+    <tr><th>십억원</th><th class="num">1Q25A</th><th class="num">2Q25A</th><th class="num">3Q25A</th><th class="num">4Q25A</th><th class="num">1Q26A</th><th class="num">2Q26E</th><th class="num">3Q26E</th><th class="num">4Q26E</th></tr>
+    <tr><td>매출</td><td class="num">17.3</td><td class="num">15.7</td><td class="num">18.0</td><td class="num">17.6</td><td class="num"><b>17.9</b></td><td class="num">23.3</td><td class="num">26.9</td><td class="num">27.1</td></tr>
+    <tr><td>영업이익</td><td class="num">1.7</td><td class="num">1.3</td><td class="num">2.6</td><td class="num">2.2</td><td class="num"><b>2.3</b></td><td class="num">4.1</td><td class="num">5.2</td><td class="num">5.0</td></tr>
+    <tr><td>OPM</td><td class="num">9.7%</td><td class="num">8.2%</td><td class="num">14.6%</td><td class="num">12.4%</td><td class="num"><b>12.9%</b></td><td class="num">17.7%</td><td class="num">19.5%</td><td class="num">18.5%</td></tr>
+    <tr><td>마이크로비트</td><td class="num">4.7</td><td class="num">5.3</td><td class="num">6.3</td><td class="num">6.7</td><td class="num"><b>8.1</b></td><td class="num">10.7</td><td class="num">14.2</td><td class="num">16.3</td></tr>
+  </table></div>
+
+  <div class="kpis">
+    <div class="kpi"><span>1Q26 매출 YoY</span><b>+3.4%</b><small>샤프트 부진 상쇄</small></div>
+    <div class="kpi"><span>1Q26 OP YoY</span><b>+36.9%</b><small>마이크로비트 믹스</small></div>
+    <div class="kpi"><span>1Q26 비트 QoQ</span><b>+20.9%</b><small>풀가동·ASP</small></div>
+    <div class="kpi"><span>2Q26E OP YoY</span><b>+220%</b><small>아직 추정</small></div>
+  </div>
+
+  <h3>증익의 질과 4분기 판독</h3>
+  <div class="scrollx"><table>
+    <tr><th>구분</th><th>내용</th><th>판정</th></tr>
+    <tr><td>구조적</td><td>마이크로비트 수요·ASP·가동률, 신규 고객, 2H26 증설</td><td><span class="pill fact">1Q 일부 확인</span> 2Q 이후 가속은 검증 필요</td></tr>
+    <tr><td>부분 일회성·외생</td><td>고환율, 렌즈 장비 인도 시점, 분기별 판관비</td><td>전사 이익 변동을 확대</td></tr>
+    <tr><td>4Q 패턴</td><td>4Q25 OPM 12.4%로 3Q 14.6%보다 낮았으나 2개년 표본만으로 상시 성과급 패턴을 단정하기 어려움</td><td><b>3Q 누적 + 4Q 판관비·장비 검수</b>를 함께 봐야 함</td></tr>
+  </table></div>
+
+  <h3>순이익과 영업이익의 괴리</h3>
+  <p>2024년 영업이익은 32억원인데 순이익은 62억원으로 더 컸다. 비영업손익이 실적을 끌어올린 해이므로 그 해 PER만 보면 본업 회복을 과대평가할 수 있다. 2025년에는 연결 순이익 63억원 중 지배주주 귀속이 약 43억원으로 비지배지분 차이가 컸다. <b>이 회사의 정상 이익력과 밸류에이션은 우선 영업이익·지배주주 EPS로 판단하는 것이 맞다.</b></p>
+
+  <p class="note danger"><b>리서치 자료 내부 숫자 불일치:</b> 2026-06-01 메리츠 보고서의 2027년 마이크로비트 매출은 실적 테이블에 801억원, 바로 아래 차트에는 912억원으로 적혀 있다. 총매출 1,495억원과 타 사업 합계에 맞는 값은 801억원이므로 이 보고서는 표의 801억원을 사용했다. IR 또는 차기 리포트에서 재확인해야 한다.</p>
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 2Q26 마이크로비트 매출 107억원·OPM 17.7%가 실제로 확인되는가?</div><div><b>더 파볼 질문 2</b> — 지배주주 순이익과 연결 순이익 차이를 만드는 자회사·비지배지분 구조는 2026년에 어떻게 변하는가?</div></div>
+</section>
+
+<section id="s4">
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — AI PCB의 “출하량”보다 “가공 강도”</h2>
+  <div class="lead">한 장의 PCB가 더 두껍고, 더 단단하고, 더 많은 홀을 요구할수록 비트는 더 빨리 닳는다. 이 때문에 네오티스는 PCB 면적 증가보다 가공 난이도 상승에 더 민감하다.</div>
+
+  <div class="flow">
+    <div class="node"><div class="n">01 DEMAND</div><div class="t">AI 서버·고속 네트워크</div><div class="d">GPU·스위치·가속기용 고성능 기판 증가</div><div class="check">확인: CSP·서버 OEM CAPEX</div></div>
+    <div class="node"><div class="n">02 PCB</div><div class="t">고다층·대면적·고경도</div><div class="d">MLB·FC-BGA·고사양 CCL 확대</div><div class="check">확인: PCB사 월매출·가동률</div></div>
+    <div class="node"><div class="n">03 PROCESS</div><div class="t">홀 수·종횡비 상승</div><div class="d">천공 횟수 증가, 미세 직경·정밀도 요구</div><div class="check">확인: 고객 품질 승인·제품 믹스</div></div>
+    <div class="node"><div class="n">04 CONSUMABLE</div><div class="t">비트 수명 단축</div><div class="d">기판당 비트 소모량 증가</div><div class="check">확인: 출하 수량·ASP·재연마 비중</div></div>
+    <div class="node"><div class="n">05 EARNINGS</div><div class="t">풀가동·가격·증설</div><div class="d">매출 증가보다 OP가 빠르게 증가</div><div class="check">확인: Capa·OPM·재고</div></div>
+  </div>
+
+  <p class="note good"><b>팩터 선언:</b> “AI PCB 고다층화 × 소모품 사용량 증가 × 공급 제약” 팩터다. 기존 시리즈에서 확인되는 한화엔진의 “조선 수주 빈티지 × DF 믹스”와는 전방·가격결정·실적 시차가 다르므로 분산 가치는 있다. 다만 둘 다 <b>공급 제약과 증설 실행</b>에 이익이 좌우된다는 공통점은 남는다.</p>
+
+  <h3>수주산업인가?</h3>
+  <p>마이크로비트는 장기 수주잔고를 쌓는 조선형 사업이 아니라 반복 주문형 소모품이다. 따라서 “수주→매출 2년” 같은 빈티지 지도는 부적절하다. 더 유효한 지도는 <b>고객 인증 → 주문 배정 → 설비 설치 → 수율 안정 → 월·분기 출하</b>다.</p>
+  <div class="scrollx"><table>
+    <tr><th>단계</th><th>대략적 시차</th><th>확인 수단</th><th>실적 메아리</th></tr>
+    <tr><td>고객 퀄 테스트</td><td>수개월</td><td>IR, 신규 거래처 납품 개시 언급</td><td>승인 즉시 매출이 아니라 소량 샘플→양산 배정</td></tr>
+    <tr><td>기존 공장 장비 반입</td><td>수주~설치 수개월</td><td>생산능력 가이던스</td><td>2H26부터 4,800만개 체제</td></tr>
+    <tr><td>그린필드 증설</td><td>약 1년+</td><td>CPS 자금 사용, 공장 착공·장비 발주</td><td>2H27 7,200만개 목표</td></tr>
+    <tr><td>수율·고객 승인 안정</td><td>설치 후 수개월</td><td>OPM, 재고, 매출채권, 고객 확대</td><td>계획 지연 시 2027E 이익이 뒤로 밀림</td></tr>
+  </table></div>
+
+  <h3>생산능력 지도</h3>
+  <div class="capacity">
+    <div class="capcol"><div class="capbar" style="height:75px">3,000</div><small>1H25</small></div>
+    <div class="capcol"><div class="capbar" style="height:88px">3,500</div><small>2H25</small></div>
+    <div class="capcol"><div class="capbar" style="height:105px">4,200</div><small>1H26</small></div>
+    <div class="capcol"><div class="capbar" style="height:120px">4,800</div><small>2H26</small></div>
+    <div class="capcol"><div class="capbar" style="height:180px">7,200</div><small>2H27</small></div>
+  </div>
+  <p class="small">단위: 연간 기준 만개. 회사 계획을 인용한 증권사 전망이며 실제 생산·판매량과 동일하지 않다. <a class="source" href="#src1">[S1]</a></p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 고객이 요구하는 미세 직경·코팅·수명 사양이 2025년 대비 얼마나 높아졌는가?</div><div><b>더 파볼 질문 2</b> — 2H27 7,200만개 중 이미 고객 승인·물량 배정 의향이 있는 비중은 얼마인가?</div></div>
+</section>
+
+<section id="s5">
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 지표 — 무엇을 얼마나 자주 볼 것인가</h2>
+  <div class="lead">이 종목은 기본적으로 지표 추세형이다. 다만 증설·고객 승인·CPS 전환처럼 특정 날짜에 비대칭 충격이 발생하므로 이벤트 캘린더를 겹쳐야 한다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처·주기·무료</th><th>현재 수치와 방향</th></tr>
+    <tr><td><b>마이크로비트 매출</b></td><td>수량·ASP·믹스를 합친 가장 직접적인 신호</td><td>분기보고서·리서치 / 분기 / 무료</td><td>1Q26 81억원, QoQ +20.9% <span class="pill fact">상승</span></td></tr>
+    <tr><td><b>전사 OPM</b></td><td>ASP 전가와 고정비 레버리지 검증</td><td>DART / 분기 / 무료</td><td>1Q26 12.9%, 2Q26E 17.7% <span class="pill est">점프 추정</span></td></tr>
+    <tr><td><b>마이크로비트 Capa</b></td><td>공급 제약 해소와 매출 상한</td><td>IR·증권사 / 반기 / 무료</td><td>1H26 4,200만개 → 2H26 4,800만개 계획</td></tr>
+    <tr><td><b>대만 드릴비트사 월매출</b></td><td>글로벌 PCB 천공 소모품 업황의 월간 대리변수</td><td>대만 MOPS / 월 / 무료</td><td>2026년 1~5월 주요 업체 주가·매출 기대가 강세였으나 6~7월 절대치는 개별 재확인 필요</td></tr>
+    <tr><td><b>텅스텐 가격</b></td><td>핵심 원재료 비용과 판가 인상 압력</td><td>KOMIS·중국 가격지표 / 주간·월 / 일부 무료</td><td>2026년 상반기 급등 추세. 리포트 차트는 4월 말 약 300달러/kg 부근을 시사 <span class="pill est">차트 판독</span></td></tr>
+    <tr><td><b>주가·52주 위치</b></td><td>실적보다 빠른 기대·수급 과열 확인</td><td>거래소·시세 / 일 / 무료</td><td>17,330원; 고점 36,300원 대비 -52.3%, 저점 3,090원 대비 +460.8%</td></tr>
+    <tr><td><b>CPS 잠재 희석</b></td><td>EPS·수급에 직접 영향</td><td>KIND / 이벤트 / 무료</td><td>662,000주, 소각 후 보통주 대비 4.8%; 전환개시 2027-06-06</td></tr>
+  </table></div>
+
+  <p class="note warn">대만 월매출·텅스텐 현물가격은 무료 데이터의 공표 시차와 단위 차이가 크다. 숫자를 한 사이트에서 자동으로 가져와 비교하기보다, 동일 출처·동일 단위로 시계열을 유지해야 한다.</p>
+
+  <h3>실전 체크리스트</h3>
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY · 무료</div><ul><li>주가와 거래대금, 투자경고·공시</li><li>KOMIS 텅스텐 방향</li><li>주요 PCB사 주문·가동률 뉴스</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY · 무료</div><ul><li>Topoint·Key Ware 월매출</li><li>AI 서버·PCB 공급망 월간 코멘트</li><li>증설 일정 변경 여부</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY · 무료</div><ul><li>비트 매출·OPM·재고·매출채권</li><li>샤프트·렌즈의 전사 희석 여부</li><li>Capa와 신규 고객 양산 시점</li></ul></div>
+  </div>
+
+  <h3>이벤트 캘린더</h3>
+  <div class="scrollx"><table>
+    <tr><th>시점</th><th>이벤트</th><th>판단 질문</th></tr>
+    <tr><td>2026년 8월 중순 예상</td><td>반기보고서</td><td>2Q26 매출 233억원·OP 41억원 추정에 근접했는가? 정확한 발표일은 미공개</td></tr>
+    <tr><td>2026년 하반기</td><td>4,800만개 체제</td><td>장비 반입이 실제 출하·OPM으로 연결되는가?</td></tr>
+    <tr><td>2027-06-06 이후</td><td>CPS 전환 가능</td><td>전환·매각 수급과 희석이 시작되는가?</td></tr>
+    <tr><td>2027년 하반기</td><td>그린필드 7,200만개 목표</td><td>공장·장비·고객 승인·수율이 동시에 준비됐는가?</td></tr>
+  </table></div>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 네오티스 비트 매출과 Topoint 월매출의 선행·동행 시차는 몇 개월인가?</div><div><b>더 파볼 질문 2</b> — 재고 증가가 원재료 선확보인지, 판매 둔화인지 구분할 기준은 무엇인가?</div></div>
+</section>
+
+<section id="s6">
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 증분 매출 100원 중 얼마가 이익으로 남는가</h2>
+  <div class="lead">설비·인력·R&D를 먼저 깔아야 하는 정밀가공업이라 가동률이 오르면 레버리지가 크다. 그러나 분기 매출 변화가 작을 때 계산한 증분마진은 노이즈가 매우 크다.</div>
+
+  <h3>고정비·변동비 구조</h3>
+  <div class="scrollx"><table>
+    <tr><th>성격</th><th>항목</th><th>근거·해석</th></tr>
+    <tr><td>고정·준고정</td><td>정밀가공 설비 감가상각, 생산 인력, 품질·R&D, 공장 운영비</td><td>2025년 감가상각비 약 32억원, CAPEX 약 19억원. 증설 이후 감가상각이 선행</td></tr>
+    <tr><td>변동</td><td>텅스텐 초경 소재, 소모품, 전력, 외주가공, 물류</td><td>매출원가율 2025년 72.6% → 1Q26 69.8% → 2026E 68.3%로 하락 전망</td></tr>
+    <tr><td>혼합</td><td>판관비</td><td>2025년 111억원, 2026E 135억원. 절대액은 늘지만 매출 비중은 16.1%→14.2%로 희석 전망</td></tr>
+  </table></div>
+
+  <h3>최근 구간의 실측 증분마진</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th class="num">Δ매출</th><th class="num">ΔOP</th><th class="num">증분마진</th><th>판독</th></tr>
+    <tr><td>4Q24→1Q25</td><td class="num">+42억원</td><td class="num">+13억원</td><td class="num">31.0%</td><td>외형 회복·고정비 흡수</td></tr>
+    <tr><td>1Q25→2Q25</td><td class="num">-16억원</td><td class="num">-4억원</td><td class="num">25.0%</td><td>역레버리지</td></tr>
+    <tr><td>2Q25→3Q25</td><td class="num">+23억원</td><td class="num">+13억원</td><td class="num">56.5%</td><td>마이크로비트 믹스·기저</td></tr>
+    <tr><td>3Q25→4Q25</td><td class="num">-4억원</td><td class="num">-4억원</td><td class="num">100%</td><td>분모가 작아 왜곡, 계절 판관비</td></tr>
+    <tr><td>4Q25→1Q26</td><td class="num">+3억원</td><td class="num">+1억원</td><td class="num">33.3%</td><td>분모가 작아 참고용</td></tr>
+    <tr class="hl"><td>1Q26→2Q26E</td><td class="num">+54억원</td><td class="num">+18억원</td><td class="num"><b>33.3%</b></td><td>증설·ASP 가정, 아직 추정</td></tr>
+  </table></div>
+
+  <h3>시각화 ① — 증분 매출 100원의 여정</h3>
+  <div class="journey">
+    <div class="jrow"><div class="jlabel">4Q24→1Q25</div><div class="jtrack"><div class="jcost" style="width:69%">비용 69</div><div class="jprofit" style="width:31%">이익 31</div></div><div class="jmetric">+31%</div></div>
+    <div class="jrow"><div class="jlabel">1Q25→2Q25</div><div class="jtrack reverse"><div class="jcost" style="width:75%">비용↓ 75</div><div class="jloss" style="width:25%">OP↓ 25</div></div><div class="jmetric">역방향</div></div>
+    <div class="jrow"><div class="jlabel">2Q25→3Q25</div><div class="jtrack"><div class="jcost" style="width:43.5%">비용 44</div><div class="jprofit" style="width:56.5%">이익 56</div></div><div class="jmetric">+57%</div></div>
+    <div class="jrow"><div class="jlabel">3Q25→4Q25</div><div class="jtrack reverse"><div class="jloss hatched" style="width:100%">매출 4↓ · OP 4↓ — 소분모 왜곡</div></div><div class="jmetric">100%</div></div>
+    <div class="jrow"><div class="jlabel">4Q25→1Q26</div><div class="jtrack"><div class="jcost" style="width:66.7%">비용 67</div><div class="jprofit" style="width:33.3%">이익 33</div></div><div class="jmetric">+33%</div></div>
+    <div class="jrow"><div class="jlabel">1Q26→2Q26E</div><div class="jtrack"><div class="jcost hatched" style="width:66.7%">비용 67</div><div class="jprofit hatched" style="width:33.3%">이익 33</div></div><div class="jmetric">E +33%</div></div>
+  </div>
+  <p class="small">빗금은 추정 또는 소분모 왜곡 구간. 선택한 연속 분기 중 이익 증분이 매출 증분을 초과하는 &gt;100% 구간은 없지만, 3Q25→4Q25의 100%는 정상 공헌이익률이 아니라 작은 매출 감소와 판관비 변동의 결과다.</p>
+
+  <h3>시각화 ② — 배율 게이지</h3>
+  <div class="gaugebox">
+    <b>현재 OPM 12.9% vs 2Q26E 증분 공헌이익률 33.3%</b>
+    <div class="gauge">
+      <div class="gline"></div>
+      <span class="tick" style="left:0%">0</span><span class="tick" style="left:25%">10</span><span class="tick" style="left:50%">20</span><span class="tick" style="left:75%">30</span><span class="tick" style="left:100%">40%</span>
+      <div class="marker opm" style="left:32.25%"><b>OPM 12.9</b></div>
+      <div class="marker cm" style="left:83.25%"><b>증분 33.3</b></div>
+    </div>
+    <p class="small">배율 = 33.3 ÷ 12.9 = <b>2.58배</b>. 매출이 늘 때 OPM이 빠르게 상승할 수 있다는 뜻이지, 영구적인 2.58배 이익 증가를 뜻하지 않는다. OPM이 18~20%로 올라갈수록 같은 공헌이익률의 배율은 자연히 낮아진다.</p>
+  </div>
+
+  <h3>매출 시나리오 — 1Q26을 기준점으로</h3>
+  <div class="scrollx"><table>
+    <tr><th>시나리오</th><th class="num">매출</th><th class="num">OP</th><th class="num">OPM</th><th>가정</th></tr>
+    <tr><td>기준 1Q26</td><td class="num">178.9억원</td><td class="num">22.9억원</td><td class="num">12.9%</td><td>확정</td></tr>
+    <tr><td>매출 +10%</td><td class="num">196.8억원</td><td class="num">28.9억원</td><td class="num">14.7%</td><td>증분마진 33.3%</td></tr>
+    <tr><td>매출 +20%</td><td class="num">214.7억원</td><td class="num">34.8억원</td><td class="num">16.2%</td><td>증분마진 33.3%</td></tr>
+    <tr class="hl"><td>2Q26E</td><td class="num">233억원</td><td class="num">41억원</td><td class="num">17.7%</td><td>매출 +30%, 믹스·ASP 동시 개선</td></tr>
+  </table></div>
+  <p class="note">레버리지는 단일 “물량”이 아니라 <b>물량 × 고부가 믹스 × 판가 전가 × 수율</b>의 곱이다. 물량만 늘고 텅스텐 전가나 신규 설비 수율이 틀리면 위 시나리오는 무너진다.</p>
+
+  <h3>증설 CAPEX, 회수기간, ROIC</h3>
+  <p>2026년 CPS 조달액은 185.7억원이며 이 중 시설자금 100억원, 운영자금 약 85.7억원으로 공시됐다. 그러나 시설자금 100억원이 그린필드의 총투자액 전체인지는 확인되지 않는다. <a class="source" href="#src2">[S2]</a></p>
+  <div class="scrollx"><table>
+    <tr><th>프레임 추정</th><th>보수</th><th>기준</th><th>낙관</th></tr>
+    <tr><td>추가 Capa</td><td colspan="3" class="num">2,400만개 (4,800→7,200만개)</td></tr>
+    <tr><td>개당 매출 가정</td><td class="num">650원</td><td class="num">750원</td><td class="num">850원</td></tr>
+    <tr><td>추가 매출 잠재</td><td class="num">156억원</td><td class="num">180억원</td><td class="num">204억원</td></tr>
+    <tr><td>증분 OP 마진</td><td class="num">30%</td><td class="num">33%</td><td class="num">35%</td></tr>
+    <tr><td>추가 OP</td><td class="num">47억원</td><td class="num">59억원</td><td class="num">71억원</td></tr>
+    <tr><td>100억원 기준 payback</td><td class="num">2.1년</td><td class="num">1.7년</td><td class="num">1.4년</td></tr>
+  </table></div>
+  <p class="small">위 표는 공시된 시설자금 100억원만 분모로 둔 프레임 추정이다. 토지·건물·추가 장비·운전자본을 포함한 총투자액이 더 크면 실제 payback은 길어진다. 세전 증분 OP/100억원 기준 단순 ROIC는 47~71%이나, 정상세율·램프업·유지보수 CAPEX 반영 전이므로 투자판단 수치로 직접 쓰면 안 된다.</p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 2H26 증설분의 감가상각 개시월과 초기 수율은 얼마인가?</div><div><b>더 파볼 질문 2</b> — 그린필드 총투자액에서 100억원 시설자금 외 토지·건물·장비·운전자본은 얼마인가?</div></div>
+</section>
+
+<section id="s7">
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크와 밸류에이션 — 가격은 절반 빠졌지만 가정은 아직 크다</h2>
+  <div class="lead">주가 하락은 선반영 부담을 줄였지만, 2027년 이익 추정은 공급 부족·고객 확대·증설·수율을 모두 요구한다.</div>
+
+  <div class="risks">
+    <div class="risk"><div class="impact">OPERATING · DEMAND</div><h4>① AI PCB 수요·비트 소모 강도 둔화</h4><p>서버·MLB 투자 둔화, 기판 설계 변경, 비트 수명 개선이 겹치면 주문 강도가 꺾인다.</p><div class="alarm"><b>조기 경보</b> — 대만 동종사 월매출 2개월 연속 둔화, 신규 고객 납품 연기, 비트 매출 QoQ 감소</div></div>
+    <div class="risk"><div class="impact">OPERATING · SPREAD</div><h4>② 텅스텐 급등과 판가 전가 시차</h4><p>원재료 상승이 ASP보다 빠르면 매출은 늘어도 GP 마진이 하락한다.</p><div class="alarm"><b>조기 경보</b> — 텅스텐 상승 지속, 매출원가율 반등, 재고일수 급증, ASP 상승 둔화</div></div>
+    <div class="risk"><div class="impact">EXECUTION · CAPEX</div><h4>③ 7,200만개 증설의 실행 실패</h4><p>장비 반입·수율·품질 승인·고객 배정 중 하나만 늦어져도 2027E 이익이 밀린다.</p><div class="alarm"><b>조기 경보</b> — CAPEX 지연, 가동 초기 불량, 판관비·감가상각만 증가, 고객 확대 언급 후 매출 미발생</div></div>
+  </div>
+
+  <h3>비영업 리스크 별도 점검</h3>
+  <div class="scrollx"><table>
+    <tr><th>항목</th><th>확인 내용</th><th>판정</th></tr>
+    <tr><td>CPS 희석</td><td>전환우선주 662,000주, 발행가 28,057원, 조달 185.7억원. 소각 후 보통주 대비 4.8% 잠재 희석</td><td><span class="pill risk">중요</span> 2027-06-06 이후 전환·매각 수급</td></tr>
+    <tr><td>자사주 소각</td><td>보통주 140,000주 소각, 상장주식수 13,794,818주로 감소</td><td>주주친화적이나 CPS 발행을 일부만 상쇄</td></tr>
+    <tr><td>순희석</td><td>소각 전 13,934,818주 대비 완전희석 14,456,818주</td><td>결과적으로 약 3.75% 증가</td></tr>
+    <tr><td>소송·담합·규제</td><td>검토한 최신 공시·리포트에서 실적을 좌우할 중대한 공개 소송·담합 수사는 확인하지 못함</td><td>“없음”이 아니라 <b>미확인</b>; 매 분기 우발부채 재점검</td></tr>
+    <tr><td>거래 과열</td><td>2026년 5월 투자경고 지정 이력</td><td>실적과 별개로 수급 급변 가능</td></tr>
+  </table></div>
+
+  <h3>현재 밸류 좌표</h3>
+  <div class="kpis">
+    <div class="kpi"><span>현재가</span><b>17,330원</b><small>2026-07-14 13:12</small></div>
+    <div class="kpi"><span>보통주 시총</span><b>2,391억</b><small>13,794,818주 계산</small></div>
+    <div class="kpi"><span>완전희석 시총</span><b>2,505억</b><small>CPS 662,000주 포함</small></div>
+    <div class="kpi"><span>52주 고점 대비</span><b>-52.3%</b><small>고점 36,300원</small></div>
+  </div>
+
+  <div class="band" aria-label="밸류에이션 밴드">
+    <div class="bandline"></div>
+    <div class="bandpoint" style="left:8%"><b>3,090</b><small>52주 저점</small></div>
+    <div class="bandpoint" style="left:32%"><b>13,235</b><small>2027E EPS × 8배</small></div>
+    <div class="bandpoint current" style="left:43%"><b>17,330</b><small>현재</small></div>
+    <div class="bandpoint" style="left:54%"><b>19,853</b><small>2027E EPS × 12배</small></div>
+    <div class="bandpoint" style="left:72%"><b>26,471</b><small>×16배</small></div>
+    <div class="bandpoint" style="left:92%"><b>36,300</b><small>52주 고점</small></div>
+  </div>
+  <div class="bandlabels"><span>침체·실패</span><span>증설 검증 전</span><span>고성장 선반영</span></div>
+
+  <div class="scrollx"><table>
+    <tr><th>좌표</th><th class="num">수치</th><th>해석</th></tr>
+    <tr><td>2026-05-29 공개 리포트</td><td class="num">31,600원</td><td>2026E PER 25.0배, 2027E 19.1배, Not Rated</td></tr>
+    <tr class="hl"><td>현재 단순 환산</td><td class="num"><b>2026E 13.7배<br>2027E 10.5배</b></td><td>같은 EPS 추정치가 유지된다는 가정. 추정치 하향 시 의미가 사라짐</td></tr>
+    <tr><td>완전희석 2027E</td><td class="num">약 11.0배</td><td>CPS 전량 전환으로 EPS 약 4.8% 희석 가정</td></tr>
+    <tr><td>목표가 컨센서스</td><td class="num">43,000원</td><td>Investing 집계 1명. 원문 리포트·산출 근거 미확인. 최신 메리츠는 NR이므로 <b>저신뢰 단일 집계</b></td></tr>
+  </table></div>
+
+  <p class="note"><b>가격이 증명을 앞서갔는가?</b> 5월 고점 부근에서는 공급 부족과 2027 증설 성공이 상당 부분 선반영됐다. 현재는 그 프리미엄이 크게 축소됐지만, 가격이 완전히 무가정 상태는 아니다. 현재가가 합리적이려면 최소한 ① 2Q26 OPM 급상승, ② 2H26 4,800만개 출하, ③ 2027 고객 배정이 순서대로 확인돼야 한다.</p>
+
+  <h3>현재 가격에 들어 있는 것 / 아직 없는 것</h3>
+  <div class="scrollx"><table>
+    <tr><th>일부 반영된 가정</th><th>가격에 충분히 반영되지 않았을 가능성</th></tr>
+    <tr><td>2026년 비트 매출 성장, 원가 전가, 2H26 증설 효과, 2027년 이익 성장의 상당 부분</td><td>7,200만개 증설의 조기 풀가동, 추가 대형 고객, 20% 이상 OPM의 장기 유지</td></tr>
+    <tr><td>반대로 주가 급락에는 과열 해소·CPS 희석·추정치 불신이 반영</td><td>텅스텐 전가 실패나 증설 지연이 실제로 발생하면 현 가격도 비싸질 수 있음</td></tr>
+  </table></div>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 43,000원 단일 목표가의 발행 증권사·기준 EPS·멀티플은 무엇인가?</div><div><b>더 파볼 질문 2</b> — CPS의 리픽싱·풋·콜 조건이 실제 전환 수급과 지배구조에 어떤 비대칭을 만드는가?</div></div>
+</section>
+
+<section id="s8">
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 가장 중요한 것은 “증설”이 아니라 “증설 후에도 부족한가”</h2>
+
+  <div class="qbox"><div class="q">QUESTION 1</div><h4>2Q26 이익률 점프가 실적에서 확인되는가?</h4><p>첫 검증 순서는 2Q26 매출 233억원, 영업이익 41억원, OPM 17.7%다. 매출만 늘고 OPM이 14% 이하라면 텅스텐 전가·믹스·수율 중 하나가 가정에 못 미친 것이다. 반대로 17%대가 확인되면 2026년 이익 업사이클의 질은 한 단계 올라간다.</p></div>
+  <div class="qbox"><div class="q">QUESTION 2</div><h4>4,800만개와 7,200만개가 “팔 수 있는 Capa”인가?</h4><p>설비 숫자는 매출이 아니다. 고객 승인, 물량 배정, 수율, ASP가 동시에 붙어야 한다. 2027년 추정치는 네 변수가 모두 우호적인 경로다. 가장 먼저 확인할 것은 2H26 증설분의 월별 출하와 신규 고객 양산 매출이다.</p></div>
+
+  <h3>3질문 프레임 좌표</h3>
+  <div class="scrollx"><table>
+    <tr><th>프레임</th><th>점수</th><th>판정</th></tr>
+    <tr><td>① 이익 업사이클 강도</td><td class="num"><b>4 / 5</b></td><td>2026E OP +115%, 2027E +75% 추정. 1Q26은 방향을 확인했지만 가속은 2Q부터</td></tr>
+    <tr><td>② 주가 반영도와 잔여 룸</td><td class="num"><b>3 / 5</b></td><td>고점 대비 반토막으로 선반영 부담은 완화. 그러나 추정치 실패 시 10.5배의 의미가 사라짐</td></tr>
+    <tr><td>③ 경로의 변수 개수</td><td class="num"><b>2 / 5</b></td><td>수요·ASP·텅스텐·증설·수율·고객 승인·희석 등 변수가 많음. 점수가 낮을수록 경로가 복잡</td></tr>
+  </table></div>
+  <p class="note">확인 가능한 기존 자매 리포트 한화엔진과 비교하면, 네오티스는 수주잔고의 가시성은 낮지만 실적 반응 속도는 빠르다. 한화엔진은 1.5~3년 빈티지를 추적하고, 네오티스는 월·분기 주문과 증설 램프업을 추적한다.</p>
+
+  <h3>이탈 규율 3단계</h3>
+  <div class="scrollx"><table>
+    <tr><th>단계</th><th>조건</th><th>행동 원칙</th></tr>
+    <tr><td><span class="pill est">경계</span></td><td>마이크로비트 매출 1개 분기 QoQ 감소, OPM 15% 미만, 증설 일정 1분기 지연</td><td>원가·믹스·고객 중 원인을 분해하고 신규 매수 중단</td></tr>
+    <tr><td><span class="pill risk">축소</span></td><td>비트 매출 2개 분기 역성장, 원가율 상승 지속, 4,800만개 가동 후에도 매출 미증가</td><td>2027 추정치 하향을 선반영해 비중 축소</td></tr>
+    <tr><td><span class="pill risk">실적 무관 이탈</span></td><td>중대한 회계·공시 신뢰 훼손, CPS 조건의 예상 밖 불리한 변경, 대형 고객 품질 인증 취소</td><td>가격과 무관하게 이탈</td></tr>
+  </table></div>
+
+  <h3>노이즈성 급락 = 검토 기회 조건</h3>
+  <p>① 비트 매출과 OPM이 추정 궤도, ② 증설 일정 불변, ③ 고객 승인·출하 증가, ④ 텅스텐 전가 확인, ⑤ 급락 원인이 시장 수급·CPS 오버행뿐일 때다. 이 다섯 조건 중 두 개 이상이 깨지면 “노이즈”라는 해석은 자기기만이다.</p>
+
+  <h3>IR에 물어볼 핵심 질문 1개</h3>
+  <div class="qbox"><div class="q">ONE DECISIVE QUESTION</div><h4>“2H27 연 7,200만개 Capa 중 현재 고객사 퀄 통과 또는 물량 배정 협의가 끝난 비중은 몇 %이며, 그 물량의 ASP는 1Q26 대비 높은가?”</h4><p>이 답 하나로 증설이 공급 부족을 수익으로 바꾸는 투자지, 아니면 수요를 낙관한 선행 투자지 갈린다.</p></div>
+
+  <h3>남은 숙제와 갱신 트리거</h3>
+  <div class="scrollx"><table>
+    <tr><th>미확인 데이터</th><th>갱신 트리거</th></tr>
+    <tr><td>사업부별 OP, 비트 ASP·수량, 텅스텐 전가 시차, 고객 집중도, 총 그린필드 CAPEX</td><td>2026 반기보고서·2Q 실적, 하반기 장비 가동, 신규 고객 7월 이후 매출, CPS 세부 조건 변경 공시</td></tr>
+    <tr><td>단일 목표가 43,000원의 원문·산식</td><td>원문 증권사 리포트 확인 또는 컨센서스 업데이트</td></tr>
+    <tr><td>2027 마이크로비트 매출 801억/912억 불일치</td><td>메리츠 차기 리포트 또는 회사 가이던스</td></tr>
+  </table></div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">GENERAL RULE 01</div><h4>소모품은 전방 출하량보다 가공 강도를 보라</h4><ul><li>고다층·경도·홀 수가 단위당 소모를 키우면 전방 성장률보다 공급자 매출이 빠를 수 있다.</li></ul></div>
+    <div class="card"><div class="k">GENERAL RULE 02</div><h4>증설 Capa와 판매 Capa는 다르다</h4><ul><li>장비, 수율, 품질 승인, 고객 배정이 모두 붙어야 매출이 된다.</li></ul></div>
+    <div class="card"><div class="k">GENERAL RULE 03</div><h4>주가 반토막은 검증의 대체재가 아니다</h4><ul><li>멀티플이 낮아져도 EPS가 증설 성공을 전제하면 여전히 고위험 성장주다.</li></ul></div>
+  </div>
+</section>
+
+<section id="appendix">
+  <div class="eyebrow">APPENDIX</div>
+  <h2>글로벌 피어와 시리즈 내 위치</h2>
+  <div class="scrollx"><table>
+    <tr><th>업체</th><th>국가</th><th class="num">2026E PER</th><th class="num">2027E PER</th><th>특징</th></tr>
+    <tr><td>Union Tool</td><td>일본</td><td class="num">35.4x</td><td class="num">29.2x</td><td>글로벌 품질 선두, 납기·현지 대응이 상대 약점</td></tr>
+    <tr><td>Topoint</td><td>대만</td><td class="num">60.8x</td><td class="num">26.0x</td><td>대만 PCB 공급망 대표 드릴비트 업체</td></tr>
+    <tr><td>Dtech</td><td>중국</td><td class="num">154.6x</td><td class="num">92.8x</td><td>중국 성장 프리미엄, 높은 밸류</td></tr>
+    <tr><td>China Tungsten</td><td>중국</td><td class="num">42.8x</td><td class="num">35.9x</td><td>원재료·공구 노출</td></tr>
+    <tr class="hl"><td><b>네오티스</b></td><td>한국</td><td class="num">25.0x</td><td class="num">19.1x</td><td>2026-05-29 가격 기준; 현재 단순 환산 13.7x/10.5x</td></tr>
+  </table></div>
+  <p class="small">피어 멀티플은 메리츠 2026-06-01 보고서의 5/29 종가 기준. 국가·회계·사업 믹스·성장률이 달라 단순 평균을 목표 멀티플로 쓰면 안 된다. <a class="source" href="#src1">[S1]</a></p>
+
+  <h3>시리즈 내 위치 지도</h3>
+  <div class="scrollx"><table>
+    <tr><th>종목</th><th>팩터</th><th>실적 가시성</th><th>반응 속도</th><th>핵심 추적</th></tr>
+    <tr><td>한화엔진</td><td>조선 수주 빈티지·DF 믹스</td><td>높음: 장기 수주잔고</td><td>느림: 1.5~3년</td><td>수주잔고·인도 ASP</td></tr>
+    <tr class="hl"><td>네오티스</td><td>AI PCB 가공강도·소모품·공급 제약</td><td>중간: 반복주문이나 장기 잔고 부재</td><td>빠름: 월·분기</td><td>비트 매출·OPM·Capa·텅스텐</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <div class="eyebrow">SOURCE LEDGER</div>
+  <h2>주요 출처와 자료 한계</h2>
+  <ol class="footnotes">
+    <li id="src1"><b>[S1] 메리츠증권, 2026-06-01, 「네오티스 — 끊임없는 레버리지」</b> — 1Q26 실적, 제품별 매출, 2026~2027 추정, Capa, 피어 밸류. <a href="https://home.imeritz.com/include/resource/research/WorkFlow/20260531192934889K_02.pdf">원문 PDF</a></li>
+    <li id="src2"><b>[S2] 한국거래소 KIND, 2026-06-04, 증권 발행결과</b> — 전환우선주 662,000주, 발행예정금액 18,573,734,000원. <a href="https://kind.krx.co.kr/common/disclsviewer.do?acptno=20260604000328&docno=&method=search&viewerhost=">공시</a></li>
+    <li id="src3"><b>[S3] 한국거래소 KIND, 2026-05-12, 주식소각 결정</b> — 보통주 140,000주. <a href="https://kind.krx.co.kr/common/disclsviewer.do?acptno=20260512000483&docno=&method=search&viewerhost=">공시</a></li>
+    <li id="src4"><b>[S4] DART 기업공시 검색</b> — 사업보고서·분기보고서·유상증자 정정·대량보유 보고. <a href="https://dart.fss.or.kr/html/search/SearchCompanyIR3_M.html?textCrpNM=085910">네오티스 공시목록</a></li>
+    <li id="src5"><b>[S5] 네오티스 2025 잠정실적 공시 인용 보도, 2026-02-20</b> — 매출 686.8억원, OP 77.8억원, 순이익 62.9억원과 회사 설명. <a href="https://www.datatooza.com/article/20260220144303481652ef38d042_80">자료</a></li>
+    <li id="src6"><b>[S6] Investing.com, 2026-07-14 13:12 지연 시세</b> — 17,330원, 52주 3,090~36,300원, 단일 애널리스트 목표가 43,000원 집계. <a href="https://kr.investing.com/equities/neo-technical-system-co-ltd">시세</a></li>
+    <li id="src7"><b>[S7] 한국거래소 변경상장 공시 인용, 2026-06-05</b> — 소각 후 보통주 13,794,818주. <a href="https://www.topstarnews.net/news/articleView.html?idxno=16080764">자료</a></li>
+  </ol>
+  <p class="note danger"><b>데이터 한계:</b> 현재가는 장중 지연값이며 변동한다. 시세 사이트의 발행주식수·시총은 소각 반영이 지연돼 본문 시총은 KIND의 소각 후 주식수 × 현재가로 직접 계산했다. 목표가 43,000원은 단일 집계값으로 원문 산식이 확인되지 않아 저신뢰로 분류했다. 추정치는 증권사 한 곳에 크게 의존한다.</p>
+</section>
+
+<footer>
+  <div class="footergrid">
+    <div><b>기준일</b> 2026-07-14 · <b>판본</b> 초판 · <b>확정/추정 구분</b> A·확정은 공시·실적, E·추정은 증권사 또는 본 보고서 프레임. 본 문서는 투자 권유가 아니며, 공개 자료의 오류·정정·시차가 있을 수 있다.</div>
+    <div><b>자매 리포트</b> 한화엔진(082740) · <b>고유 액센트</b> Violet #7147A7<br><button class="printbtn" onclick="window.print()">인쇄 / PDF 저장</button></div>
+  </div>
+</footer>
+</div>
+<script>
+const sections=[...document.querySelectorAll('section[id]')];
+const links=[...document.querySelectorAll('.nav a')];
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px'});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

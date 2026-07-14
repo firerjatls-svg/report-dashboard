@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>씨엠티엑스 (388210) 기업분석 리포트 · 2026-07-14</title>
+<style>
+:root{
+  --bg:#F5F3F8; --paper:#FFFFFF; --ink:#201D2A; --muted:#706A7D; --line:#E3DDEB;
+  --accent:#7046B8; --accent2:#A17BD6; --accent-soft:#EEE7F8; --accent-deep:#4E298B;
+  --gold:#B77A20; --gold-soft:#FAF0DD; --blue:#3E70A3; --blue-soft:#E8F0F8;
+  --up:#247357; --up-soft:#E6F2EC; --warn:#A56A16; --warn-soft:#F9EFDE;
+  --down:#B34254; --down-soft:#F9E6EA; --dark:#292238; --silicon:#8260C5;
+  --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-deep);text-decoration-thickness:1px;text-underline-offset:3px}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 18px 88px}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.cover{background:linear-gradient(135deg,#241B36,#392258 58%,#54367A);color:#F8F5FC;border-radius:18px;padding:42px 38px 34px;position:relative;overflow:hidden}
+.cover:before{content:"";position:absolute;width:370px;height:370px;right:-145px;top:-165px;border:48px solid rgba(161,123,214,.27);border-radius:50%}
+.cover:after{content:"";position:absolute;width:210px;height:210px;right:70px;bottom:-142px;background:rgba(183,122,32,.22);transform:rotate(32deg);border-radius:38px}
+.cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#CFB7ED;margin-bottom:14px;position:relative;z-index:1}
+.cover h1{font-size:38px;line-height:1.18;letter-spacing:-.035em;position:relative;z-index:1}
+.cover .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#D8C6EF;margin-left:8px}
+.cover .sub{font-size:15.5px;color:#E0D7EB;margin-top:12px;max-width:800px;position:relative;z-index:1}
+.cover .meta{display:grid;grid-template-columns:repeat(5,minmax(110px,1fr));gap:17px;margin-top:29px;padding-top:22px;border-top:1px solid rgba(255,255,255,.16);position:relative;z-index:1}
+.cover .meta span{display:block;font-size:11.5px;color:#BDB0CC}
+.cover .meta b{display:block;font-size:16px;color:white;margin-top:3px}
+.cover .meta small{display:block;color:#CEBDE4;font-size:10.7px;margin-top:1px}
+.thesis{margin:24px 0 10px;background:var(--accent-soft);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:21px 24px;font-size:15.5px}
+.thesis b{color:var(--accent-deep)}
+.nav{position:sticky;top:9px;z-index:20;margin:18px 0 4px;padding:8px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:12px;backdrop-filter:blur(8px);display:flex;gap:5px;overflow-x:auto}
+.nav a{white-space:nowrap;text-decoration:none;font-size:12px;font-weight:800;color:var(--muted);padding:7px 10px;border-radius:8px}
+.nav a:hover,.nav a.active{background:var(--accent-soft);color:var(--accent-deep)}
+section{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:31px 31px 29px;margin-top:18px;scroll-margin-top:72px}
+.eyebrow{font-family:var(--mono);font-size:11px;font-weight:900;letter-spacing:.18em;color:var(--accent);margin-bottom:6px}
+h2{font-size:26px;line-height:1.35;letter-spacing:-.028em;margin-bottom:7px}
+h3{font-size:18.5px;letter-spacing:-.018em;margin:25px 0 10px}
+h4{font-size:16px;line-height:1.45}
+.lead{font-size:15.7px;color:#4C4658;margin-bottom:18px}
+p+p{margin-top:9px}
+.small{font-size:12.4px;color:var(--muted)}
+.note{background:#F7F5FA;border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin:12px 0;font-size:13px;color:#504A5C}
+.note.warn{background:var(--warn-soft);border-color:#E8D0A7}
+.note.danger{background:var(--down-soft);border-color:#E8BBC4}
+.note.good{background:var(--up-soft);border-color:#BBDCCA}
+.note.gold{background:var(--gold-soft);border-color:#E8CDA8}
+.pill{display:inline-block;border-radius:999px;padding:3px 8px;font-size:10.5px;font-weight:900;vertical-align:1px}
+.pill.fact{background:var(--up-soft);color:var(--up)}
+.pill.est{background:var(--warn-soft);color:var(--warn)}
+.pill.risk{background:var(--down-soft);color:var(--down)}
+.pill.nr{background:var(--blue-soft);color:var(--blue)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:13px 0}
+.card{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}
+.card .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--accent);font-weight:900;margin-bottom:5px}
+.card h4{margin-bottom:7px}
+.card ul{padding-left:17px;font-size:13.2px;color:#514B59}
+.card li+li{margin-top:4px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.kpi{background:#F7F5FA;border:1px solid var(--line);border-radius:11px;padding:13px}
+.kpi span{display:block;color:var(--muted);font-size:11.4px}
+.kpi b{display:block;font-family:var(--mono);font-size:20px;margin-top:3px;color:var(--accent-deep)}
+.kpi small{display:block;font-size:10.8px;color:var(--muted)}
+.scrollx{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13.05px;min-width:680px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:#F0ECF5;color:#443D50;font-weight:900;text-align:left;padding:10px 11px;border-bottom:1px solid var(--line)}
+td{padding:9px 11px;border-bottom:1px solid #EEE9F2;vertical-align:top}
+tr:last-child td{border-bottom:0}
+tr.hl td{background:var(--accent-soft)}
+td.num,th.num{text-align:right;white-space:nowrap}
+.factrow td:first-child:before{content:"확정";font-size:9px;font-weight:900;color:var(--up);background:var(--up-soft);border-radius:99px;padding:2px 5px;margin-right:5px}
+.estrow td:first-child:before{content:"추정";font-size:9px;font-weight:900;color:var(--warn);background:var(--warn-soft);border-radius:99px;padding:2px 5px;margin-right:5px}
+.revrow td:first-child:before{content:"역산";font-size:9px;font-weight:900;color:var(--blue);background:var(--blue-soft);border-radius:99px;padding:2px 5px;margin-right:5px}
+.stack{display:flex;height:49px;border-radius:9px;overflow:hidden;margin:12px 0 8px;color:white;font-size:12px;font-weight:900}
+.stack>div{display:flex;align-items:center;justify-content:center;text-align:center;padding:4px;min-width:3px}
+.legend{display:flex;flex-wrap:wrap;gap:9px 16px;font-size:12.4px;color:var(--muted)}
+.legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;background:var(--c);margin-right:6px}
+.formula{font-family:var(--mono);white-space:pre-wrap;background:#2D2241;color:#F7F3FC;border-radius:11px;padding:18px 19px;font-size:13.4px;margin:12px 0}
+.formula b{color:#D4BDF0}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;margin:16px 0;align-items:stretch}
+.node{position:relative;background:#F8F6FB;border:1px solid var(--line);border-radius:11px;padding:14px 12px;min-height:144px}
+.node:not(:last-child):after{content:"→";position:absolute;right:-18px;top:42%;color:var(--accent);font-size:23px;font-weight:900}
+.node .n{font-family:var(--mono);font-size:10px;color:var(--accent);font-weight:900}
+.node .t{font-size:14px;font-weight:900;margin-top:4px}
+.node .d{font-size:11.5px;color:var(--muted);margin-top:5px}
+.node .check{font-size:10.5px;color:var(--accent-deep);margin-top:7px;font-weight:800}
+.vintage{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin:12px 0}
+.vintage .v{border:1px solid var(--line);border-radius:11px;padding:14px;background:#FBFAFD}
+.vintage .yr{font-family:var(--mono);font-size:10px;font-weight:900;color:var(--accent)}
+.vintage strong{display:block;margin:4px 0;font-size:15px}
+.rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:13px 0}
+.rhythm .box{border-radius:11px;padding:14px 15px}
+.rhythm .w{background:var(--accent-soft)}
+.rhythm .m{background:var(--blue-soft)}
+.rhythm .q{background:var(--warn-soft)}
+.rhythm .freq{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;font-weight:900;margin-bottom:5px}
+.rhythm ul{font-size:12.5px;padding-left:17px}
+.journey{margin:13px 0}
+.jrow{display:grid;grid-template-columns:145px 1fr 76px;gap:9px;align-items:center;margin:10px 0}
+.jlabel{font-size:11.5px;text-align:right;color:#514B59}
+.jtrack{height:36px;background:#ECE8F1;border-radius:7px;display:flex;overflow:hidden;position:relative}
+.jtrack.reverse{outline:1px dashed #D6AAB2}
+.jcost{background:#BDB4C9;display:flex;align-items:center;justify-content:center;font-size:10.5px;color:#302A39}
+.jprofit{background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10.5px;color:white;font-weight:900}
+.jloss{background:var(--down);display:flex;align-items:center;justify-content:center;font-size:10.5px;color:white;font-weight:900}
+.joverflow{position:absolute;right:0;top:0;bottom:0;width:100%;display:flex;align-items:center;justify-content:center;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.28) 0,rgba(255,255,255,.28) 5px,transparent 5px,transparent 10px);color:#fff;font-weight:900;font-size:10.5px}
+.hatched{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.28) 0,rgba(255,255,255,.28) 5px,transparent 5px,transparent 10px)}
+.jmetric{font-family:var(--mono);font-size:11px;font-weight:900}
+.gaugebox{border:1px solid var(--line);border-radius:12px;padding:20px 20px 15px;margin:13px 0}
+.gauge{position:relative;height:72px;margin:12px 12px 0}
+.gline{position:absolute;left:0;right:0;top:31px;height:9px;background:linear-gradient(90deg,#E4DFF0,#B89FD9,#7046B8);border-radius:99px}
+.tick{position:absolute;top:44px;font-family:var(--mono);font-size:9px;color:var(--muted);transform:translateX(-50%)}
+.marker{position:absolute;top:2px;transform:translateX(-50%);text-align:center}
+.marker:after{content:"";display:block;width:3px;height:37px;background:currentColor;margin:3px auto 0;border-radius:2px}
+.marker b{font-family:var(--mono);font-size:12px;white-space:nowrap;background:white;border:1px solid currentColor;border-radius:6px;padding:2px 5px}
+.marker.opm{color:var(--blue)}
+.marker.cm{color:var(--accent-deep)}
+.risks{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:12px 0}
+.risk{border-radius:12px;padding:16px;border-top:4px solid var(--down);background:#FFF9FA}
+.risk:nth-child(2){border-top-color:var(--warn);background:#FFFBF5}
+.risk:nth-child(3){border-top-color:var(--accent);background:#FAF8FD}
+.risk:nth-child(4){border-top-color:var(--blue);background:#F8FBFD}
+.risk .impact{font-size:10px;font-weight:900;letter-spacing:.08em;color:var(--down)}
+.risk h4{margin:4px 0 7px}
+.risk p{font-size:12.7px}
+.alarm{margin-top:9px;padding-top:8px;border-top:1px dashed #DCCFD2;font-size:11.5px;color:#625A66}
+.band{position:relative;height:135px;margin:22px 10px 8px}
+.bandline{position:absolute;left:2%;right:2%;top:59px;height:11px;border-radius:99px;background:linear-gradient(90deg,#E6F2EC 0 22%,#ECE7F6 22% 58%,#F8EDDA 58% 83%,#F4DEE3 83% 100%)}
+.bandpoint{position:absolute;top:21px;transform:translateX(-50%);text-align:center}
+.bandpoint:after{content:"";display:block;width:2px;height:54px;background:#453E50;margin:3px auto 0}
+.bandpoint b{display:block;font-family:var(--mono);font-size:11px;white-space:nowrap}
+.bandpoint small{display:block;font-size:9.5px;color:var(--muted);white-space:nowrap}
+.bandpoint.current{color:var(--accent-deep)}
+.bandpoint.current:after{width:4px;background:var(--accent)}
+.bandpoint.target{color:var(--gold)}
+.bandpoint.target:after{width:4px;background:var(--gold)}
+.bandlabels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);padding:0 2%}
+.matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:13px 0}
+.matrix .m{border:1px solid var(--line);border-radius:11px;padding:15px;background:#FBFAFD}
+.matrix .score{font-family:var(--mono);font-weight:900;color:var(--accent);font-size:18px}
+.qbox{border:1px solid var(--line);border-radius:11px;padding:16px 18px;margin:11px 0;background:#FBFAFD}
+.qbox .q{font-family:var(--mono);font-size:10px;letter-spacing:.15em;font-weight:900;color:var(--accent)}
+.qbox h4{font-size:17px;margin:4px 0 6px}
+.questions{margin-top:18px;background:#F3EEF9;border-radius:10px;padding:13px 16px;font-size:12.8px}
+.questions b{color:var(--accent-deep)}
+.questions div+div{margin-top:5px}
+.source{font-size:10px;vertical-align:super;font-weight:900;text-decoration:none}
+.footnotes{font-size:12px;color:#554F5E}
+.footnotes li+li{margin-top:7px}
+.footnotes code{font-family:var(--mono);font-size:10.5px}
+footer{padding:25px 7px 0;color:var(--muted);font-size:11.5px}
+footer b{color:#494250}
+.footergrid{display:grid;grid-template-columns:1.55fr 1fr;gap:20px}
+.printbtn{border:1px solid var(--line);background:white;color:var(--accent-deep);border-radius:9px;padding:7px 10px;font-weight:900;cursor:pointer}
+@media(max-width:780px){
+  .wrap{padding:12px 10px 58px}
+  .cover{padding:29px 22px 24px}
+  .cover h1{font-size:30px}
+  .cover .ticker{display:block;margin:5px 0 0}
+  .cover .meta{grid-template-columns:repeat(2,1fr);gap:13px}
+  section{padding:23px 17px}
+  h2{font-size:22px}
+  .cards,.risks,.rhythm,.matrix,.vintage{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .flow{grid-template-columns:1fr;gap:11px}
+  .node{min-height:auto}
+  .node:not(:last-child):after{content:"↓";right:auto;left:48%;top:auto;bottom:-20px}
+  .jrow{grid-template-columns:96px 1fr 55px}
+  .jlabel{font-size:10px}
+  .footergrid{grid-template-columns:1fr}
+}
+@media print{
+  body{background:white}
+  .wrap{max-width:none;padding:0}
+  .nav,.printbtn{display:none}
+  section{break-inside:avoid;border-color:#DDD;margin-top:10px}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="cover">
+  <div class="tag">INVESTMENT RESEARCH · 2026.07.14 · FIRST EDITION</div>
+  <h1>씨엠티엑스 <span class="ticker">388210 · KOSDAQ</span></h1>
+  <div class="sub">식각 장비 안에서 플라즈마에 닳는 실리콘 파츠를 반도체 제조사에 직접 공급하는 애프터마켓 업체. 성장의 본질은 장비 출하량보다 웨이퍼 투입량·식각 강도·고객 침투율의 곱이다.</div>
+  <div class="meta">
+    <div><span>확인 주가</span><b>83,400원</b><small>2026-07-14 14:17 KST · 20분 지연</small></div>
+    <div><span>시가총액</span><b>8,052억원</b><small>9,654,438주 기준</small></div>
+    <div><span>1Q26 매출 / OP</span><b>441 / 135억원</b><small>OPM 30.6%</small></div>
+    <div><span>2026E 매출 / OP</span><b>2,122 / 692억원</b><small>유진투자증권 2026-04-28</small></div>
+    <div><span>목표가 범위</span><b>18.2~22.0만원</b><small>평균 20.05만원 · 5월 집계</small></div>
+  </div>
+</header>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 씨엠티엑스는 “반도체 장비주”라기보다 <b>식각 강도에 연동되는 반복형 소모품주</b>다. 2025년 실리콘 파츠가 매출의 97.6%였고, 1Q26에도 약 98%를 차지했다. 삼성전자·TSMC 등 팹에 직접 납품하는 애프터마켓 구조와 자회사 셀릭을 통한 실리콘 잉곳 내재화가 30%대 영업이익률의 핵심이다. 긍정론은 <b>선단공정·고단 NAND의 식각 스텝 증가 × 해외 고객 침투 × 생산능력 2배 확대</b>다. 부정론은 <b>고객·제품 집중, 증설 램프 비용, 램리서치 특허소송, 상장 초기 오버행</b>이다. 현재 주가는 2026E 예상 EPS 기준 약 12.4~12.7배로 목표 멀티플보다 크게 낮아졌지만, 2월 고점 대비 51% 조정은 성장 기대가 사라졌다기보다 소송·수급·상장 초기 변동성에 대한 할인까지 반영한 상태다.
+</div>
+
+<nav class="nav" id="nav">
+  <a href="#s1">1 사업</a><a href="#s2">2 수익</a><a href="#s3">3 실적</a><a href="#s4">4 전방</a>
+  <a href="#s5">5 트래킹</a><a href="#s6">6 레버리지</a><a href="#s7">7 리스크·밸류</a><a href="#s8">8 종합</a><a href="#appendix">부록·출처</a>
+</nav>
+
+<section id="s1">
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 무엇을 만들고, 누구에게 파는가</h2>
+  <div class="lead">주력은 식각 챔버 내부의 실리콘 소모성 부품이다. 쿼츠 파츠나 SiC 파츠와 같은 “반도체 파츠”로 묶으면 경쟁 구도를 잘못 읽게 된다.</div>
+
+  <h3>제품별 매출 구성</h3>
+  <div class="stack" aria-label="2025 매출 구성">
+    <div style="flex:97.6;background:#7046B8">Silicon Parts 97.6%</div>
+    <div style="flex:0.3;background:#3E70A3"></div>
+    <div style="flex:0.1;background:#B77A20"></div>
+    <div style="flex:1.9;background:#9A91A4">기타 1.9%</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#7046B8">실리콘 파츠 1,568억원</span>
+    <span style="--c:#3E70A3">세라믹 5억원</span>
+    <span style="--c:#B77A20">사파이어 2억원</span>
+    <span style="--c:#9A91A4">기타 31억원</span>
+  </div>
+  <div class="stack" aria-label="2026 1분기 매출 구성">
+    <div style="flex:98.0;background:#7046B8">Silicon Parts 약 98.0%</div>
+    <div style="flex:2.0;background:#9A91A4">기타 약 2.0%</div>
+  </div>
+  <p class="small">2025 확정 기준 실리콘 파츠 97.6%, 세라믹 0.3%, 사파이어 0.1%, 기타 1.9%. 1Q26 실리콘 파츠 매출은 약 432억원으로 전사 매출의 약 98%다. 반올림으로 합계가 100%와 소폭 다를 수 있다. <a class="source" href="#src3">[S3]</a><a class="source" href="#src6">[S6]</a></p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="k">ETCH CHAMBER CONSUMABLE</div>
+      <h4>실리콘 파츠</h4>
+      <ul>
+        <li><b>Focus Ring</b>: 웨이퍼 가장자리의 플라즈마·식각 균일도를 제어하는 링</li>
+        <li><b>Electrode</b>: 플라즈마 발생·가스 분배와 관련된 고순도 실리콘 부품</li>
+        <li><b>C-Ring 등</b>: RF 접지·챔버 구조와 연동되는 소모성 정밀 부품</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">MATERIAL INTEGRATION</div>
+      <h4>실리콘 잉곳 내재화</h4>
+      <ul>
+        <li>종속회사 셀릭 지분 58.6% 보유</li>
+        <li>연간 단결정·다결정 잉곳 약 200톤 생산 역량</li>
+        <li>소재 조달·품질·리드타임·원가 경쟁력을 동시에 관리</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">NICHE PRODUCTS</div>
+      <h4>세라믹·사파이어</h4>
+      <ul>
+        <li>증착·기타 공정용 정밀 부품</li>
+        <li>매출 비중은 각각 1% 미만</li>
+        <li>현 시점 투자 논점은 성장 옵션이지 이익의 핵심이 아님</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>직접 고객과 최종 수요</h3>
+  <div class="scrollx"><table>
+    <tr><th>구분</th><th>직접 고객</th><th>최종 수요</th><th>확실성·주의</th></tr>
+    <tr><td>확인된 핵심 고객</td><td>삼성전자, TSMC</td><td>메모리·파운드리 웨이퍼 생산과 식각 공정</td><td>삼성 1차 협력사 등록, TSMC 협력사 등록·공급을 회사/증권사 자료에서 확인</td></tr>
+    <tr><td>해외 고객 확대</td><td>Micron, Kioxia, GlobalFoundries, UMC 등</td><td>DRAM·NAND·로직·아날로그 팹</td><td>회사 IR은 “22개 이상 FAB와 거래 진행 및 추진”으로 표현. 모두가 현재 유의미한 매출 고객이라는 뜻은 아님</td></tr>
+    <tr><td>판매 경로</td><td>반도체 제조사 구매조직에 직접 공급</td><td>장비 설치대수보다 챔버 가동시간·교체주기</td><td>장비 OEM을 통하지 않는 <b>After Market</b> 중심. 고객 인증 후 반복 PO</td></tr>
+    <tr><td>최종 수요 변수</td><td>AI 서버·스마트폰·PC·자동차·산업용 반도체</td><td>웨이퍼 투입량 × 식각 횟수 × 플라즈마 강도</td><td>HBM 자체 조립공정보다 HBM용 DRAM·선단 로직의 전공정 식각 강도가 연결고리</td></tr>
+  </table></div>
+
+  <h3>제품별 경쟁 구도</h3>
+  <div class="scrollx"><table>
+    <tr><th>시장</th><th>경쟁사·구도</th><th>씨엠티엑스의 위치</th><th>비상장사 간접 추적법</th></tr>
+    <tr><td>고순도 Si Focus Ring·Electrode</td><td>하나머티리얼즈, 월덱스, 케이씨파츠텍, SK엔펄스 등. 팹·장비·공정별 다원 경쟁</td><td>애프터마켓 직접 납품과 잉곳 내재화가 강점. “국내 1위”의 범위·점유율은 제품별 공개가 없어 확정 불가</td><td>삼성·TSMC 벤더 등록, 고객사 공급망 시상, SEMICON Korea/Taiwan 부스, 특허·채용·수출법인, 증권사 탐방</td></tr>
+    <tr><td>SiC 코팅·Solid SiC 파츠</td><td>티씨케이, 케이엔제이 등</td><td>재료·적용 챔버가 달라 Si 파츠와 완전 대체재가 아님. 피어 비교는 가능하지만 동일 시장으로 합산 금지</td><td>고객사의 챔버 재질 전환, SiC 코팅 수명·결함률, 고객별 신규 인증</td></tr>
+    <tr><td>OEM 정품 파츠</td><td>Lam Research, Applied Materials, TEL 등 장비 OEM 공급망</td><td>OEM 대비 낮은 총소유비용과 빠른 대응을 무기로 애프터마켓 침투</td><td>OEM 부품가격, 유지보수 계약, 특허소송, 고객사의 듀얼벤더 정책</td></tr>
+    <tr><td>세라믹·사파이어</td><td>재료·공정별 전문 가공사 다수</td><td>매출 비중 0.4% 내외로 현재 경쟁력 판단 자료 부족</td><td>신규 품목 매출, 특수 소재 국책과제, 고객 양산 인증</td></tr>
+  </table></div>
+
+  <p class="note warn"><b>오해 방지:</b> 씨엠티엑스의 주력은 <b>실리콘 파츠</b>다. 원익QnC의 주력인 쿼츠웨어나 티씨케이의 주력인 SiC 링을 그대로 같은 제품으로 취급하면 시장 규모·교체주기·고객 인증 구조를 왜곡한다.</p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 실리콘 파츠 매출을 Focus Ring·Electrode·C-Ring으로 나누면 제품별 비중과 마진은?</div><div><b>더 파볼 질문 2</b> — “22개 FAB 거래 진행 및 추진” 중 양산 매출·샘플·퀄 진행 단계는 각각 몇 곳인가?</div></div>
+</section>
+
+<section id="s2">
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 돈을 어떻게 버는가</h2>
+  <div class="lead">장비 한 대를 팔고 끝나는 구조가 아니라, 승인된 파츠가 플라즈마에 마모될 때마다 교체 주문을 받는다. 고객 침투 후 반복성이 높지만 가격은 원자재 자동연동이 아니다.</div>
+
+  <div class="formula">매출 = 웨이퍼 투입량 × 웨이퍼당 식각 스텝 × 챔버당 파츠 수
+     × 교체 빈도 × 씨엠티엑스 침투율 × ASP
+
+영업이익 = 매출
+         − 실리콘 잉곳·세라믹·사파이어 소재비
+         − 절삭·연마·세정·외주·소모품비
+         − 인건비 − R&D − 감가상각 − 판관비</div>
+
+  <h3>가격 결정 구조</h3>
+  <div class="scrollx"><table>
+    <tr><th>제품</th><th>가격 구조 분류</th><th>원가 전가 가능성</th><th>실제 방어 수단</th></tr>
+    <tr><td>승인된 실리콘 파츠</td><td><b>PO 기반 분기·연간 협상형</b>. 품목·도면·공정별 단가</td><td>원재료 자동연동 조항은 공개 확인되지 않음. 즉시 전가를 전제로 하면 안 됨</td><td>잉곳 내재화, 수율·재활용, 가공 자동화, 고난도 제품 믹스, 고객 전환비용</td></tr>
+    <tr><td>신규 퀄 제품</td><td>초도 샘플·평가 후 양산 단가 협상</td><td>초기에는 품질 증명 비용이 커 가격보다 승인 우선</td><td>양산 수율 안정화, 동일 플랫폼 확장, 장기 반복주문</td></tr>
+    <tr><td>세라믹·사파이어</td><td>소량 주문·품목별 협상형</td><td>소량·특수 사양이면 전가 여지가 있으나 물량이 작음</td><td>특수소재 차별화, 고객 공동개발</td></tr>
+  </table></div>
+
+  <h3>매출 비중과 이익 기여</h3>
+  <div class="scrollx"><table>
+    <tr><th>제품</th><th>2025 매출 비중</th><th>이익 기여 판단</th><th>확실성</th></tr>
+    <tr><td>Silicon Parts</td><td>97.6%</td><td>전사 매출총이익·영업이익의 사실상 전부. 잉곳 내재화와 고정비 흡수가 40%대 GPM을 형성</td><td><span class="pill fact">매출 확정</span> 제품별 OP는 미공개</td></tr>
+    <tr><td>Ceramic Parts</td><td>0.3%</td><td>이익에 미치는 절대 영향 미미</td><td><span class="pill nr">마진 미확인</span></td></tr>
+    <tr><td>Sapphire Parts</td><td>0.1%</td><td>이익 옵션 수준</td><td><span class="pill nr">마진 미확인</span></td></tr>
+    <tr><td>기타·상품</td><td>1.9%</td><td>분기별 변동. 2Q25 기타매출 증가가 제품 비중을 일시적으로 낮춤</td><td><span class="pill est">세부 미공개</span></td></tr>
+  </table></div>
+
+  <h3>원가·마진의 원천과 훼손 요인</h3>
+  <div class="scrollx"><table>
+    <tr><th>항목</th><th>마진에 플러스</th><th>마진 훼손 요인</th></tr>
+    <tr><td>소재</td><td>셀릭의 잉곳 내재화, 구매·리드타임·품질 통제, 폐실리콘 재활용 추진</td><td>잉곳 수율 저하, 전력비·소모품비, 셀릭 비지배지분, 내부거래 마진 변동</td></tr>
+    <tr><td>가공</td><td>고정밀 가공 노하우, 600종 이상 품목 대응, 자동화·대량생산</td><td>초도품·신규 설비 램프 수율, 불량·폐기, 긴급 납품</td></tr>
+    <tr><td>고객·제품 믹스</td><td>선단공정·고난도 파츠, 해외 고객, 직접판매 애프터마켓</td><td>대형 고객 단가 인하, 저난도 제품 비중, 고객별 승인 지연</td></tr>
+    <tr><td>고정비</td><td>매출 증가 시 인건비·R&D·D&A 흡수</td><td>2026년 인력 선투입, M캠퍼스 B동·장비 감가상각, 증설 초기 저가동</td></tr>
+    <tr><td>법률·IP</td><td>특허심판원 4건 승소로 애프터마켓 사업 정당성 강화</td><td>특허법원·민사 본안에서 불리한 판결 시 C-Ring 판매 제한·비용 발생</td></tr>
+  </table></div>
+
+  <div class="kpis">
+    <div class="kpi"><span>2025 GPM</span><b>40.4%</b><small>매출총이익 648억원</small></div>
+    <div class="kpi"><span>2025 OPM</span><b>32.3%</b><small>영업이익 518억원</small></div>
+    <div class="kpi"><span>2025 D&A</span><b>110억원</b><small>EBITDA 628−OP 518</small></div>
+    <div class="kpi"><span>1Q26 GPM</span><b>42.6%</b><small>OPM 30.6%</small></div>
+  </div>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 셀릭 잉곳 내부조달 비중과 외부 구매 대비 원가 절감률은?</div><div><b>더 파볼 질문 2</b> — 고객별 단가 재협상 주기와 2026년 신규 고객의 초도 마진은 기존 삼성향보다 높은가?</div></div>
+</section>
+
+<section id="s3">
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 성장 속도보다 4분기 마진 변동을 봐야 한다</h2>
+  <div class="lead">2023년 삼성향 양산 확대 이후 매출이 급증했고, 2024~2025년에는 소재 내재화·가동률 상승으로 OPM이 6.5%에서 32.3%로 뛰었다. 다만 4Q25 GPM 급락은 아직 설명이 충분하지 않다.</div>
+
+  <h3>최근 5년 연간 실적</h3>
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th class="num">순이익</th><th>판독</th></tr>
+    <tr class="factrow"><td>2021</td><td class="num">110</td><td class="num">20</td><td class="num">18.5%</td><td class="num">8</td><td>삼성 1차 협력사 등록 전후의 초기 규모</td></tr>
+    <tr class="factrow"><td>2022</td><td class="num">186</td><td class="num">25</td><td class="num">13.7%</td><td class="num">0</td><td>설비·고객 인증 투자 구간</td></tr>
+    <tr class="factrow"><td>2023</td><td class="num">708</td><td class="num">46</td><td class="num">6.5%</td><td class="num">29</td><td>삼성향 매출 급증, 초기 저마진·가동 안정화</td></tr>
+    <tr class="factrow"><td>2024</td><td class="num">1,087</td><td class="num">236</td><td class="num">21.8%</td><td class="num">135</td><td>실리콘 파츠 97.5%, 규모의 경제 본격화</td></tr>
+    <tr class="factrow hl"><td>2025</td><td class="num">1,606</td><td class="num">518</td><td class="num">32.3%</td><td class="num">−215</td><td>영업은 최고치, RCPS 관련 파생상품평가손실로 순손실</td></tr>
+    <tr class="estrow"><td>2026E</td><td class="num">2,122</td><td class="num">692</td><td class="num">32.6%</td><td class="num">646</td><td>삼성 안정 성장 + TSMC·해외 고객 확대</td></tr>
+    <tr class="estrow"><td>2027E</td><td class="num">3,026</td><td class="num">1,005</td><td class="num">33.2%</td><td class="num">798</td><td>증설 완전 가동과 고객 다변화 가정</td></tr>
+  </table></div>
+  <p class="small">단위: 억원. 2021~2025는 유진투자증권이 사업보고서·IR을 재구성한 연결 기준. 2025 영업이익은 표에 따라 516~518억원의 반올림 차이가 있으며 본문은 감사 후 518억원을 사용한다. <a class="source" href="#src3">[S3]</a><a class="source" href="#src6">[S6]</a></p>
+
+  <h3>최근 6개 분기</h3>
+  <div class="scrollx"><table>
+    <tr><th>분기</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">GPM</th><th class="num">OPM</th><th class="num">순이익</th><th>질적 판독</th></tr>
+    <tr class="factrow"><td>4Q24</td><td class="num">356</td><td class="num">94</td><td class="num">35.0%</td><td class="num">26.4%</td><td class="num">28</td><td>연말에도 정상 마진 유지</td></tr>
+    <tr class="factrow"><td>1Q25</td><td class="num">369</td><td class="num">126</td><td class="num">41.9%</td><td class="num">34.2%</td><td class="num">111</td><td>가동률·믹스 개선</td></tr>
+    <tr class="factrow"><td>2Q25</td><td class="num">404</td><td class="num">137</td><td class="num">40.7%</td><td class="num">33.9%</td><td class="num">−570</td><td>RCPS 평가손실이 순이익을 왜곡</td></tr>
+    <tr class="factrow"><td>3Q25</td><td class="num">410</td><td class="num">155</td><td class="num">46.2%</td><td class="num">37.7%</td><td class="num">156</td><td>역대 최고 분기 마진</td></tr>
+    <tr class="factrow"><td>4Q25</td><td class="num">422</td><td class="num">100</td><td class="num">33.0%</td><td class="num">23.7%</td><td class="num">88</td><td>매출 증가에도 GPM −13.2%p. 원인 분해 미흡</td></tr>
+    <tr class="factrow hl"><td>1Q26</td><td class="num">441</td><td class="num">135</td><td class="num">42.6%</td><td class="num">30.6%</td><td class="num">141</td><td>분기 최대 매출, 인력·R&D 선투입으로 YoY OPM 하락</td></tr>
+    <tr class="estrow"><td>2Q26E</td><td class="num">508</td><td class="num">171</td><td class="num">42.4%</td><td class="num">33.6%</td><td class="num">156</td><td>해외·신규 고객 확대 가정</td></tr>
+  </table></div>
+  <p class="small">2Q25 순손실은 분기 파생상품 평가 영향이며 연간 순손실과 단순 합산 관계가 다를 수 있다. 1Q26 확정치는 매출 441.2억원, OP 135.1억원, 순이익 141.0억원. <a class="source" href="#src5">[S5]</a><a class="source" href="#src6">[S6]</a></p>
+
+  <h3>증익·감익의 질</h3>
+  <div class="scrollx"><table>
+    <tr><th>요인</th><th>관찰</th><th>판정</th></tr>
+    <tr><td>물량·고객 침투</td><td>2023~2025 매출 CAGR 급증, 1Q26 수출 273억원·수출 비중 62%</td><td><span class="pill fact">구조적</span> 고객 승인·가동률이 유지될 때</td></tr>
+    <tr><td>믹스·원가</td><td>2023 OPM 6.5% → 2025 32.3%, 실리콘 파츠 97.6%, 잉곳 내재화</td><td><span class="pill est">핵심</span> 제품·고객별 마진 미공개</td></tr>
+    <tr><td>선투입 비용</td><td>1Q26 매출 +19.4% 대비 OP +7.0%, 인원·R&D·M캠퍼스 램프 비용 증가</td><td><span class="pill fact">중기 투자</span> 2H26 매출이 흡수해야 함</td></tr>
+    <tr><td>4분기 일회성</td><td>4Q25 GPM 33.0%로 3Q 대비 13.2%p 급락. 공개 자료에서 단일 충당금·성과급 금액 확인 불가</td><td><span class="pill nr">원인 미확인</span> 임의 조정 금지</td></tr>
+    <tr><td>비영업 손익</td><td>2025 파생상품거래손실 478억원 공시, 연간 영업외손익 약 −626억원</td><td><span class="pill risk">순이익 왜곡</span> 영업이익 기준 판독 필요</td></tr>
+  </table></div>
+
+  <p class="note danger"><b>4분기 판독 기준:</b> 4Q25는 매출이 늘었는데 영업이익이 55억원 감소했다. 일회성 금액이 명시되지 않았으므로 “제거 후 정상화” 숫자를 만들면 안 된다. 현재 최선의 기준은 <b>1~3Q25 누적 OPM 35.3%와 1Q26 OPM 30.6%의 범위</b>를 실력치로 보고, 향후 4Q가 반복적으로 낮은지 확인하는 것이다.</p>
+
+  <p class="note"><b>순이익과 영업이익 괴리:</b> 2025년 OP 518억원에도 순손실 215억원을 기록했다. 주원인은 상장 전 RCPS의 주가 연동 파생상품평가손실이다. 본체 RCPS가 보통주로 전환돼 동일 손실의 반복 가능성은 낮아졌지만, 셀릭의 RCPS·주주간 약정은 별도 점검이 필요하다. 따라서 2025 trailing PER은 의미가 없고, <b>영업이익·EBITDA와 정상화 forward EPS</b>로 평가해야 한다.</p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 4Q25 매출총이익률 급락의 정확한 항목은 재고평가·불량·성과급·저마진 믹스 중 무엇인가?</div><div><b>더 파볼 질문 2</b> — 2025 파생상품 손실 가운데 상장 후에도 남아 있는 셀릭 관련 잠재 손실·풋옵션 규모는?</div></div>
+</section>
+
+<section id="s4">
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 장비 CAPEX보다 식각 강도와 웨이퍼 가동률</h2>
+  <div class="lead">팩터 선언: <b>“글로벌 선단 로직·DRAM·고단 NAND의 웨이퍼 투입량 × 식각 스텝·플라즈마 강도 × 애프터마켓 침투율”</b>.</div>
+
+  <h3>인과사슬 다이어그램</h3>
+  <div class="flow">
+    <div class="node"><div class="n">01 · AI / STORAGE</div><div class="t">AI 서버·HBM·고용량 NAND</div><div class="d">선단 DRAM·로직과 고단 NAND 수요 확대</div><div class="check">확인: 고객 실적·bit shipment·가이던스</div></div>
+    <div class="node"><div class="n">02 · PROCESS</div><div class="t">식각 스텝·난이도 상승</div><div class="d">미세화·다층화로 플라즈마 노출과 공정 반복 증가</div><div class="check">확인: 노드 전환·NAND 단수·공정 로드맵</div></div>
+    <div class="node"><div class="n">03 · CONSUMPTION</div><div class="t">파츠 마모·교체주기</div><div class="d">챔버 가동시간과 식각 강도가 교체 수요 결정</div><div class="check">확인: 웨이퍼 가동률·고객 PO</div></div>
+    <div class="node"><div class="n">04 · SHARE</div><div class="t">애프터마켓 침투</div><div class="d">OEM 정품 대비 비용·납기·품질을 검증해 벤더 확대</div><div class="check">확인: 퀄 통과·FAB 수·수출비중</div></div>
+    <div class="node"><div class="n">05 · CMTX</div><div class="t">매출·마진·현금흐름</div><div class="d">증설 가동률과 잉곳 수율이 영업 레버리지 결정</div><div class="check">확인: GPM·재고·CAPEX·OCF</div></div>
+  </div>
+
+  <h3>전방 기업 최신 교차 검증</h3>
+  <div class="scrollx"><table>
+    <tr><th>전방</th><th>최신 공식 확인</th><th>씨엠티엑스 연결고리</th><th>신뢰 한계</th></tr>
+    <tr><td>TSMC</td><td>2026년 1~6월 매출 NT$2.404조, YoY +35.6%. 6월 +67.9%. 2026년 달러 매출 30% 이상 성장 가이던스</td><td>선단 로직 가동률·첨단 노드 식각 강도와 해외 Si 파츠 매출의 직접 선행 신호</td><td>TSMC 전체 매출 성장과 씨엠티엑스 품목 점유율은 별개. 퀄 확대 확인 필요</td></tr>
+    <tr><td>삼성전자</td><td>1Q26 DS 부문이 AI·고부가 메모리·가격 강세로 성장. 메모리 선단공정 투자 지속</td><td>기존 최대 핵심 고객의 웨이퍼 투입량·고단화가 반복 주문 기반</td><td>고객 집중으로 단가·벤더 정책 변화 영향이 큼</td></tr>
+    <tr><td>Micron</td><td>FQ3-26 사상 최대 실적, DRAM·NAND 수급이 2027년 이후까지 타이트할 것으로 전망. FY26 CAPEX 약 $27bn 가이던스</td><td>메모리 가동률과 신규 해외 팹 벤더 진입 기회</td><td>IR 지도상 거래 “진행·추진”과 실제 씨엠티엑스 매출은 구분해야 함</td></tr>
+    <tr><td>NAND 고단화</td><td>업계 전반 고단 NAND 비중 확대와 가격 강세</td><td>적층 수가 높아질수록 식각 깊이·횟수·파츠 마모 부담 증가</td><td>NAND CAPEX가 보수적이어도 기술전환만으로 수요가 늘 수 있으나 정량 탄력성은 미공개</td></tr>
+  </table></div>
+
+  <h3>수주산업이 아니라 “인증 빈티지” 산업</h3>
+  <p>씨엠티엑스는 조선·발전장비처럼 수년치 수주잔고를 쌓는 산업이 아니다. 고객사 품질평가에 1.5~2년 이상이 걸릴 수 있고, 승인 뒤 월별·분기별 교체 PO가 반복된다. 따라서 수주잔고·ASP 빈티지 대신 <b>퀄 시작 연도 → 양산 승인 연도 → 매출 램프 연도</b>를 추적해야 한다.</p>
+  <div class="vintage">
+    <div class="v"><div class="yr">2021 VINTAGE</div><strong>삼성 1차 협력사 등록</strong><p class="small">약 1.5년 퀄 이후 2023년부터 선단공정 매출 확대</p></div>
+    <div class="v"><div class="yr">2023–2024</div><strong>삼성 양산 램프</strong><p class="small">2023 매출 708억원 → 2024 1,087억원, 마진 정상화</p></div>
+    <div class="v"><div class="yr">2023–2025</div><strong>TSMC 장기 평가·등록</strong><p class="small">2년 이상 테스트 후 2025년 선단공정 공급망 진입</p></div>
+    <div class="v"><div class="yr">2026–2027</div><strong>해외 FAB·신규 소재</strong><p class="small">현재 퀄·초도 공급이 증설 가동률로 연결되는지 검증</p></div>
+  </div>
+
+  <div class="scrollx"><table>
+    <tr><th>일반 수주 지도 항목</th><th>씨엠티엑스 적용</th><th>투자자 판독</th></tr>
+    <tr><td>수주잔고 몇 년 치</td><td><b>해당 없음 / 미공개</b>. 반복 PO 구조</td><td>매출채권·재고·수출·고객 퀄 단계로 대체</td></tr>
+    <tr><td>수주→매출 시차</td><td>퀄 1.5~2년+, 승인 후 PO→납품은 상대적으로 짧음</td><td>퀄 통과 뉴스가 즉시 대형 매출을 뜻하지 않음</td></tr>
+    <tr><td>수주 공백의 메아리</td><td>신규 퀄 공백은 1~2년 뒤 고객 다변화 정체로 나타남</td><td>현재 22 FAB 파이프라인의 단계별 숫자가 핵심</td></tr>
+    <tr><td>ASP 빈티지</td><td>장기 고정판가보다 품목별 PO·재협상</td><td>ASP보다 고난도 믹스·교체빈도·점유율을 추적</td></tr>
+  </table></div>
+
+  <h3>기존 분석 종목과 팩터 비교</h3>
+  <div class="scrollx"><table>
+    <tr><th>종목</th><th>주요 팩터</th><th>씨엠티엑스와의 관계</th><th>분산 가치</th></tr>
+    <tr><td>케이씨텍</td><td>메모리 장비 발주·검수 + CMP 슬러리 웨이퍼 가동률</td><td>같은 반도체 팹 사이클. 씨엠티엑스는 장비 PO보다 소모품 교체·식각 강도 비중이 큼</td><td>낮음~중간</td></tr>
+    <tr><td>네오티스</td><td>AI PCB 다층화·마이크로비트 마모·가공 강도</td><td>공정 강도가 소모품 교체를 늘리는 구조가 유사. 전방은 PCB와 웨이퍼로 다름</td><td>중간</td></tr>
+    <tr><td>한화엔진</td><td>2~4년 선박 수주잔고·ASP 빈티지</td><td>시간축·전방·가격 결정이 완전히 다름</td><td>높음</td></tr>
+  </table></div>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — TSMC향 매출이 2026년 2배 증가한다는 전망은 이미 승인된 품목 수와 PO로 얼마나 뒷받침되는가?</div><div><b>더 파볼 질문 2</b> — 웨이퍼 투입량 10% 증가와 식각 스텝 10% 증가가 파츠 매출에 각각 몇 % 탄력성을 갖는가?</div></div>
+</section>
+
+<section id="s5">
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 지표 — 추세형 70%, 이벤트 캘린더형 30%</h2>
+  <div class="lead">매출은 웨이퍼 가동률·식각 강도·수출 증가라는 추세를 타지만, 신규 고객 퀄과 특허판결은 특정 이벤트로 주가를 크게 움직인다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처</th><th>주기</th><th>무료</th><th>현재 수치·방향</th></tr>
+    <tr><td>TSMC 월매출</td><td>선단 로직 웨이퍼 가동률의 가장 빠른 공개 신호</td><td>TSMC IR</td><td>월간</td><td>예</td><td>2026 1H NT$2.404조, YoY +35.6% · 강한 상승</td></tr>
+    <tr><td>Micron DRAM/NAND 전망</td><td>메모리 가동률·CAPEX·신규 벤더 수요</td><td>Micron IR</td><td>분기</td><td>예</td><td>2027년 이후까지 타이트 전망, FY26 CAPEX 약 $27bn</td></tr>
+    <tr><td>삼성 DS 실적·CAPEX</td><td>기존 핵심 고객 주문량과 기술전환</td><td>삼성전자 IR</td><td>분기</td><td>예</td><td>1Q26 AI·고부가 메모리 호조, 투자 지속</td></tr>
+    <tr><td>씨엠티엑스 수출액·비중</td><td>TSMC·해외 FAB 침투의 실현치</td><td>분기보고서</td><td>분기</td><td>예</td><td>1Q26 273.3억원, 매출의 62% · 상승</td></tr>
+    <tr><td>Si Parts 매출</td><td>핵심 제품의 물량·점유율 직접 확인</td><td>분기보고서·리포트</td><td>분기</td><td>예</td><td>1Q26 약 432억원, 비중 약 98% · 사상 최대</td></tr>
+    <tr><td>GPM·OPM</td><td>증설 수율·믹스·원가 내재화의 결과</td><td>분기보고서</td><td>분기</td><td>예</td><td>1Q26 GPM 42.6%, OPM 30.6% · 4Q25 대비 회복</td></tr>
+    <tr><td>재고·매출채권·OCF</td><td>램프 전 재고 축적과 이익의 현금 전환</td><td>DART</td><td>분기</td><td>예</td><td>2025 재고 499억원, OCF 362억원 · 운전자본 부담 확대</td></tr>
+    <tr><td>M캠퍼스 CAPEX</td><td>2027 매출 3,000억원대의 물리적 전제</td><td>DART·회사 IR</td><td>분기/수시</td><td>예</td><td>1Q26 기계장치 등 91.3억원 집행, 연말 CAPA 4,000억원 목표</td></tr>
+    <tr><td>램리서치 소송</td><td>핵심 C-Ring 판매·법률비용·멀티플 리스크</td><td>특허법원·DART·보도</td><td>수시</td><td>예</td><td>특허심판원 4건 승소, 램리서치 항소·민사 본안 계속</td></tr>
+    <tr><td>주가·수급</td><td>상장 초기 VC 락업 해제와 기대 과열 여부</td><td>KRX·공시</td><td>일간</td><td>예</td><td>83,400원, 52주 고점 대비 −51.0%, 저점 대비 +22.8%</td></tr>
+  </table></div>
+
+  <h3>무료 실전 체크리스트</h3>
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY</div><ul><li>DRAM·NAND 가격 방향</li><li>특허소송·심결취소소송 기사</li><li>대량보유·보호예수 해제·블록딜</li><li>고객사 팹 가동·신규 노드 뉴스</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div><ul><li>TSMC 월매출 YoY·MoM</li><li>한국 반도체 수출</li><li>증권사 2026E OP·EPS 수정</li><li>M캠퍼스 건설·채용 속도</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY</div><ul><li>Si 파츠·수출 매출</li><li>GPM·OPM·인건비·R&D</li><li>재고·채권·영업현금흐름</li><li>고객별 퀄·양산 품목 수</li></ul></div>
+  </div>
+
+  <h3>이벤트 캘린더</h3>
+  <div class="scrollx"><table>
+    <tr><th>시점</th><th>이벤트</th><th>판단 기준</th></tr>
+    <tr><td>2026-07-16</td><td>TSMC 2Q26 실적발표 예정</td><td>3Q 가이던스·선단 노드 수요·CAPEX 변화</td></tr>
+    <tr><td>2026-07 말</td><td>삼성전자 2Q26 확정 실적·컨콜</td><td>DRAM·NAND 가동·기술전환·CAPEX</td></tr>
+    <tr><td>2026-08 중순</td><td>씨엠티엑스 반기보고서 법정 제출 구간</td><td>2Q 매출 약 508억원·OP 약 171억원 충족, 수출·재고·현금흐름</td></tr>
+    <tr><td>2026 하반기</td><td>램리서치 특허법원 심결취소소송·민사 본안</td><td>심판원 승소 유지 여부, 판매금지·손해배상 가능성</td></tr>
+    <tr><td>2026-12-31 목표</td><td>M캠퍼스 B동 증축·CAPA 확대</td><td>CAPA 2,100→4,000억원, 장비 반입·수율·고객 주문 커버리지</td></tr>
+  </table></div>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 수출 매출 증가를 TSMC·Micron·기타 FAB로 분리할 수 있는 대체 데이터는 무엇인가?</div><div><b>더 파볼 질문 2</b> — 재고 증가가 미래 PO 대응인지 수율·판매 지연인지 판별할 재고회전일 기준은?</div></div>
+</section>
+
+<section id="s6">
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 높은 마진이지만 분기 증분마진은 매우 불안정</h2>
+  <div class="lead">연간 기준 2024→2025 증분마진은 53.9%였지만 분기 기준은 −458%에서 +300%까지 흔들린다. 작은 매출 변화와 믹스·재고·램프 비용이 결합되기 때문이다.</div>
+
+  <h3>고정비·변동비 구조</h3>
+  <div class="scrollx"><table>
+    <tr><th>비용</th><th>근거</th><th>성격</th><th>판독</th></tr>
+    <tr><td>실리콘 소재·가공 소모품</td><td>2025 매출원가 957억원</td><td>변동비 + 수율 연동</td><td>잉곳 내재화·재활용·수율이 공헌이익률 결정</td></tr>
+    <tr><td>인건비</td><td>1Q26 인원 약 310명 수준으로 확대된 것으로 증권사 추정</td><td>단기 고정비</td><td>매출 선행 채용이면 2H26 레버리지, 주문 지연이면 마진 훼손</td></tr>
+    <tr><td>R&D·품질인증</td><td>신규 고객 퀄과 600종 이상 품목 개발</td><td>고정·준고정비</td><td>성장 옵션이지만 승인 전 비용 선반영</td></tr>
+    <tr><td>감가상각</td><td>2025 약 110억원, 2026E 112억원</td><td>고정비</td><td>M캠퍼스 완공 후 증가 가능</td></tr>
+    <tr><td>판관비</td><td>2025 130억원, 1Q26 45억원</td><td>고정+성장비</td><td>해외 영업·상장사 비용·법률비가 상승</td></tr>
+  </table></div>
+
+  <h3>최근 구간 Δ매출 대비 Δ영업이익</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th class="num">Δ매출</th><th class="num">ΔOP</th><th class="num">증분마진</th><th>해석</th></tr>
+    <tr><td>4Q24 → 1Q25</td><td class="num">+13</td><td class="num">+32</td><td class="num">246.2%</td><td>매출 증가보다 원가·믹스 개선이 큼. 작은 분모로 과대 표시</td></tr>
+    <tr><td>1Q25 → 2Q25</td><td class="num">+35</td><td class="num">+11</td><td class="num">31.4%</td><td>정상 범위의 레버리지</td></tr>
+    <tr><td>2Q25 → 3Q25</td><td class="num">+6</td><td class="num">+18</td><td class="num">300.0%</td><td>고마진 믹스·원가 개선, 작은 분모 효과</td></tr>
+    <tr><td>3Q25 → 4Q25</td><td class="num">+12</td><td class="num">−55</td><td class="num">−458.3%</td><td>매출 증가에도 GPM 급락. 가장 중요한 이상 구간</td></tr>
+    <tr><td>4Q25 → 1Q26</td><td class="num">+19</td><td class="num">+35</td><td class="num">182.8%</td><td>4Q 저점에서 정상화된 기저</td></tr>
+    <tr class="hl"><td>1Q25 → 1Q26</td><td class="num">+72</td><td class="num">+9</td><td class="num">12.6%</td><td>인력·R&D 선투입을 포함한 보수적 실측</td></tr>
+    <tr><td>2024 → 2025</td><td class="num">+519</td><td class="num">+282</td><td class="num">54.3%</td><td>연간 규모의 경제·내재화·믹스 효과</td></tr>
+  </table></div>
+
+  <h3>시각화 ① — 증분 매출 100원의 여정</h3>
+  <div class="journey">
+    <div class="jrow"><div class="jlabel">4Q24→1Q25</div><div class="jtrack"><div class="jprofit" style="width:100%"></div><div class="joverflow">OP 246 · 비용 −146 · 기저/믹스</div></div><div class="jmetric">246%</div></div>
+    <div class="jrow"><div class="jlabel">1Q25→2Q25</div><div class="jtrack"><div class="jcost" style="width:68.6%">비용 68.6</div><div class="jprofit" style="width:31.4%">OP 31.4</div></div><div class="jmetric">31.4%</div></div>
+    <div class="jrow"><div class="jlabel">2Q25→3Q25</div><div class="jtrack"><div class="jprofit" style="width:100%"></div><div class="joverflow">OP 300 · 비용 −200 · 작은 분모</div></div><div class="jmetric">300%</div></div>
+    <div class="jrow"><div class="jlabel">3Q25→4Q25</div><div class="jtrack reverse"><div class="jloss hatched" style="width:100%">OP −458 · 비용 +558</div></div><div class="jmetric">역레버리지</div></div>
+    <div class="jrow"><div class="jlabel">4Q25→1Q26</div><div class="jtrack"><div class="jprofit" style="width:100%"></div><div class="joverflow">OP 183 · 비용 −83 · 회복 기저</div></div><div class="jmetric">183%</div></div>
+    <div class="jrow"><div class="jlabel">YoY 1Q25→1Q26</div><div class="jtrack"><div class="jcost" style="width:87.4%">비용 87.4</div><div class="jprofit" style="width:12.6%">12.6</div></div><div class="jmetric">12.6%</div></div>
+  </div>
+  <p class="small">100% 초과 구간은 빗금·오버플로 표기로 표시했다. 이는 영업이익이 매출보다 커졌다는 뜻이 아니라 기존 비용이 줄거나 믹스가 좋아져 증분 비용이 음수가 됐다는 뜻이다. 4Q25는 공개된 일회성 금액이 없어 제거 전/후를 만들지 않았고, 대신 1Q25→1Q26 YoY를 정상화 비교로 병기했다.</p>
+
+  <h3>시각화 ② — 배율 게이지</h3>
+  <div class="gaugebox">
+    <div><b>증분 공헌이익률 proxy 42.6%</b> vs <b>1Q26 OPM 30.6%</b> → 배율 약 <b>1.39배</b></div>
+    <div class="gauge">
+      <div class="gline"></div>
+      <span class="tick" style="left:0%">0%</span><span class="tick" style="left:25%">12.5%</span><span class="tick" style="left:50%">25%</span><span class="tick" style="left:75%">37.5%</span><span class="tick" style="left:100%">50%</span>
+      <div class="marker opm" style="left:61.2%"><b>OPM 30.6%</b></div>
+      <div class="marker cm" style="left:85.2%"><b>공헌 42.6%</b></div>
+    </div>
+    <p class="small">가변·고정 원가를 회사가 분리 공시하지 않아 1Q26 매출총이익률을 공헌이익률의 보수적 proxy로 사용했다. OPM이 이미 30%를 넘으므로 매출 증가 때 배율은 자연히 낮아진다.</p>
+  </div>
+
+  <h3>매출 +10% / +20% 시나리오</h3>
+  <div class="scrollx"><table>
+    <tr><th>시나리오</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th>전제</th></tr>
+    <tr><td>1Q26 기준</td><td class="num">441</td><td class="num">135</td><td class="num">30.6%</td><td>확정</td></tr>
+    <tr><td>매출 +10%</td><td class="num">485</td><td class="num">154</td><td class="num">31.7%</td><td>증분 공헌 42.6%, 고정비 불변</td></tr>
+    <tr><td>매출 +20%</td><td class="num">529</td><td class="num">173</td><td class="num">32.6%</td><td>증설 초기 수율 저하 없음</td></tr>
+    <tr><td>보수적 +20%</td><td class="num">529</td><td class="num">161</td><td class="num">30.4%</td><td>증분 공헌 30%, 신규 인력·감가 반영</td></tr>
+  </table></div>
+  <p class="note"><b>곱의 구조:</b> 레버리지는 단순 매출 증가가 아니라 <b>웨이퍼 투입 × 식각 스텝 × 교체 빈도 × 고객 침투율 × 고난도 믹스 × 잉곳 수율</b>의 곱이다. 증설 첫해에는 매출이 늘어도 인력·감가·초도 불량이 먼저 발생할 수 있다.</p>
+
+  <h3>증설 CAPEX·Payback·ROIC</h3>
+  <div class="scrollx"><table>
+    <tr><th>항목</th><th class="num">공개·추정치</th><th>판독</th></tr>
+    <tr><td>기존 생산능력</td><td class="num">약 2,100억원</td><td>매출액 기준 CAPA로 제시된 증권사·회사 설명</td></tr>
+    <tr><td>2026년 말 목표</td><td class="num">약 4,000억원</td><td>M캠퍼스 B동·설비·임대공장 포함. 과거 IPO 자료 3,500억원과 차이가 있어 재확인 필요</td></tr>
+    <tr><td>시설 투자 계획</td><td class="num">약 400억원</td><td>IPO 자금 기준 2025~2027 시설투자. M캠퍼스 310억원 중심</td></tr>
+    <tr><td>1Q26 집행</td><td class="num">91.3억원</td><td>기계장치 등 CAPEX</td></tr>
+  </table></div>
+  <div class="scrollx"><table>
+    <tr><th>프레임 추정</th><th class="num">증분 CAPA</th><th class="num">가동률</th><th class="num">증분 매출</th><th class="num">세후 증분이익</th><th class="num">Payback / 세후 ROIC</th></tr>
+    <tr class="estrow"><td>보수적 램프</td><td class="num">1,900</td><td class="num">50%</td><td class="num">950</td><td class="num">217</td><td class="num">1.85년 / 54%</td></tr>
+    <tr class="estrow"><td>정상 가동</td><td class="num">1,900</td><td class="num">75%</td><td class="num">1,425</td><td class="num">347</td><td class="num">1.15년 / 87%</td></tr>
+  </table></div>
+  <p class="small">단위: 억원. 시설투자 400억원, OPM 30~32%, 법인세 24% 가정. 토지·운전자본·추가 장비·유지 CAPEX와 셀릭 비지배지분을 단순화한 <b>프레임 추정</b>이다. 실제 주문 커버리지 없이 CAPA만 채워진다는 가정은 위험하다.</p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 4Q25 역레버리지의 비용 항목과 2026년 재발 가능성은?</div><div><b>더 파볼 질문 2</b> — 4,000억원 CAPA 중 이미 퀄이 끝난 품목·고객 주문으로 커버되는 비중은 몇 %인가?</div></div>
+</section>
+
+<section id="s7">
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크와 밸류에이션 — 실적보다 법률·수급 할인이 더 커졌다</h2>
+  <div class="lead">상장 8개월 미만이라 장기 역사적 PER 밴드는 없다. 가격 밴드·forward 이익·법률 이벤트를 함께 봐야 한다.</div>
+
+  <div class="risks">
+    <div class="risk">
+      <div class="impact">SCENARIO 1 · OPERATING</div>
+      <h4>고객 침투·증설 램프 지연</h4>
+      <p>TSMC·해외 FAB의 퀄과 PO가 늦어지는데 인력·감가상각이 먼저 증가하면 2027년 3,000억원 매출 경로가 무너진다.</p>
+      <div class="alarm"><b>조기 경보:</b> 수출 매출 QoQ 감소, 2개 분기 연속 매출 성장률 10% 미만, 재고 급증, CAPA 완공 연기</div>
+    </div>
+    <div class="risk">
+      <div class="impact">SCENARIO 2 · MARGIN</div>
+      <h4>30%대 OPM 정상화 실패</h4>
+      <p>대형 고객 단가 인하, 신규 제품 초도 불량, 잉곳 수율 저하, M캠퍼스 저가동으로 4Q25와 같은 마진 압축이 반복된다.</p>
+      <div class="alarm"><b>조기 경보:</b> GPM 38% 하회, OPM 28% 하회, 재고평가·폐기, 인건비 증가율이 매출 증가율 상회</div>
+    </div>
+    <div class="risk">
+      <div class="impact">SCENARIO 3 · IP</div>
+      <h4>램리서치 특허소송 역전</h4>
+      <p>특허심판원에서는 4건 모두 승소했지만 램리서치가 특허법원에 불복했고 서울중앙지법 본안도 계속된다. 최종 승소가 아니다.</p>
+      <div class="alarm"><b>조기 경보:</b> 심결취소, 가처분·판매금지 인용, 손해배상 충당금, 고객사의 해당 C-Ring 발주 보류</div>
+    </div>
+    <div class="risk">
+      <div class="impact">SCENARIO 4 · NON-OPERATING</div>
+      <h4>오버행·지배구조·RCPS 약정</h4>
+      <p>상장 초기 VC 보호예수 해제와 블록딜은 실적과 무관하게 멀티플을 누른다. 셀릭 RCPS·IPO 관련 약정도 비영업 손익 변수가 될 수 있다.</p>
+      <div class="alarm"><b>조기 경보:</b> 대량보유 감소, 시간외 대량매매, 셀릭 풋옵션·IPO 기한 변경, 관련자 거래 공시</div>
+    </div>
+  </div>
+
+  <h3>비영업 리스크 별도 점검</h3>
+  <div class="scrollx"><table>
+    <tr><th>항목</th><th>확인 결과</th><th>판정</th></tr>
+    <tr><td>특허소송</td><td>2024년 10월 램리서치가 C-Ring 관련 특허 2건으로 판매금지·손해배상 소송. 씨엠티엑스는 특허심판 4건 승소, 램은 항소</td><td><span class="pill risk">핵심 리스크</span> 최종 확정 전 할인 필요</td></tr>
+    <tr><td>RCPS·파생손실</td><td>2025년 파생상품거래손실 478억원, 순손실 215억원. 본체 RCPS 전환 후 반복 가능성 감소</td><td><span class="pill est">정상화 가능</span> 셀릭 약정 확인 필수</td></tr>
+    <tr><td>CB/BW 희석</td><td>2026-07-14 검색 기준 대규모 신규 CB/BW 발행 확인 안 됨</td><td><span class="pill fact">현재 낮음</span></td></tr>
+    <tr><td>대주주·지분</td><td>박성훈 및 특별관계자 주권 약 31.3%, 총 보유증권 약 31.6%로 2026-04-24 공시</td><td>경영 안정성은 있으나 소수주주·관련자 거래 감시</td></tr>
+    <tr><td>담합·규제·중대 소송</td><td>특허 외 실적을 훼손할 중대한 공개 사건은 확인하지 못함</td><td><span class="pill nr">미확인 위험 잔존</span></td></tr>
+  </table></div>
+
+  <h3>밸류에이션 좌표</h3>
+  <div class="kpis">
+    <div class="kpi"><span>현재 확인가</span><b>83,400원</b><small>2026-07-14 14:17</small></div>
+    <div class="kpi"><span>시가총액</span><b>8,052억원</b><small>9,654,438주</small></div>
+    <div class="kpi"><span>2026E PER</span><b>12.4~12.7배</b><small>EPS 6,594~6,709원</small></div>
+    <div class="kpi"><span>2027E PER</span><b>10.1배</b><small>EPS 8,268원</small></div>
+  </div>
+
+  <div class="band" aria-label="상장 후 가격 밴드">
+    <div class="bandline"></div>
+    <div class="bandpoint" style="left:2%"><b>67,900</b><small>52주 저점</small></div>
+    <div class="bandpoint current" style="left:15.1%"><b>83,400</b><small>현재 확인가</small></div>
+    <div class="bandpoint" style="left:98%"><b>170,300</b><small>52주 고점</small></div>
+    <div class="bandpoint target" style="left:100%"><b>200,500</b><small>목표가 평균*</small></div>
+  </div>
+  <div class="bandlabels"><span>소송·오버행 할인</span><span>실적 검증 구간</span><span>성장 기대 과열</span></div>
+  <p class="small">*목표가 평균은 2026-05-14 공개 집계 200,500원. 개별 최근 목표가는 한국투자 182,000원, 신한 200,000원, 유진 220,000원 등으로 집계처·기간에 따라 다르다. 7월 신규 리포트는 검색상 확인되지 않았다.</p>
+
+  <div class="scrollx"><table>
+    <tr><th>기준</th><th class="num">값</th><th>해석</th></tr>
+    <tr><td>2025 trailing PER</td><td class="num">N/A</td><td>RCPS 평가손실로 순손실. 사용 금지</td></tr>
+    <tr><td>2026E PER</td><td class="num">12.4~12.7배</td><td>증권사 목표 PER 25~33배보다 크게 낮음. 시장은 추정치·소송·수급을 할인</td></tr>
+    <tr><td>2027E PER</td><td class="num">10.1배</td><td>매출 3,026억원·OP 1,005억원이 실현될 경우 낮음</td></tr>
+    <tr><td>목표가 평균 여력</td><td class="num">+140.4%</td><td>매우 크지만 5월 목표가로, 현재 위험 프리미엄 변화가 미반영됐을 수 있음</td></tr>
+    <tr><td>52주 밴드 위치</td><td class="num">15.1%</td><td>고점 대비 −51.0%, 저점 대비 +22.8%. 상장 후 역사 짧음</td></tr>
+    <tr><td>공모가 대비</td><td class="num">+37.9%</td><td>공모가 60,500원 대비 여전히 프리미엄</td></tr>
+  </table></div>
+
+  <h3>가격이 이미 반영한 것과 아직 증명되지 않은 것</h3>
+  <div class="cards">
+    <div class="card"><div class="k">ALREADY PRICED</div><h4>2026 성장 둔화·마진 정상화</h4><p class="small">고점 대비 반토막과 12배대 PER은 기존 30배 목표 멀티플을 부정하고 있다.</p></div>
+    <div class="card"><div class="k">PARTLY PRICED</div><h4>특허소송·상장 오버행</h4><p class="small">심판 승소에도 항소·본안이 남아 법률 할인은 계속된다.</p></div>
+    <div class="card"><div class="k">NOT PROVEN</div><h4>2027 CAPA 완전 가동</h4><p class="small">3,000억원 매출과 OP 1,000억원은 고객 퀄·수율·가동률이 모두 맞아야 한다.</p></div>
+  </div>
+
+  <p class="note danger"><b>판정 — 가격이 증명을 앞서갔는가?</b> 2월 170,300원에서는 2026 성장과 30%대 마진이 상당 부분 선반영됐다. 83,400원에서는 그 선반영이 대부분 해소됐고, 오히려 소송·오버행·증설 리스크를 강하게 할인한다. 그러나 “주가가 반토막 났으니 싸다”는 논리는 부족하다. <b>2Q26 실적과 M캠퍼스 주문 커버리지</b>가 없으면 2027E PER 10배는 가상의 분모일 뿐이다.</p>
+
+  <div class="questions"><div><b>더 파볼 질문 1</b> — 현재 목표가 18.2~22만원은 특허법원 항소 이후의 승소확률·손해액을 반영했는가?</div><div><b>더 파볼 질문 2</b> — VC·재무적투자자 보호예수 해제 물량 중 실제 미매각 잔량은 몇 주인가?</div></div>
+</section>
+
+<section id="s8">
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 매출 성장보다 증설의 주문 커버리지를 먼저 확인</h2>
+  <div class="lead">투자 판단의 순서는 ① 2Q 마진, ② 해외 매출, ③ 증설 주문 커버리지, ④ 특허소송이다. AI·TSMC라는 서사만으로는 부족하다.</div>
+
+  <div class="qbox"><div class="q">MOST IMPORTANT QUESTION 01</div><h4>4,000억원 CAPA의 절반 이상이 이미 승인·주문으로 커버되는가?</h4><p>설비가 완공돼도 고객 퀄과 주문이 없으면 감가상각만 늘어난다. 2027 매출 3,026억원의 신뢰도를 가르는 질문이다.</p></div>
+  <div class="qbox"><div class="q">MOST IMPORTANT QUESTION 02</div><h4>4Q25 마진 급락은 비반복인가?</h4><p>1Q26 회복만으로는 부족하다. 2Q·3Q GPM이 40% 이상, OPM이 30% 이상 유지돼야 2025의 32% OPM이 구조적이라고 볼 수 있다.</p></div>
+
+  <h3>검증 순서</h3>
+  <div class="flow">
+    <div class="node"><div class="n">STEP 1</div><div class="t">2Q26 실적</div><div class="d">매출 약 508·OP 약 171억원, OPM 33% 전후</div><div class="check">8월 반기보고서</div></div>
+    <div class="node"><div class="n">STEP 2</div><div class="t">해외 침투</div><div class="d">수출액·TSMC향 품목·신규 FAB 양산 전환</div><div class="check">수출비중·Si 매출</div></div>
+    <div class="node"><div class="n">STEP 3</div><div class="t">증설 램프</div><div class="d">M캠퍼스 준공·장비 반입·수율·인력 생산성</div><div class="check">CAPEX·재고·GPM</div></div>
+    <div class="node"><div class="n">STEP 4</div><div class="t">법률 경로</div><div class="d">심판 승소가 특허법원·민사 본안에서도 유지되는지</div><div class="check">판결·충당금·발주</div></div>
+    <div class="node"><div class="n">STEP 5</div><div class="t">현금 전환</div><div class="d">재고·채권 증가를 넘어 OCF가 이익을 따라가는지</div><div class="check">OCF / EBITDA</div></div>
+  </div>
+
+  <h3>3질문 프레임 좌표</h3>
+  <div class="matrix">
+    <div class="m"><div class="score">① 8.0 / 10</div><h4>이익 업사이클 강도</h4><p class="small">2024 OP 236 → 2025 518 → 2027E 1,005억원. 식각 강도·해외 침투·증설의 결합은 강하다.</p></div>
+    <div class="m"><div class="score">② 7.0 / 10</div><h4>주가 반영도와 잔여 룸</h4><p class="small">고점 대비 51% 조정, 2026E PER 12배대. 잔여 룸은 크지만 법률·오버행 할인도 정당하다.</p></div>
+    <div class="m"><div class="score">③ 7.5 / 10</div><h4>경로의 변수 개수</h4><p class="small">웨이퍼 투입, 식각 강도, 교체주기, 퀄, 점유율, 증설 수율, 가격, 소송 등 8개 이상이다.</p></div>
+  </div>
+  <p class="note"><b>상대 위치:</b> 케이씨텍보다 장비 검수 변동은 작고 반복매출 비중은 높지만, 제품·고객 집중과 특허 리스크가 더 크다. 네오티스와는 “공정 강도→소모품 마모” 구조가 가장 유사하다. 한화엔진보다 장기 수주 가시성은 낮지만 매출 반응은 빠르다.</p>
+
+  <h3>이탈 규율 3단계</h3>
+  <div class="scrollx"><table>
+    <tr><th>단계</th><th>조건</th><th>행동</th></tr>
+    <tr><td><span class="pill est">경계</span></td><td>분기 OPM 28% 하회 또는 수출 매출 QoQ 감소, M캠퍼스 일정 1분기 이상 지연</td><td>추정치 상향 기대를 중단하고 원인 확인 전 추가 비중 확대 금지</td></tr>
+    <tr><td><span class="pill risk">축소</span></td><td>2개 분기 연속 Si 파츠 성장률 10% 미만, 2026E OP 15% 이상 하향, GPM 38% 하회</td><td>증설 과잉·고객 침투 실패 가능성을 반영해 비중 축소</td></tr>
+    <tr><td><span class="pill risk">실적 무관 이탈</span></td><td>핵심 C-Ring 판매금지·고객 승인 취소·중대 품질사고·숨겨진 RCPS/관련자 약정</td><td>가격과 무관하게 투자 가정 폐기</td></tr>
+    <tr><td><span class="pill fact">노이즈성 급락 검토</span></td><td>고객 가동·실적·소송 지위 불변인데 수급만으로 2026E PER 10배 이하(약 6.6~6.7만원)</td><td>보호예수 잔량과 현금흐름 확인 후 재평가</td></tr>
+  </table></div>
+
+  <h3>IR에 물어볼 단 하나의 질문</h3>
+  <div class="qbox"><div class="q">ONE DECISIVE IR QUESTION</div><h4>“연말 4,000억원 CAPA 가운데 이미 양산 승인된 고객·품목과 2027년 반복 PO로 커버되는 매출은 얼마이며, 나머지 CAPA의 퀄 단계와 정상 GPM은 각각 얼마입니까?”</h4><p>이 답 하나로 2027 성장 가시성, 증설 payback, 마진 지속성, 고객 다변화를 동시에 판단할 수 있다.</p></div>
+
+  <h3>남은 숙제와 갱신 트리거</h3>
+  <div class="scrollx"><table>
+    <tr><th>미확인 데이터</th><th>왜 중요한가</th><th>다음 갱신 트리거</th></tr>
+    <tr><td>고객별 매출·삼성 의존도</td><td>단가·고객 집중 리스크</td><td>반기 IR·회사 질의</td></tr>
+    <tr><td>제품별 GPM·교체주기</td><td>식각 강도와 이익 탄력성</td><td>IR·탐방</td></tr>
+    <tr><td>4,000억원 CAPA 주문 커버리지</td><td>2027E 실현 가능성</td><td>M캠퍼스 준공·3Q/4Q 보고서</td></tr>
+    <tr><td>램리서치 소송 일정·청구액</td><td>판매금지·손해액·멀티플</td><td>특허법원·중앙지법 공시/보도</td></tr>
+    <tr><td>셀릭 RCPS·IPO·풋옵션</td><td>비영업 손익·현금 유출</td><td>반기 주석·주총 자료</td></tr>
+    <tr><td>보호예수·FI 잔여 물량</td><td>상장 초기 수급 압력</td><td>대량보유·블록딜 공시</td></tr>
+  </table></div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">DISCOVERY 01</div><h4>소모품주는 CAPEX보다 “공정 강도”를 추적해야 한다</h4><p class="small">신규 장비가 없어도 웨이퍼 투입·식각 스텝·교체주기가 늘면 매출이 성장한다.</p></div>
+    <div class="card"><div class="k">DISCOVERY 02</div><h4>수주잔고가 없는 산업은 퀄 빈티지가 잔고 역할을 한다</h4><p class="small">평가 시작→승인→PO 램프를 시간축으로 관리해야 미래 매출을 과대평가하지 않는다.</p></div>
+    <div class="card"><div class="k">DISCOVERY 03</div><h4>고마진 기업일수록 증분마진 배율은 낮아지는 것이 정상이다</h4><p class="small">OPM 30%에서 과거 2~3배 레버리지를 영구 적용하면 증설 초기 비용과 믹스 변동을 무시한다.</p></div>
+  </div>
+</section>
+
+<section id="appendix">
+  <div class="eyebrow">APPENDIX</div>
+  <h2>경쟁사·피어 비교, 자료 한계와 출처</h2>
+
+  <h3>글로벌·국내 피어 비교</h3>
+  <div class="scrollx"><table>
+    <tr><th>회사</th><th>주력</th><th>씨엠티엑스와 겹치는 영역</th><th>비교 시 주의</th></tr>
+    <tr><td>하나머티리얼즈</td><td>Si·SiC 식각 파츠</td><td>Si Focus Ring·Electrode와 고객 팹 사이클</td><td>제품·고객 믹스와 자회사 구조 차이</td></tr>
+    <tr><td>월덱스</td><td>Si·Quartz 파츠</td><td>실리콘 애프터마켓과 해외 고객</td><td>쿼츠 매출이 섞여 있어 단순 OPM 비교 주의</td></tr>
+    <tr><td>티씨케이</td><td>Solid SiC Ring</td><td>식각 챔버 소모품·고마진</td><td>재료·장비 플랫폼·수명·가격이 다름</td></tr>
+    <tr><td>케이엔제이</td><td>SiC 코팅·파츠</td><td>식각 소모품과 고객 CAPEX</td><td>코팅·디스플레이 장비 등 사업 믹스 차이</td></tr>
+    <tr><td>Lam Research</td><td>식각 장비 OEM·정품 부품</td><td>고객 챔버 설치 기반과 OEM 파츠</td><td>경쟁사이자 특허분쟁 상대. 장비사 경제성은 직접 피어가 아님</td></tr>
+  </table></div>
+
+  <h3>확정·추정 구분</h3>
+  <ul class="footnotes">
+    <li><span class="pill fact">확정</span> 사업보고서·분기보고서·회사 공식 IR·고객사 공식 IR에서 직접 확인한 수치.</li>
+    <li><span class="pill est">추정</span> 증권사 2026~2027 전망, 증분 공헌이익률 proxy, CAPEX payback·ROIC 프레임.</li>
+    <li><span class="pill nr">미확인</span> 고객별 매출, 제품별 마진·교체주기, 전체 FAB의 양산/퀄 단계, 4Q25 마진 급락의 정확한 원인, 특허 청구액.</li>
+    <li>주가는 2026-07-14 14:17 KST 한국경제 20분 지연 장중가 83,400원을 사용했다. 장 마감 후 수치와 달라질 수 있다.</li>
+    <li>목표가 집계는 기간·기관 수에 따라 다르다. 2026-05-14 공개 평균 200,500원과 개별 182,000~220,000원을 병기했다.</li>
+    <li>상장 이력이 2025년 11월부터로 짧아 “역사적 PER 밴드”는 통계적 의미가 부족하다. 대신 상장 후 가격 밴드와 forward 이익을 사용했다.</li>
+  </ul>
+
+  <h3>주요 출처</h3>
+  <ol class="footnotes">
+    <li id="src1"><b>씨엠티엑스 2025 사업보고서</b>, KIND, 2026-03-23 — 연간 실적·주주·재무주석. <a href="https://kind.krx.co.kr/common/disclsviewer.do?acptNo=20260323001242&docno=&method=searchInitInfo" target="_blank" rel="noopener">원문</a></li>
+    <li id="src2"><b>씨엠티엑스 2026 1Q 분기보고서</b>, KIND/IRGO, 2026-05-15 — 1Q 실적·수출·재무. <a href="https://m.irgo.co.kr/IR-COMP/388210/%EC%94%A8%EC%97%A0%ED%8B%B0%EC%97%91%EC%8A%A4-IR-PAGE" target="_blank" rel="noopener">공시 목록</a></li>
+    <li id="src3"><b>유진투자증권 기업분석</b>, 2026-04-28 — 제품 구성·연간/분기 실적·고객·밸류에이션·CAPA. <a href="https://file.alphasquare.co.kr/media/pdfs/company-report/20260428_388210_jongsun.park_2587.pdf" target="_blank" rel="noopener">PDF</a></li>
+    <li id="src4"><b>씨엠티엑스 공식 홈페이지</b> — 제품·공정·회사 소개. <a href="https://www.cmtx.co.kr/" target="_blank" rel="noopener">원문</a></li>
+    <li id="src5"><b>1Q26 잠정실적</b>, 디지털투데이, 2026-05-11 — 매출 441.2억원·OP 135.1억원·순이익 141.0억원. <a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=664706" target="_blank" rel="noopener">원문</a></li>
+    <li id="src6"><b>1Q26 실적·전망 리포트 브리핑</b>, 뉴스핌, 2026-05-14 — 목표가 220,000원·공개 목표가 평균 200,500원. <a href="https://www.newspim.com/news/view/20260514000579" target="_blank" rel="noopener">원문</a></li>
+    <li id="src7"><b>한국경제 종목·컨센서스</b>, 2026-07-14 — 장중 주가 83,400원(20분 지연), 예상 EPS 6,594원. <a href="https://markets.hankyung.com/stock/388210/consensus" target="_blank" rel="noopener">원문</a></li>
+    <li id="src8"><b>총 발행주식수</b>, 서울거래 비상장/공개정보 — 9,654,438주. <a href="https://www.seoulexchange.kr/stocks/%EC%94%A8%EC%97%A0%ED%8B%B0%EC%97%91%EC%8A%A4-3617/" target="_blank" rel="noopener">원문</a></li>
+    <li id="src9"><b>M캠퍼스·CAPA 확대</b>, 더벨, 2026-05-19 — IPO 자금·B동·설비·CAPA 4,000억원 계획. <a href="https://m.thebell.co.kr/m/newsview.asp?newskey=202605191015068040104845" target="_blank" rel="noopener">원문</a></li>
+    <li id="src10"><b>1Q26 수출·CAPEX</b>, 2026-07-07 — 수출 273.3억원·62%, 1Q CAPEX 91.3억원. <a href="https://v.daum.net/v/20260707060003111" target="_blank" rel="noopener">원문</a></li>
+    <li id="src11"><b>램리서치 특허심판 4건 승소</b>, 전자신문, 2026-05-06. <a href="https://www.etnews.com/20260506000273" target="_blank" rel="noopener">원문</a></li>
+    <li id="src12"><b>램리서치 특허법원 항소</b>, ZDNet Korea, 2026-06-03 — 심결취소소송·본안 지속. <a href="https://zdnet.co.kr/view/?no=20260603160342" target="_blank" rel="noopener">원문</a></li>
+    <li id="src13"><b>TSMC 2026 월매출</b>, TSMC IR, 2026-07-13 — 1H26 +35.6%, 6월 +67.9%. <a href="https://investor.tsmc.com/english/monthly-revenue/2026" target="_blank" rel="noopener">원문</a></li>
+    <li id="src14"><b>TSMC 1Q26 실적·2026 가이던스</b>, TSMC IR, 2026-04-16 — 2026 달러 매출 30% 이상 성장 전망. <a href="https://investor.tsmc.com/english/quarterly-results/2026/q1" target="_blank" rel="noopener">원문</a></li>
+    <li id="src15"><b>Micron FQ3-26 공식 실적·가이던스</b>, 2026-06-24 — DRAM/NAND 수급·FY26 CAPEX $27bn. <a href="https://investors.micron.com/news-releases/news-release-details/micron-technology-inc-reports-record-results-third-quarter" target="_blank" rel="noopener">원문</a></li>
+    <li id="src16"><b>삼성전자 1Q26 공식 실적</b>, 2026-04-30 — DS·AI·고부가 메모리 실적. <a href="https://news.samsung.com/global/samsung-electronics-announces-first-quarter-2026-results" target="_blank" rel="noopener">원문</a></li>
+    <li id="src17"><b>최대주주 지분 공시 보도</b>, 디지털투데이, 2026-04-24 — 특별관계자 포함 보유비율. <a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=660267" target="_blank" rel="noopener">원문</a></li>
+    <li id="src18"><b>파생상품거래손실 공시</b>, IRGO 공시 목록, 2026-03-20 — 478억원 관련. <a href="https://m.irgo.co.kr/IR-COMP/388210/%EC%94%A8%EC%97%A0%ED%8B%B0%EC%97%91%EC%8A%A4-IR-PAGE" target="_blank" rel="noopener">원문 목록</a></li>
+  </ol>
+</section>
+
+<footer>
+  <div class="footergrid">
+    <div>
+      <b>자료 한계</b><br>
+      본 리포트는 2026년 7월 14일까지 공개된 공시·회사 자료·고객사 공식 IR·증권사 자료·1차 보도를 바탕으로 작성됐다. 고객별 매출, 제품별 마진, 교체주기, 퀄 단계, 특허소송 청구액과 일정은 비공개이거나 최종 확정 전이다. 추정치는 사실과 구분했으며 공개 수치가 충돌하면 감사 후 자료와 최신 시점을 우선했다. 투자 판단과 손실 책임은 투자자에게 있다.
+    </div>
+    <div>
+      <b>시리즈 정보</b><br>
+      기준일: 2026-07-14 · 초판<br>
+      자매 리포트: 케이씨텍 · 네오티스 · 한화엔진<br>
+      고유 액센트: Silicon Violet <span class="mono">#7046B8</span><br><br>
+      <button class="printbtn" onclick="window.print()">인쇄 / PDF 저장</button>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+const links=[...document.querySelectorAll('.nav a')];
+const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+},{rootMargin:'-18% 0px -72% 0px',threshold:0});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

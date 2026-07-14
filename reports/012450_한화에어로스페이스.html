@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한화에어로스페이스 (012450) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#1E3A8A; --accent-soft:#E6EAF7; --accent-deep:#172554;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(30,58,138,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#9DB0E8;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#AEBEED;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#9DB0E8;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 방산·항공우주·해양 복합 · 시리즈 18 — 방산 팩터의 본진 (퍼스텍의 전방)</div>
+  <h1>한화에어로스페이스<span class="ticker">KOSPI 012450</span></h1>
+  <div class="sub">영업이익 3조의 방산 최강자 — 잔고 37조, 가이던스 CAGR 20~25%, 그리고 PER 46배의 무게</div>
+  <div class="meta">
+    <div>기준일<b>2026. 07. 10</b></div>
+    <div>2025년 확정<b class="figures">매출 26조 678억 (+137.6%) · OP 3조 345억 (+75%)</b></div>
+    <div>수주잔고<b class="figures">37조 2,000억 (4Q25 컨콜)</b></div>
+    <div>가이던스<b class="figures">'26~'30년 매출 CAGR 20~25% (회사 제시)</b></div>
+    <div>주가·목표가<b class="figures">1,335,000원 (3/24) · 컨센 1,580,000원 (+18%)</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 한화에어로스페이스는 방산 팩터의 본진이자, 코오롱인더에 이은 시리즈 두 번째 복합기업이다:
+  <b>지상방산(K9·천무 — 이익의 본체) + 항공엔진(GTF RSP) + 해양(한화오션 연결) + 한화시스템</b>이 한 연결 재무제표에
+  산다. 그래서 '25년 매출 +137.6%라는 헤드라인부터 분해가 필요하다 — 대부분이 한화오션 연결 편입 효과이고, 이익의
+  본체는 지상방산 수출이다. 이 종목의 특별함은 <b>회사가 직접 그려준 5년 지도</b>에 있다: 수주잔고 37.2조 위에
+  '26~'30년 CAGR 20~25% 가이던스, 폴란드 천무 3차 5.6조(JV 51%·100% 연결·'30~'33년 인도)까지 —
+  수주산업의 빈티지 가시성이 시리즈 최장이다. 반면 가격도 그 지도를 미리 샀다: PER 46.7배(추정 29배)·PBR 7배,
+  목표 컨센까지 +18%. 그리고 이 종목은 시리즈의 퍼스텍(Tier-2)과 수직으로 연결된다 —
+  <b>한화에어로의 수주 공시가 퍼스텍 수주의 선행지표</b>라는 Tier-2 시차 법칙의 상류가 바로 여기다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01</div>
+  <h2>사업의 이해 — 4개의 몸, 하나의 연결 재무제표</h2>
+  <div class="lead">1977년 삼성정밀 출발 → 2015년 한화 편입 → 2018년 현 사명. 2022년 한화디펜스, 2023년 한화방산 흡수합병으로
+  그룹 방산이 한 몸이 됐고, 2023년 한화오션 지분 취득(1조 3,130억)으로 해양까지 연결됐다.</div>
+
+  <h3>부문 지도 (2025년 매출 26.1조 — 구성비는 추정, 확실하지 않음)</h3>
+  <div class="stackbar">
+    <div style="flex:42;background:#1E3A8A">해양 (한화오션 연결) ~42%</div>
+    <div style="flex:33;background:#3B5BC0">지상방산 ~33%</div>
+    <div style="flex:14;background:#7288D4">한화시스템 ~14%</div>
+    <div style="flex:11;background:#AEBEED">항공우주·기타 ~11%</div>
+  </div>
+  <div class="legend">
+    <span style="--c:#1E3A8A">한화오션 — 매출은 크지만 마진 낮음 (조선 팩터가 연결로 들어와 있음)</span>
+    <span style="--c:#3B5BC0"><b>K9 자주포·천무·장갑차·탄약 — 이익의 본체 (수출 마진 20%대 추정)</b></span>
+    <span style="--c:#7288D4">방산 전자·ICT (상장 자회사)</span>
+    <span style="--c:#AEBEED">항공기 엔진·부품 (GTF RSP)·우주 (누리호 체계종합)</span>
+  </div>
+
+  <h3>부문별 경쟁 구도 — 반드시 분리</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="k">지상방산</div>
+      <h4>K9·천무의 수출 독주 <span class="pill up">이익의 본체</span></h4>
+      <ul>
+        <li>구도 <b>자주포는 사실상 글로벌 독보 (독일 PzH2000 대비 가격·납기 우위)</b></li>
+        <li>실적 <b>폴란드 K9 1차 212문 3년 만에 전량 완납 — 납기 이행의 실증</b> (4Q 컨콜)</li>
+        <li>신규 <b>폴란드 천무 3차 실행계약 5.6조 — 현지 JV 51%, 매출·이익 100% 연결</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">항공엔진</div>
+      <h4>GTF RSP — 긴 호흡의 옵션</h4>
+      <ul>
+        <li>구조 <b>P&W GTF 엔진 국제공동개발 지분(RSP) — 초기 손실 분담, 2030년 BEP 도달 전망</b> (컨콜)</li>
+        <li>성격 <b>민항 엔진 AM의 초장기 스톡 사업 — 마린솔루션과 동형의 미래 반복매출</b></li>
+        <li>+ 누리호 체계종합 · 차세대 발사체 — 우주는 아직 옵션 단계</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="k">해양·미국</div>
+      <h4>한화오션 + 필리조선소 <span class="pill neutral">조선 팩터 내장</span></h4>
+      <ul>
+        <li>연결 <b>한화오션 — 시리즈 조선 4종과 같은 사이클이 이 종목 안에 들어와 있음</b></li>
+        <li>미국 <b>필리 조선소 인수 (Hanwha Futureproof) — MASGA·미 함정 MRO 옵션</b></li>
+        <li>함의 <b>방산과 조선의 팩터 혼합 — 분해 없이는 어느 쪽에 베팅하는지 알 수 없다</b></li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>시리즈 수직 연결</b>: 퍼스텍(010820 — 방산 Tier-2, 유도무기 부품)의 전방이 바로 이 회사다.
+  Tier-2 시차 법칙(원청 수주 공시 → 수개월 뒤 협력사 수주)의 상류 — 한화에어로의 대형 계약 공시는 퍼스텍 대시보드의
+  1급 선행지표를 겸한다. 직접 고객 vs 최종 수요: 방산은 각국 정부(방사청·폴란드 군비청 등), 해양은 선주, 엔진은 P&W 경유 항공사.</p>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02</div>
+  <h2>수익 구조 — 수출 방산의 빈티지 장사</h2>
+
+  <div class="formula">매출     = Σ 부문 — 이익 판독은 사실상 <b>지상방산 수출</b> 한 줄
+지상방산 = 실행계약(빈티지 — 계약 시 판가·조건 고정) × 인도 진행률 (진행 기준 인식)
+영업이익 = 수출 물량 × 수출 마진(내수 대비 월등) + 해양·시스템·항공의 보조
+
+가격 결정: <b>정부간·실행계약형 (수주 시 고정 — 카본·엔진과 같은 빈티지 구조)</b>
+  — 원가 상승 전가 불가, 방어는 계약 시 에스컬레이션 조항·환헤지 (세부 미공개)
+4Q 패턴: <b>4Q25 이연 판매비·충당금 950억 일시 반영 (컨콜 확인)</b> — 시리즈 표준 「4Q 일회성 함정」 보유</div>
+
+  <div class="scrollx"><table>
+    <tr><th>마진의 원천 (+)</th><th>마진의 변수·약점 (−)</th></tr>
+    <tr>
+      <td>① 수출 믹스 — K9·천무 수출 마진이 내수의 수 배 (추정)<br>
+      ② 폴란드 JV 구조 — 지분 51%인데 매출·이익 100% 연결<br>
+      ③ 잔고 37.2조의 진행 기준 인식 — 분기 변동성 완화<br>
+      ④ 순차입금/EBITDA 1.2배 (KIS) — 유증 이후 재무 여력 확보</td>
+      <td>① 4Q 충당금·판매비 패턴 (950억 실증)<br>
+      ② 한화오션 연결의 조선 마진 희석 + 후판가 노출<br>
+      ③ GTF RSP — 2030년까지 손실 분담 구간<br>
+      ④ 순이익 −38.9% ('25) — 유증·영업외 요인으로 <b>밸류에이션은 영업이익 기준 권장</b></td>
+    </tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03</div>
+  <h2>실적 트랙레코드 — 3,753억에서 3조까지, 3년</h2>
+
+  <div class="scrollx"><table>
+    <tr><th>연도</th><th>매출</th><th>영업이익</th><th>해설</th></tr>
+    <tr><td>2022</td><td class="num">6조 5,396억</td><td class="num">3,753억</td><td>폴란드 1차 계약의 해 — 수출 시대 개막</td></tr>
+    <tr><td>2023~24</td><td class="num">~9조 → ~11조 (역산)</td><td class="num">~1조 7,300억 ('24 역산)</td><td>수출 인도 본격화 + 한화오션 연결 개시</td></tr>
+    <tr class="hl"><td>2025 (확정)</td><td class="num"><b>26조 678억 (+137.6%)</b></td><td class="num" style="color:var(--up)"><b>3조 345억 (+75%)</b></td><td>사상 최대 — 매출 급증분의 대부분은 한화오션 연결 효과, <b>이익 급증은 지상방산 수출</b>. 순익은 −38.9% (영업외)</td></tr>
+    <tr><td>2026E (컨센)</td><td class="num">30조 5,442억</td><td class="num" style="color:var(--up)">4조 3,423억 (OPM 14.2%)</td><td>천무 3차 반영 개시 — 8/7 2Q26 발표 예정</td></tr>
+  </table></div>
+  <p><b>평가와 판독:</b> 3년 만에 영업이익 8배(3,753억→3조)라는 궤적의 질은 명확히 구조적이다 — 유럽 재무장이라는
+  수요 격변 위에서 「납기를 지키는 유일한 공급자」 지위를 실증(K9 212문 완납)한 결과다. 판독 규칙 둘: ① 매출 헤드라인은
+  한화오션 연결로 왜곡되므로 <b>지상방산 부문 매출·마진만 본다</b>, ② 4Q는 충당금·이연 판매비 패턴(950억 실증)이 있으므로
+  「3Q 누적이 실력」 — 시리즈 표준 규칙이 여기도 적용된다. 순이익 라인은 유증·영업외로 오염('25년 −38.9%) — 영업이익 기준 판단.</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04</div>
+  <h2>전방산업 연결고리 — 지정학이 CapEx인 산업</h2>
+  <div class="lead"><b>팩터 선언: 「글로벌 재무장 (유럽 중심 국방예산 사이클)」</b> — 반도체·조선·화학과 전부 무상관인
+  네 번째 대형 팩터. 시리즈 내 기존 탑승자는 퍼스텍(Tier-2)뿐이며, 이 종목은 그 상류(Tier-1·체계종합)다.</div>
+
+  <h3>사슬 · 재무장 → 수주 → 빈티지 인도 <span class="pill up">회사가 지도를 그려준 사슬</span></h3>
+  <div class="chain">
+    <div class="step"><div class="n"><i>1</i></div><div class="body">지정학 위협 지속 → 유럽·중동 국방예산 증액 (NATO 목표 상향) — <b>이 산업의 「CapEx」는 국방예산이다</b></div></div>
+    <div class="step"><div class="n"><i>2</i></div><div class="body">실행계약 체결 (폴란드 천무 3차 5.6조 등) → 잔고 37.2조 적립 — 루마니아 등 유럽 추가 수주 파이프라인 (컨콜)</div></div>
+    <div class="step final"><div class="n"><i>3</i></div><div class="body">진행 기준 인도·매출 — 천무 3차는 '30~'33년 인도. <b>가이던스 CAGR 20~25% ('26~'30)가 이 잔고 위에 서 있다</b> — 시리즈 최장의 예약 성장</div></div>
+  </div>
+
+  <h3>보조 사슬</h3>
+  <div class="scrollx"><table>
+    <tr><th>사슬</th><th>구조</th><th>상태</th></tr>
+    <tr><td>B. 민항 회복 → 엔진 AM</td><td>GTF 운항 시간 증가 → RSP 지분 손익 개선 → 2030년 BEP — 초장기 스톡</td><td>손실 분담 구간 진행</td></tr>
+    <tr><td>C. 조선 사이클 (연결)</td><td>한화오션 = 시리즈 조선 4종과 동일 사이클 — <b>한화엔진 수주·카본 수주와 교차 검증 가능</b></td><td>수주 호조 국면</td></tr>
+    <tr><td>D. 미국 함정 MRO·MASGA</td><td>필리조선소 발판의 미 해군 시장 — 정책 옵션</td><td>초기 단계</td></tr>
+    <tr><td>E. Tier-2 파급 (하류)</td><td><b>이 회사의 수주 공시 → 수개월 뒤 퍼스텍 등 협력사 수주</b> — 시차 법칙의 상류 확인</td><td>천무 3차 → 협력사 파급 관찰 구간</td></tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05</div>
+  <h2>트래킹 대시보드 — 이벤트 캘린더형 (계약 공시가 심장박동)</h2>
+
+  <div class="scrollx"><table>
+    <tr><th>지표</th><th>왜 선행하는가</th><th>확인처 · 주기 · 무료</th><th>현재 상태 (확인 시점)</th></tr>
+    <tr><td><span class="dot g"></span><b>대형 실행계약 공시</b></td><td>잔고·가이던스의 원천 + 퍼스텍 선행지표 겸용</td><td>DART·뉴스 · 수시 · 무료</td><td class="num">천무 3차 5.6조 반영 ('26.2 컨콜)</td></tr>
+    <tr><td><span class="dot g"></span><b>지상방산 부문 매출·마진</b></td><td>이익의 본체 — 전사 헤드라인 대신 이 줄</td><td>분기 실적 · 분기</td><td>4Q25 믹스 하락은 일시적 (컨콜)</td></tr>
+    <tr><td><span class="dot g"></span>유럽 국방예산·NATO 뉴스</td><td>팩터의 원천 — 지정학이 CapEx</td><td>외신 · 수시 · 무료</td><td>재무장 기조 지속</td></tr>
+    <tr><td><span class="dot y"></span><b>우크라이나 종전 협상</b></td><td>팩터의 거울 리스크 — 센티먼트 급변 변수</td><td>외신 · 수시</td><td>협상 국면 감시</td></tr>
+    <tr><td><span class="dot y"></span>4Q 충당금·판매비</td><td>판독 노이즈 필터 (950억 실증)</td><td>4Q 실적 · 연간</td><td>패턴 확인됨</td></tr>
+    <tr><td><span class="dot g"></span>한화오션·조선 지표 (공유)</td><td>연결 해양 부문 — 조선 4종 대시보드 겸용</td><td>기존 대시보드</td><td>수주 호조</td></tr>
+    <tr><td><span class="dot y"></span>유상증자·주주환원 공시</td><td>'25년 연이은 유증 전례 — 재발 시 실적 무관 급락</td><td>DART · 수시</td><td>순차입금/EBITDA 1.2배 — 재발 유인 낮아짐</td></tr>
+  </table></div>
+
+  <div class="rhythm">
+    <div class="box w"><div class="freq">WEEKLY — 무료</div>
+      <ul><li>DART 공시 알림 (계약·증자) + 유럽 방산·종전 뉴스</li></ul></div>
+    <div class="box m"><div class="freq">MONTHLY</div>
+      <ul><li>루마니아 등 유럽 파이프라인 진행 + 미국 MRO 정책</li></ul></div>
+    <div class="box q"><div class="freq">QUARTERLY — 한 세트</div>
+      <ul><li><b>지상방산 부문 두 줄 → 잔고 증감 → GTF 손익 → 퍼스텍 파급 확인</b> · 8/7 2Q26 발표</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06</div>
+  <h2>영업 레버리지 — 복합기업 변형 프레임 (코오롱인더 방식)</h2>
+  <div class="lead">한화오션 연결로 전사 incremental margin이 왜곡되므로(Δ매출의 대부분이 저마진 해양), 부문 스윙 분해로 대체한다.</div>
+
+  <h3>실측과 분해</h3>
+  <div class="scrollx"><table>
+    <tr><th>구간</th><th>Δ매출</th><th>ΔOP</th><th>표면 Inc.M</th><th>해석</th></tr>
+    <tr><td>'24→'25</td><td class="num">+15.1조</td><td class="num" style="color:var(--up)">+1.30조</td><td class="num">8.6%</td><td><b>왜곡 — Δ매출 대부분이 한화오션 연결 편입.</b> 지상방산만의 증분 마진은 20%대 추정</td></tr>
+    <tr class="hl"><td>'25→'26E</td><td class="num">+4.47조</td><td class="num" style="color:var(--up)"><b>+1.31조</b></td><td class="num"><b>29%</b></td><td>연결 기저가 정리된 첫 구간 — 수출 믹스의 실제 레버리지에 근접</td></tr>
+  </table></div>
+
+  <style>
+    .gauge{margin:18px 0 4px;position:relative;height:56px}
+    .gauge .track{position:absolute;top:24px;left:0;right:0;height:10px;border-radius:5px;background:linear-gradient(90deg,#EEF1F5,var(--accent-soft))}
+    .gauge .fillB{position:absolute;top:24px;left:0;height:10px;border-radius:5px 0 0 5px;background:var(--accent);opacity:.25;width:29%}
+    .gauge .fillA{position:absolute;top:24px;left:0;height:10px;border-radius:5px;background:#94A3B8;width:11.6%}
+    .gauge .mkr{position:absolute;top:0;font-size:11.5px;font-weight:700;transform:translateX(-50%);text-align:center;line-height:1.25}
+    .gauge .mkr i{display:block;width:2px;height:14px;background:currentColor;margin:3px auto 0;font-style:normal}
+  </style>
+  <h3>배율 게이지 (연결 왜곡 보정 후)</h3>
+  <div class="gauge">
+    <div class="track"></div>
+    <div class="fillB"></div>
+    <div class="fillA"></div>
+    <div class="mkr" style="left:11.6%;color:#64748B">전사 OPM<br>11.6% ('25)<i></i></div>
+    <div class="mkr" style="left:29%;color:var(--accent-deep)">'26E 증분 이익률<br>~29%<i></i></div>
+  </div>
+  <p class="note" style="margin-top:14px">배율 ≈ 29 ÷ 11.6 ≈ <b>2.5배</b> — 매출 +10% 시 OP +20~25%. 동력은 곱 구조:
+  <b>수출 물량(잔고 소화 속도) × 수출/내수 믹스 × JV 연결 효과</b>. 가동률·증설: 탄약·발사대 캐파 증설(폴란드 현지 JV 포함)이
+  진행 중이나 공시 CAPEX 총액 미확인(확실하지 않음) — 잔고 37.2조 대비 실행 능력이 병목이며, K9 1차 완납이 그 능력의
+  실증이다. GTF RSP는 2030년까지 손실 분담이라는 「역방향 고정비」로 작동함을 기억할 것.</p>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07</div>
+  <h2>리스크 — 훼손 시나리오 3가지와 조기 경보</h2>
+
+  <div class="risk r1">
+    <span class="impact r1i">팩터 반전 · 멀티플 −30~50%</span>
+    <h4>① 평화의 역설 — 종전이 만드는 조정</h4>
+    <p>이 팩터의 거울 리스크다. 우크라이나 종전·긴장 완화 뉴스는 실적(잔고 37조는 그대로)과 무관하게 멀티플을 먼저
+    때린다 — PER 46.7배는 재무장 서사의 지속을 전제한 값이기 때문이다. 실제 유럽 재무장은 종전과 무관하게 구조적이라는
+    반론(NATO 목표 상향)이 있으나, 주가의 1차 반응은 서사를 따른다.</p>
+    <div class="alarm"><b>경보</b> — 종전 협상 타결 임박 보도 · 유럽 국방예산 증액 지연 · 신규 대형 계약 공백 2개 분기</div>
+  </div>
+
+  <div class="risk r2">
+    <span class="impact r2i">기대 조정</span>
+    <h4>② 가이던스의 무게 — CAGR 20~25%가 컨센이 된 상태</h4>
+    <p>회사가 직접 제시한 5개년 가이던스는 가시성인 동시에 족쇄다 — 이미 컨센(26E OP 4.34조)과 목표가(158만)에 반영돼
+    있고, 목표 컨센 대비 여력은 +18%로 얇다. 어느 해든 20% 하회가 확인되면 「가이던스 신뢰」 프리미엄부터 반납한다.
+    분기 단위로는 4Q 충당금 패턴과 지상방산 믹스 변동이 「미스처럼 보이는」 분기를 만든다(4Q25 실증 — 주가 조정,
+    3월 20일선 아래 조정 국면).</p>
+    <div class="alarm"><b>경보</b> — 지상방산 마진 2개 분기 연속 하락 · 루마니아 등 파이프라인 수주 실패 · 목표가 상향 정체</div>
+  </div>
+
+  <div class="risk r3">
+    <span class="impact r3i">거버넌스 · 실적 무관</span>
+    <h4>③ 유상증자의 기억 + 복합 구조 — 비영업 점검</h4>
+    <p>2025년 연이은 유상증자(KIS 명시)는 주주가치 논란을 남겼다 — 순차입금/EBITDA 1.2배로 재발 유인은 낮아졌으나,
+    미국 조선소 추가 투자·대형 M&A가 있으면 언제든 재점화될 수 있는 전례다. 그룹 승계·지배구조 이슈, 한화오션
+    연결이 실어오는 조선 고유 리스크(후판가·헤비테일), GTF RSP의 2030년까지 손실 구간도 비영업·구조 항목.
+    소송·수사 뇌관은 미확인(확실하지 않음).</p>
+    <div class="alarm"><b>경보</b> — 대규모 투자·증자 공시 · 계열 지원성 거래 · 한화오션 대형 충당금</div>
+  </div>
+
+  <h3>밸류에이션 좌표 (2026년 3월 24일 기준 — 7월 재확인 필수)</h3>
+  <div class="band">
+    <div class="rail"></div>
+    <div class="marks">
+      <div class="mk" style="left:8%"><div class="tick"></div><div class="price">'22년</div><div class="lbl">OP 3,753억 시절<br>(폴란드 1차 계약의 해)</div></div>
+      <div class="mk" style="left:42%"><div class="tick"></div><div class="price">1,250,000원</div><div class="lbl">전년 저점 (지지선)</div></div>
+      <div class="mk" style="left:62%"><div class="tick"></div><div class="price"><b>1,335,000원</b></div><div class="lbl">'26.3.24 · PER 46.7배<br>(추정 29.2배 · PBR 7.1배)</div></div>
+      <div class="mk" style="left:90%"><div class="tick"></div><div class="price">1,580,000원</div><div class="lbl">컨센 목표가 (+18%)</div></div>
+    </div>
+  </div>
+  <p class="note"><b>판정: 가격이 가이던스를 상당분 선반영 — 단 「가이던스형 성장주」의 특수성이 있다.</b> 이미 가격에 든 것:
+  '26년 OP 4.3조, CAGR 20~25%, 천무 3차, 미국 옵션. 남은 상방은 가이던스 「초과」(유럽 추가 대형 수주·미 MRO 구체화)뿐.
+  티씨케이형 소진과의 차이 — 잔고 37조가 하방의 실적 바닥을 깔아주므로, 조정이 와도 「이익은 늘면서 멀티플만 눌리는」
+  형태가 될 공산이 크다. 3월 조정 국면(20일선 아래)의 현재 위치는 7월 기준 재확인 필수.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08</div>
+  <h2>종합 — 지금 가장 중요한 두 가지 질문</h2>
+
+  <div class="qbox">
+    <div class="q">QUESTION 1</div>
+    <h4>가이던스 첫 해의 증명 — '26년 20~25% 성장의 분기별 확인</h4>
+    <p>5개년 가이던스의 신뢰는 첫 해에 결정된다. 검증 순서: <b>① 8/7 2Q26 — 지상방산 마진의 4Q25 충당금 이전 수준 복원
+    → ② 유럽 파이프라인(루마니아 등) 신규 계약 공시 → ③ 3Q26 누적으로 연간 가이던스 궤도 확인 → ④ 퍼스텍 등
+    협력사 파급(천무 3차발) 확인.</b> ①이 무너지면 "4Q 일시적" 해명이 깨지는 것이라 가장 중요하다.</p>
+    <p><b>IR에 물어볼 핵심 질문 하나:</b> "잔고 37.2조의 연도별 인도(매출 인식) 스케줄 — 특히 '26~'27년 배분" —
+    이 답으로 CAGR 20~25%가 잔고만으로 달성되는지, 신규 수주가 얼마나 필요한지 계산된다.</p>
+  </div>
+
+  <div class="qbox">
+    <div class="q">QUESTION 2</div>
+    <h4>3질문 좌표와 시리즈 내 자리 — 방산 팩터의 코어·퍼스텍의 상류</h4>
+    <p>①강도 ★★★ (가이던스 CAGR 20~25% + 잔고 37조 — 예약 성장 시리즈 최장) / ②룸 얇음 (+18%, PER 46.7배 — 선반영,
+    단 잔고가 하방을 깔아줌) / ③변수 중간 (지정학 서사 + 유증 전례 + 복합 구조 — 단 실적 경로 자체의 변수는 적음).
+    시리즈 내 자리: <b>반도체·조선·화학과 무상관인 네 번째 대형 팩터의 코어</b> — 분산 가치가 크고,
+    방산 노출은 「코어 = 한화에어로, 새틀라이트 = 퍼스텍(이벤트 베타)」의 2층 구조가 자연스럽다.
+    한화오션 연결분은 조선 4종과 중복되므로 조선 비중 계산 시 합산할 것.</p>
+    <p>이탈 규율 3단계: <b style="color:#9DB0E8">경계 = 지상방산 마진 하락 2개 분기 또는 종전 협상 급진전 · 축소 = 연간
+    가이던스 하회 공식화 · 실적 무관 이탈 = 대규모 유상증자 재발.</b> 노이즈 판별: 4Q 충당금발 쇼크와 종전 헤드라인발
+    급락은 잔고·유럽 예산이 멀쩡하면 검토 기회 — 이 종목의 하방은 잔고가 받친다.</p>
+  </div>
+
+  <h3>이번 분석의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>지정학이 CapEx인 산업</h4>
+      <ul><li>국방예산 = 이 팩터의 설비투자 — <b>대시보드가 시황이 아니라 외신·정책</b></li><li>거울 리스크(종전)는 실적 아닌 서사를 때린다 — 잔고와 분리해 판단</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>가이던스형 성장주의 문법</h4>
+      <ul><li>회사가 그린 5년 지도는 가시성이자 족쇄 — <b>첫 해 분기 이행이 멀티플을 지배</b></li><li>마린솔루션 밸류업 공시와 동형 — 「약속의 이행 감시」가 분석의 본체</li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>Tier 수직 계열은 하나의 대시보드다</h4>
+      <ul><li>한화에어로 계약 공시 = 퍼스텍 수주의 선행지표 — <b>상류·하류를 한 세트로 감시</b></li><li>코어(Tier-1)+새틀라이트(Tier-2)의 2층 구조가 방산 노출의 표준형</li></ul></div>
+  </div>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계</b> — 본 리포트는 공시·4Q25 컨콜 노트·KIS 신용평가(4/8)·언론 보도 기반의 정리 자료이며 투자 권유가 아닙니다.
+  2022·2025년 연간은 확정, 2023~24년은 증감률 역산, 2026E는 컨센서스입니다. 부문별 매출 구성비는 추정(확실하지 않음 —
+  사업보고서 부문 주석 확인 필요), 수출/내수 마진 격차·지상방산 이익 비중도 추정입니다. 7월 현재가·최신 목표가 컨센 미확인 —
+  재확인 필수 (주가 133.5만원은 3/24 기준). 다음 갱신 트리거: <b>8/7 2Q26 실적</b> · 유럽(루마니아) 수주 공시 · 종전 협상 뉴스.
+  기준일: 2026년 7월 10일. 자매 리포트: 솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두 ·
+  덕산하이메탈 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 이오테크닉스 · 원익IPS · 브이엠 · 코오롱인더 · 퍼스텍(방산 Tier-2).
+</footer>
+
+</div>
+</body>
+</html>
