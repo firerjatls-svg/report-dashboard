@@ -56,11 +56,20 @@ def extract_meta_via_claude(text, sector_ids):
     if not api_key:
         return None
     prompt = (
-        "다음은 한국 상장기업 분석 리포트 본문이다. JSON만 출력하라(설명·백틱 금지): "
-        '{"code":"6자리 종목코드 또는 null","name":"종목명","sector":"다음 중 하나 '
-        + str(sector_ids) + ' 또는 etc","desc":"리포트의 핵심 명제 한 문장",'
-        '"tags":"검색 키워드 5~8개 공백 구분"} '
-        "확실하지 않은 필드는 null. 본문:\n" + text
+        "다음은 한국 상장기업 분석 리포트 본문이다. 리포트의 논지를 읽고 아래 스키마의 JSON만 "
+        "출력하라(설명·백틱 금지). "
+        '{"code":"6자리 종목코드 또는 null","name":"종목명",'
+        '"sector":"다음 섹터 id 중 하나 ' + str(sector_ids) + ' 중 가장 적합한 것",'
+        '"desc":"리포트의 핵심 투자 명제 한 문장(50자 내외)",'
+        '"tags":"검색 키워드 5~8개 공백 구분",'
+        '"intensity":"증익 사이클 강도 1~3 정수(3=가장 강함)",'
+        '"variables":"경로 변수/리스크 수 1~3 정수(1=적음,3=많음)",'
+        '"note":"강도·변수 판단 근거 한 구절(20자 내외)",'
+        '"catalysts":[{"date":"YYYY-MM-DD","label":"다음 촉매 이벤트(분기 실적 등)"}]} '
+        "규칙: sector는 반드시 제시된 id 중 하나를 고를 것(모르면 가장 근접한 것). "
+        "intensity/variables는 리포트의 결론 강도에 근거해 판단. "
+        "catalysts는 리포트에 언급된 다음 실적·수주·공시 일정을 추정해 1~2개, 없으면 빈 배열. "
+        "code나 name이 불확실하면 그 필드만 null. 본문:\n" + text
     )
     body = json.dumps({"model": "claude-sonnet-4-6", "max_tokens": 400,
                        "messages": [{"role": "user", "content": prompt}]}).encode()
@@ -90,21 +99,38 @@ def upsert(master, code, name, fname, mdate, meta):
     if sector == "etc" and all(s["id"] != "etc" for s in master["sectors"]):
         master["sectors"].append(ETC_SECTOR)
     used = {c["ac"] for c in master["companies"]}
+    m = meta or {}
+
+    def as_score(v, lo=1, hi=3, default=2):
+        try:
+            return max(lo, min(hi, int(v)))
+        except (TypeError, ValueError):
+            return default
+
+    ai_scored = m.get("intensity") is not None and m.get("variables") is not None
+    intensity = as_score(m.get("intensity"))
+    variables = as_score(m.get("variables"))
+    note = m.get("note") or ("AI 분류 (초안)" if ai_scored else "자동 등록 — 검수 전 기본값")
+    catalysts = m.get("catalysts") if isinstance(m.get("catalysts"), list) else []
+    catalysts = [c for c in catalysts if isinstance(c, dict) and c.get("date")]
+
     master["companies"].append({
         "code": code,
-        "name": (meta or {}).get("name") or name,
+        "name": m.get("name") or name,
         "sector": sector,
         "seq": max((c["seq"] for c in master["companies"]), default=0) + 1,
         "ac": next((p for p in PALETTE if p not in used), "#525252"),
-        "desc": (meta or {}).get("desc") or "자동 등록 — 설명 검수 필요",
-        "tags": (meta or {}).get("tags") or name,
+        "desc": m.get("desc") or "자동 등록 — 설명 검수 필요",
+        "tags": m.get("tags") or name,
         "per": None,
-        "frame": {"intensity": 2, "variables": 2, "note": "자동 등록 — 검수 전 기본값"},
-        "catalysts": [],
-        "auto": True,
+        "frame": {"intensity": intensity, "variables": variables, "note": note},
+        "catalysts": catalysts,
+        # AI가 섹터+스코어까지 판단했으면 정식 등록, 아니면 검수 대기(auto)
+        **({} if ai_scored and sector != "etc" else {"auto": True}),
         "report": {"file": fname, "date": mdate},
     })
-    print(f"  신규: {code} {name} → 섹터 {sector} (자동 등록)")
+    tag = "AI 분류" if ai_scored else "자동 등록"
+    print(f"  신규: {code} {master['companies'][-1]['name']} → 섹터 {sector} ({tag})")
 
 
 def main():
@@ -127,9 +153,13 @@ def main():
         m = re.match(r"(\d{6})_([^_\.]+)", f["name"])
         code = m.group(1) if m else None
         name = m.group(2) if m else f["name"].rsplit(".", 1)[0]
+        is_existing = code and any(c["code"] == code for c in master["companies"])
         meta = None
-        if not code or not any(c["code"] == code for c in master["companies"]):
-            meta = extract_meta_via_claude(strip_tags(dest.read_text(encoding="utf-8", errors="ignore")), sector_ids)
+        # 신규 종목이면(코드 유무 무관) 본문을 Claude에게 읽혀 섹터·스코어·촉매까지 판단.
+        # 기존 종목의 개정판이면 리포트 파일만 교체하므로 API 호출 불필요.
+        if not is_existing:
+            meta = extract_meta_via_claude(
+                strip_tags(dest.read_text(encoding="utf-8", errors="ignore")), sector_ids)
         if not code:
             code = (meta or {}).get("code")
         if not code or not re.fullmatch(r"\d{6}", str(code)):
