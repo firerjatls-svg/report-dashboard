@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주성엔지니어링 (036930) — ALD에서 ALG로, 꿈의 가격표 검증</title>
+<script type="application/json" id="dashboard-meta">
+{
+  "code": "036930",
+  "name": "주성엔지니어링",
+  "sector": "part",
+  "intensity": 3,
+  "variables": 3,
+  "note": "2026E OP +268% 컨센, 단 ALG·고객집중·밸류 3중 변수",
+  "desc": "ALD 독점 기술력에 ALG 신기술 옵션 — 실적보다 2년 앞서간 주가의 증명 구간",
+  "tags": "반도체장비 ALD ALG SK하이닉스 M15X 증착 VCT 메모리슈퍼사이클",
+  "catalysts": [{"date": "2026-08-07", "label": "2Q26 실적 발표"}, {"date": "2026-09-30", "label": "ALG 추가 수주·고객 공개 (추정)"}]
+}
+</script>
+<style>
+  :root{
+    --bg:#e9eef2;
+    --paper:#ffffff;
+    --ink:#15222b;
+    --muted:#66757f;
+    --line:#d3dce2;
+    --line-soft:#e2e9ee;
+    --accent:#0284C7;        /* 스카이블루 — 주성엔지니어링 고유 액센트 */
+    --accent-deep:#075985;
+    --accent-bg:#e4f2fa;
+    --warn:#b04a28;
+    --warn-bg:#f7ece5;
+    --info:#4a5a72;
+    --info-bg:#eaeef4;
+    --est:#8a7430;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);background:var(--bg);color:var(--ink);
+    line-height:1.62;-webkit-font-smoothing:antialiased;
+    padding:20px 12px 80px;display:flex;justify-content:center;font-size:14.5px;
+  }
+  .wrap{width:100%;max-width:860px}
+  .mono{font-family:var(--mono)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .est{color:var(--est);font-weight:600}
+  .pos{color:var(--accent-deep);font-weight:600}
+  .neg{color:var(--warn);font-weight:600}
+  .fn{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+  /* ---------- cover ---------- */
+  .cover{
+    background:linear-gradient(160deg,#0b2536 0%,#0d4260 60%,#0f6493 100%);
+    color:#eaf4fa;border-radius:18px;padding:30px 24px 26px;position:relative;
+    overflow:hidden;margin-bottom:14px;
+  }
+  .cover::before{ /* 원자층 적층 시그니처 */
+    content:"";position:absolute;right:-30px;top:18px;width:230px;height:150px;
+    background:repeating-linear-gradient(180deg,rgba(234,244,250,.16) 0 2px,transparent 2px 16px);
+    transform:skewY(-8deg);border-radius:8px;
+  }
+  .cover .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:#8fc8e8;margin-bottom:10px;position:relative;z-index:1}
+  .cover h1{font-size:27px;font-weight:800;letter-spacing:-.02em;line-height:1.25;position:relative;z-index:1}
+  .cover h1 .code{font-family:var(--mono);font-size:15px;font-weight:500;color:#8fc8e8;margin-left:8px}
+  .cover .sub{font-size:13.5px;color:#c3e0f0;margin-top:8px;max-width:600px;position:relative;z-index:1}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px;position:relative;z-index:1}
+  @media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:11px 12px}
+  .kpi .l{font-size:10.5px;letter-spacing:.08em;color:#8fc8e8;font-family:var(--mono)}
+  .kpi .v{font-size:16.5px;font-weight:800;font-family:var(--mono);margin-top:3px}
+  .kpi .d{font-size:10.5px;color:#b5d8ec;margin-top:2px}
+
+  .thesis{
+    background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:14px;padding:18px 20px;margin-bottom:22px;
+    box-shadow:0 1px 2px rgba(21,34,43,.04),0 8px 22px rgba(21,34,43,.05);
+  }
+  .thesis .t{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700;margin-bottom:8px}
+  .thesis p{font-size:14.5px}
+  .thesis p b{color:var(--accent-deep)}
+
+  .nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+  .nav a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;
+    border:1px solid var(--line);background:var(--paper);border-radius:99px;padding:5px 11px;transition:.15s}
+  .nav a:hover{color:var(--accent-deep);border-color:var(--accent)}
+
+  section{
+    background:var(--paper);border:1px solid var(--line);border-radius:16px;
+    padding:22px 20px;margin-bottom:18px;position:relative;
+    box-shadow:0 1px 2px rgba(21,34,43,.03),0 6px 18px rgba(21,34,43,.04);
+  }
+  @media(min-width:640px){section{padding:26px 28px}}
+  section::before{content:"";position:absolute;top:10px;right:10px;width:14px;height:14px;
+    border-top:2px solid var(--line);border-right:2px solid var(--line);border-radius:0 4px 0 0}
+  .sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .sec-h .no{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:#fff;background:var(--accent);border-radius:6px;padding:3px 8px}
+  .sec-h h2{font-size:19px;font-weight:800;letter-spacing:-.01em}
+  h3{font-size:15px;font-weight:700;margin:20px 0 8px;color:var(--accent-deep)}
+  h3 .tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--muted);margin-left:6px}
+  p{margin-bottom:10px}
+  ul{margin:0 0 10px 18px}
+  li{margin-bottom:5px}
+
+  .tbl-wrap{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;min-width:540px;font-size:12.5px}
+  th{background:#eef4f8;color:var(--accent-deep);font-weight:700;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:7px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl-note{font-size:11px;color:var(--muted);margin-top:6px}
+
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;vertical-align:1px}
+  .pill.conf{background:var(--accent-bg);color:var(--accent-deep)}
+  .pill.estm{background:#f4efdd;color:var(--est)}
+  .pill.calc{background:var(--info-bg);color:var(--info)}
+  .pill.unkn{background:var(--warn-bg);color:var(--warn)}
+
+  .callout{border-radius:10px;padding:12px 14px;margin:10px 0;font-size:13.5px;border:1px solid}
+  .callout.warn{background:var(--warn-bg);border-color:#e6cbb9;color:#6e3417}
+  .callout.info{background:var(--info-bg);border-color:#ccd6e4;color:#31435c}
+  .callout.good{background:var(--accent-bg);border-color:#bcdcef;color:var(--accent-deep)}
+
+  .q2{background:#f4f8fa;border:1px dashed var(--line);border-radius:10px;padding:11px 14px;margin-top:14px;font-size:13px}
+  .q2 .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:5px}
+
+  .stackbar{display:flex;height:38px;border-radius:9px;overflow:hidden;border:1px solid var(--line);margin:12px 0 6px}
+  .stackbar div{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--c)}
+
+  .chain{margin:14px 0}
+  .chain .node{background:#f4f8fa;border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:10px;padding:10px 14px;font-size:13px}
+  .chain .node b{display:block;font-size:13.5px;color:var(--accent-deep)}
+  .chain .node .chk{font-family:var(--mono);font-size:10.5px;color:var(--info);margin-top:3px;display:block}
+  .chain .arrow{display:flex;justify-content:center;color:var(--accent);font-size:15px;padding:2px 0;font-weight:700}
+
+  .lev-row{margin:14px 0}
+  .lev-row .cap{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;gap:8px;flex-wrap:wrap}
+  .lev-row .cap b{font-family:var(--mono)}
+  .lev-bar{display:flex;height:30px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+  .lev-bar .cost{background:#c3ced6;color:#41505a;display:flex;align-items:center;padding-left:10px;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar .profit{background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar.rev .cost{background:#e0b8a6;color:#6e3417}
+  .lev-bar.rev .profit{background:var(--warn)}
+
+  .gauge{position:relative;height:76px;margin:18px 4px 6px}
+  .gauge .ruler{position:absolute;left:0;right:0;top:38px;height:10px;border-radius:5px;
+    background:linear-gradient(90deg,#e3ebf0,#b9d8ea 55%,#2f9ad2)}
+  .gauge .tick{position:absolute;top:50px;font-family:var(--mono);font-size:10px;color:var(--muted);transform:translateX(-50%)}
+  .gauge .mk{position:absolute;top:8px;transform:translateX(-50%);text-align:center;font-family:var(--mono);font-size:10.5px;font-weight:700;white-space:nowrap}
+  .gauge .mk::after{content:"";display:block;width:2px;height:24px;margin:2px auto 0}
+  .gauge .mk.opm{color:var(--info)} .gauge .mk.opm::after{background:var(--info)}
+  .gauge .mk.inc{color:var(--accent-deep)} .gauge .mk.inc::after{background:var(--accent)}
+
+  .chart-box{border:1px solid var(--line);border-radius:12px;padding:12px 8px 6px;margin:12px 0;background:#f9fcfd}
+  .chart-box svg{width:100%;height:auto;display:block}
+
+  .risk-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0}
+  @media(min-width:640px){.risk-grid{grid-template-columns:repeat(3,1fr)}}
+  .risk{border:1px solid #e6cbb9;background:var(--warn-bg);border-radius:12px;padding:13px 14px;font-size:12.5px}
+  .risk .rt{font-weight:800;color:#6e3417;font-size:13px;margin-bottom:5px}
+  .risk .row{margin-top:5px}
+  .risk .row b{font-family:var(--mono);font-size:10.5px;color:#8a4b2c;letter-spacing:.06em}
+  .risk .sig{margin-top:7px;padding-top:7px;border-top:1px dashed #ddc2ae;font-family:var(--mono);font-size:11px;color:#8a4b2c}
+
+  footer{background:#0d2433;color:#a9c8db;border-radius:16px;padding:22px 22px;font-size:12px;line-height:1.7}
+  footer h4{color:#e2f0f8;font-size:13px;margin-bottom:6px;margin-top:14px}
+  footer h4:first-child{margin-top:0}
+  footer .mono{color:#7fb4d4}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= 표지 ================= -->
+<div class="cover">
+  <div class="eyebrow">EQUITY DEEP-DIVE // 전공정 장비 // 기준일 2026-07-15</div>
+  <h1>주성엔지니어링 <span class="code">KOSDAQ 036930</span></h1>
+  <div class="sub">DRAM 캐패시터 High-k ALD의 강자가 세계 최초 ALG(원자층성장)로 차세대 트랜지스터 시장에 도전 — 주가는 저점 대비 11배, 실적은 1Q26 적자</div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">주가 (07/09 확인치)</div><div class="v">178,400원</div><div class="d">고점 283,000(6/12) 比 −37%</div></div>
+    <div class="kpi"><div class="l">시가총액 (동일 기준)</div><div class="v">≈8.5조</div><div class="d">코스닥 5위권 · 자체 계산</div></div>
+    <div class="kpi"><div class="l">2025 매출 / OP</div><div class="v">3,107 / 313억</div><div class="d">−24% / −68% YoY · 1Q26 적자</div></div>
+    <div class="kpi"><div class="l">강도 3 / 변수 3</div><div class="v">2026E OP +268%</div><div class="d">컨센 1,150~1,213억 (5~6월)</div></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <div class="t">핵심 투자 명제</div>
+  <p>주성은 <b>SK하이닉스 DRAM 캐패시터 ALD를 사실상 과점해 온 기술 장비사</b>이고, 2026년 메모리 슈퍼사이클(M15X 등)로 영업이익이 313억→1,150억+로 복원되는 것은 컨센서스가 뒷받침하는 실적 스토리다. 그러나 시총 8.5조는 그 복원의 <b>70배가 넘는 가격</b>이며, 나머지는 전부 <b>ALG(원자층성장) — "수직 트랜지스터 시대의 표준 장비"라는 꿈</b>에 대한 선불이다. ALG는 5월 첫 출하(고객·규모 비공시)로 존재는 증명했지만 양산 채택은 증명 전. <b>이 종목의 분석은 "좋은 회사인가"가 아니라 "가격이 증명을 몇 년 앞서갔는가"의 계측 문제</b>다.</p>
+</div>
+
+<nav class="nav">
+  <a href="#s1">01 사업</a><a href="#s2">02 수익구조</a><a href="#s3">03 트랙레코드</a><a href="#s4">04 전방·성장경로</a>
+  <a href="#s5">05 트래킹</a><a href="#s6">06 레버리지·CAPEX</a><a href="#s7">07 리스크·밸류</a><a href="#s8">08 종합</a>
+</nav>
+
+<!-- ================= 01 ================= -->
+<section id="s1">
+  <div class="sec-h"><span class="no">SEC 01</span><h2>사업의 이해 — 무엇을 만들어 누구에게 파는가</h2></div>
+
+  <p>1993년(설립)~1995년 현대전자 출신 황철주 회장이 세운 벤처 1세대 <b>증착(deposition) 장비 전문사</b>. 웨이퍼 위에 원자·분자 단위의 박막을 입히는 장비를 만든다. 핵심은 <b>ALD(원자층증착 — 원자층을 한 겹씩 쌓아 극도로 균일한 박막을 만드는 기술)</b>로, DRAM 캐패시터의 High-k(고유전율) 유전막용 시공간분할(TSD) ALD에서 세계적 기술력을 보유. 그 위에 CVD(화학기상증착), 태양광(HJT — 이종접합 고효율 태양전지) 장비, 디스플레이(OLED 봉지 등) 장비가 얹혀 있다.</p>
+
+  <h3>제품별 매출 구성</h3>
+  <div class="legend">
+    <span style="--c:#0284C7">반도체 장비</span>
+    <span style="--c:#7fb4d4">태양광 + 디스플레이</span>
+  </div>
+  <p style="font-size:12.5px;margin-bottom:2px"><b>2025년</b> (잠정공시 확정, 2026.2.10) — 매출 3,107억</p>
+  <div class="stackbar">
+    <div style="width:97.8%;background:#0284C7">반도체 3,037억 (97.8%)</div>
+    <div style="width:2.2%;background:#7fb4d4"></div>
+  </div>
+  <p style="font-size:12.5px;margin-bottom:2px"><b>2023년</b> (사업보고서, 주간한국 2024.7 재인용) — 참고: 구성이 급변했음</p>
+  <div class="stackbar" style="height:30px">
+    <div style="width:75.4%;background:#0284C7">반도체 75.4%</div>
+    <div style="width:17.7%;background:#3f7ea3">태양광 17.7%</div>
+    <div style="width:6.9%;background:#7fb4d4">6.9%</div>
+  </div>
+  <p class="fn">2025년 태양광+디스플레이 합산 69.7억(2.2%)으로 사실상 소멸 — 회사의 "3사업 33% 균형" 비전(황 회장, 2024)과 달리 현재의 주성은 <b>실질적으로 반도체 ALD 단일 종목</b>이다. 태양광·디스플레이는 매출이 아니라 옵션으로 취급할 것.</p>
+
+  <h3>고객 — 직접 고객 vs 최종 수요처</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구분</th><th>주체</th><th>내용</th></tr>
+    <tr><td><b>직접 고객</b></td><td>SK하이닉스 <span class="pill conf">사실</span>, 중국 반도체(SMIC·CXMT 등) <span class="pill estm">시장 추정</span>, 'DTC 실리콘 캐패시터' 고객(2024.10 공급 개시 — 고객명 비공개)</td><td>장비를 칩 제조사(IDM)에 직접 판매 — 체계사 경유 없는 1차 벤더. 삼성전자향 DRAM ALD는 전통적으로 미진입 <span class="pill estm">시장 통설</span></td></tr>
+    <tr><td><b>ALG 신규 고객</b></td><td>"해외 대형 메모리 기업" <span class="pill unkn">고객·규모 비공시 — 언론 전언(한국경제 2026.5.18)</span></td><td>수십 대 → 100대+ 확대, 대당 ~200억, 총 2조원+ 가능성 보도. <b>공시가 아닌 전언임에 유의</b> — 삼성·하이닉스 아닌 해외사(시장은 마이크론 추정, 미확인)</td></tr>
+    <tr><td><b>최종 수요</b></td><td>AI 데이터센터 → HBM·DDR5 → 메모리 3사 CAPEX</td><td>주성의 최종 전방은 메모리 웨이퍼 CAPA 증설(그린필드·전환투자)</td></tr>
+  </table></div>
+
+  <h3>경쟁 구도 — 제품별 분리</h3>
+  <ul>
+    <li><b>DRAM 캐패시터 High-k ALD:</b> 글로벌 경쟁자는 도쿄일렉트론(TEL)·ASM인터내셔널·램리서치 등 상장 대형사. SK하이닉스 캐패시터 ALD 내에서는 주성이 높은 점유를 유지해온 것으로 알려짐 <span class="pill estm">시장 추정 — 점유율 수치 미공시</span>. 고객 레퍼런스가 곧 해자(공정 재인증 비용).</li>
+    <li><b>ALG(원자층성장):</b> "세계 최초·업계 유일" — 정의상 경쟁 부재이나, 이는 <b>시장이 아직 존재하지 않는다는 뜻이기도 하다</b>. 실질 경쟁은 TEL·AMAT·램의 차세대 3D 트랜지스터용 증착 로드맵과의 표준 경쟁. 이들의 대응은 각사 기술 컨퍼런스(IEDM·VLSI 발표)로 간접 추적.</li>
+    <li><b>태양광 HJT / 디스플레이:</b> 중국 장비사(Maxwell 등)와 경쟁 — 현재 매출 2.2%로 논외 수준. 부활 시 별도 재분석.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① SK하이닉스 內 캐패시터 ALD 실점유율과, TEL·ASM의 침투 시도 이력은? (IR·탐방으로만 확인 가능)<br>
+  ② 'DTC 실리콘 캐패시터' 고객(2024.10)의 정체 — 유럽·일본 수동부품사라면 비메모리 다변화의 첫 실증인가?</div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="s2">
+  <div class="sec-h"><span class="no">SEC 02</span><h2>수익 구조 — 돈을 어떻게 버는가</h2></div>
+
+  <h3>손익 공식</h3>
+  <div class="callout info mono" style="font-size:13px">
+    매출 = Σ(고객 팹별 발주 대수 × 대당 가격) — 발주는 고객 CAPEX 일정에 종속, 검수 완료 시점 인식<br>
+    영업이익 = 매출 × 매출총이익률(고마진) − 고정비(R&D 매출의 15~20% + 인건비) → <b>임계점 통과형 손익</b>
+  </div>
+  <p>장비업의 전형적 <b>BEP 임계점 구조</b>: 분기 매출이 고정비 임계(약 700~900억/분기 <span class="pill estm">자체 추정</span>) 위면 이익이 폭발하고(3Q24 OPM 35.5%), 아래면 즉시 적자(1Q26 매출 549억 → −70억). 시리즈의 파두·원익IPS에서 확립한 <b>BEP 문턱 레버리지 원형</b>이 그대로 적용된다.</p>
+
+  <h3>가격 결정 구조 판정</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>항목</th><th>분류</th><th>원가 전가</th></tr>
+    <tr><td>장비 판가</td><td><b>수주 시 고정(빈티지형)</b> — PO 시점에 대당 가격 확정, 납품·검수까지 2~4분기</td><td>계약 후 원가 상승 전가 <b>불가</b>. 방어: 짧은 리드타임(수주→납품 1년 미만이라 빈티지 노출 짧음), 고마진 버퍼</td></tr>
+    <tr><td>협상력</td><td>기술 차별화 장비(ALD 独자 구조)는 가격 방어력 높음. 단 고객이 SK하이닉스 중심 <b>과점 구매자</b>라 단가 인하 압력 상존</td><td>—</td></tr>
+  </table></div>
+
+  <h3>제품별 이익 기여</h3>
+  <p>부문별 손익 미공시. 다만 2025년 구성(반도체 97.8%)상 <b>이익 = 반도체 ALD</b>로 봐도 무방하다. 태양광·디스플레이는 2023년까지도 이익 기여가 미미했던 것으로 추정 <span class="pill estm">추정</span> — 오히려 R&D 비용을 흡수하는 투자 부문. 매출/이익 비중 괴리 이슈는 사실상 "반도체가 전부"로 해소됨.</p>
+
+  <h3>원가·마진의 원천(+)과 훼손(−)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>원천 (+)</th><th>훼손 (−)</th></tr>
+    <tr><td>독자 TSD-ALD 구조 → 기술 차별화 판가 (호황기 OPM 28~35%)</td><td>R&D 매출比 15~20% — 불황기에 그대로 적자 전환 요인 (2025년 감익 사유로 회사가 직접 "R&D 투자 증가" 명시)</td></tr>
+    <tr><td>부품·모듈 외주 조립 구조 → 변동비율 관리 가능</td><td>고객 집중(SK하이닉스) → 발주 공백 시 매출 급감을 상쇄할 2nd 고객 부재</td></tr>
+    <tr><td>순현금성 재무구조(부채총계 2,985억 vs 자본 5,894억, 2025말) + 금융수익 → NP가 OP 상회</td><td>중국 매출은 미·중 규제(수출통제) 리스크에 노출</td></tr>
+  </table></div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① ALG 장비 대당 ~200억(보도)은 기존 ALD 대비 몇 배인가 — 검증되면 ASP 믹스가 구조적으로 점프하는가?<br>
+  ② R&D의 자산화 vs 비용화 비율 — 2025 감익 폭(−68%)에 회계 정책 변화가 섞여 있는가?</div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="s3">
+  <div class="sec-h"><span class="no">SEC 03</span><h2>실적 트랙레코드</h2></div>
+
+  <h3>연간 (연결, 억원)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>연도</th><th class="num">매출</th><th class="num">YoY</th><th class="num">영업이익</th><th class="num">OPM</th><th class="num">순이익</th><th>표기</th></tr>
+    <tr><td>2022</td><td class="num">4,379</td><td class="num">—</td><td class="num">1,238</td><td class="num">28.3%</td><td class="num">—</td><td><span class="pill unkn">2차 자료 — 재확인</span> 직전 사이클 고점</td></tr>
+    <tr><td>2023</td><td class="num">~2,848</td><td class="num">−35%</td><td class="num">289</td><td class="num">10.1%</td><td class="num">~340</td><td><span class="pill unkn">2차·역산 — 재확인</span> 다운사이클</td></tr>
+    <tr><td>2024</td><td class="num">4,094</td><td class="num">+43.8%</td><td class="num">972</td><td class="num">23.7%</td><td class="num">1,068</td><td><span class="pill conf">확정</span> 손익구조 공시</td></tr>
+    <tr><td><b>2025</b></td><td class="num"><b>3,107</b></td><td class="num neg">−24.1%</td><td class="num"><b>313</b></td><td class="num"><b>10.1%</b></td><td class="num">347</td><td><span class="pill conf">잠정공시</span> (2026.2.10) — 반도체 3,037 / 기타 70</td></tr>
+    <tr><td>2026E</td><td class="num est">4,030~4,850</td><td class="num est">+30~56%</td><td class="num est">1,150~1,213</td><td class="num est">28~30%</td><td class="num">—</td><td><span class="pill estm">시장 추정</span> 한투(5/27)·하나·SK증권(5~6월)</td></tr>
+  </table></div>
+
+  <h3>분기 (연결, 억원)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>분기</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th>표기·비고</th></tr>
+    <tr><td>3Q24</td><td class="num">1,472</td><td class="num">522</td><td class="num">35.5%</td><td><span class="pill conf">잠정공시</span> 사이클 내 분기 고점</td></tr>
+    <tr><td>4Q24</td><td class="num">~1,083</td><td class="num">~19</td><td class="num">~1.8%</td><td><span class="pill calc">역산</span> 연간−3Q누적 — 급락 주목 (아래)</td></tr>
+    <tr><td>1Q25</td><td class="num">1,208</td><td class="num">339</td><td class="num">28.1%</td><td><span class="pill conf">잠정공시</span> (+113%/+384% YoY)</td></tr>
+    <tr><td>2Q~4Q25 합산</td><td class="num">~1,899</td><td class="num">~−26</td><td class="num">적자</td><td><span class="pill calc">역산</span> 개별 분기 미확인 — 1Q 이후 사실상 9개월 영업적자</td></tr>
+    <tr><td>1Q26</td><td class="num">549</td><td class="num">−70</td><td class="num">−12.8%</td><td><span class="pill conf">확정</span> 순손실 −12억. 매출 −54.6% YoY</td></tr>
+  </table></div>
+
+  <h3>증익·감익의 질 분해</h3>
+  <ul>
+    <li><b>구조적:</b> 실적의 몸통은 전적으로 <b>고객 CAPEX 타이밍(물량)</b>. 2024 증익 = SK하이닉스·중국 발주 집중, 2025 감익 = 발주 공백("전방 고객사 투자 일정" — 회사 공시 표현) + R&D 증액. 단가·믹스 요인은 부차적.</li>
+    <li><b>4분기 패턴 점검:</b> 4Q24 영업이익 ~19억(역산)은 3Q24 522억에서 수직 낙하 — 장비 검수 시점 이월에 R&D·성과급 등 연말 비용 집중이 겹친 것으로 추정 <span class="pill estm">추정</span>. 시리즈에서 확립한 <b>"4Q 일회성 함정 → 3Q 누적이 실력"</b> 판독 기준이 주성에도 적용된다(원익IPS·이오테크닉스와 동형). 연간 숫자만 보면 이 회사의 분기 변동성을 심하게 과소평가하게 됨.</li>
+    <li><b>순이익 &gt; 영업이익:</b> 2025 NP 347 &gt; OP 313, 2024 NP 1,068 &gt; OP 972 — 원인은 보유 현금의 금융수익 중심 <span class="pill estm">추정(세전이익 412억 &gt; OP 313억 구조에서 역산)</span>. 퍼스텍처럼 지분 구조 이슈가 아니라 건전한 괴리로 판단되나, <b>밸류에이션은 영업이익 기준</b>이 여전히 안전하다 — 금융수익은 멀티플을 줄 대상이 아니므로.</li>
+  </ul>
+
+  <div class="callout info"><b>판독 기준:</b> 이 회사의 "실력"은 연간도 4분기도 아닌 <b>발주 도착 분기의 OPM</b>(28~35%)과 <b>공백 분기의 적자 폭</b>(−13%)의 쌍으로 읽어야 한다. 2026년 컨센서스 OPM 28~30%는 "모든 분기에 발주가 차 있는 해"를 가정한 숫자다.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 2Q~4Q25 분기별 분해(분기보고서) — 적자가 몇 개 분기였고 최저 매출 분기는 얼마였나? (BEP 임계 실측)<br>
+  ② 1Q26 수주잔고·계약부채 잔액 — 2Q26부터의 매출 복원을 재고자산·선수금이 예고하고 있는가?</div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="s4">
+  <div class="sec-h"><span class="no">SEC 04</span><h2>전방산업과 성장 경로</h2></div>
+
+  <div class="callout good"><b>팩터 선언:</b> 본업은 <b>"메모리 WFE(웨이퍼팹장비) 발주 사이클"</b> 팩터 — 시리즈의 원익IPS·이오테크닉스·브이엠과 <b>동일 팩터(분산 가치 낮음)</b>. 다만 주가의 절반 이상은 별도 팩터인 <b>"차세대 트랜지스터(VCT/3D DRAM) 전환 × ALG 표준 채택"이라는 기술 옵션</b>이 지배한다. 즉 주성 = 원익IPS류 사이클 베타 + 기술 복권 한 장의 합성 포지션이며, 시리즈 내에서 이 옵션 성격은 유일하다.</div>
+
+  <h3>인과 사슬 ① — 본업(ALD) 사이클</h3>
+  <div class="chain">
+    <div class="node"><b>① AI 데이터센터 수요 → 메모리 슈퍼사이클</b>DRAM·HBM 공급 부족, 2016~18 이후 최대 증설기<span class="chk">선행지표: DRAM 고정가·하이퍼스케일러 CAPEX / 시차: 2~4분기 / 방향: 상승 지속 (26.7 확인)</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>② SK하이닉스 CAPEX 집행 — 청주 M15X·용인</b>M15X 증설에 주성 핵심 장비 다수 도입 전망 (한투 채민숙, 26.5.27)<span class="chk">확인처: SK하이닉스 분기 컨콜 CAPEX 가이던스 (상장사 — 교차검증 가능) / 시차: 발주→주성 매출 2~4분기</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>③ 주성 수주·출하 → 검수 후 매출 인식</b>1Q26 공백(매출 549억) → 2Q26부터 복원이 컨센서스의 전제<span class="chk">확인처: 분기보고서 수주잔고·계약부채, 단일판매공급계약 공시 / 현재: 1Q26 잔고 미확인</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>④ 2026E 매출 4,030~4,850억 / OP 1,150억+ (컨센)</b>연간 OPM 28~30% 복원 가정<span class="chk">확인: 8/7 2Q26 실적이 첫 검증대</span></div>
+  </div>
+
+  <h3>인과 사슬 ② — ALG 옵션 (별도 트랙)</h3>
+  <div class="chain">
+    <div class="node"><b>① 미세화 한계 → 수직채널트랜지스터(VCT)·3D DRAM 전환</b>수평 트랜지스터의 누설전류·집적 한계 — 업계 공통 로드맵<span class="chk">확인처: IEDM·메모리 3사 기술 발표 / 시기: 2027~2029 양산 전환 <span class="pill estm">시장 추정</span></span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>② ALG 장비 첫 출하 (2026.5.16) — 존재 증명</b>"해외 대형 메모리사"향, 수십 대·대당 ~200억·총 2조+ 가능성은 <b>언론 전언(비공시)</b><span class="chk">확인처: 향후 단일판매공급계약 공시 여부가 진위 판별 — 아직 공시 없음 (26.7.15 확인)</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>③ 평가(eval) → 양산 라인 채택 → 반복 발주</b>장비업의 관문: 첫 출하와 양산 채택 사이 탈락 사례 다수 — 여기가 미증명 구간<span class="chk">확인처: 공시·고객 공개·증권사 채널체크 / 시차: 통상 1~2년</span></div>
+  </div>
+
+  <h3>수주산업 체크</h3>
+  <ul>
+    <li><b>수주잔고:</b> <span class="pill unkn">미확인</span> — 주성은 대형 계약을 개별 공시하기보다 분기보고서 잔고로 공개하는 유형. 1Q26 분기보고서 원문 확인 과제.</li>
+    <li><b>수주→매출 시차:</b> 2~4분기 (장비 제작·반입·검수). 따라서 <b>2025년 발주 공백의 메아리가 1Q26 적자</b>로 나타난 것이고, 역으로 2026년 상반기 발주 회복의 메아리는 2H26~2027 매출이다.</li>
+    <li><b>ASP 빈티지:</b> 장비는 리드타임이 짧아 빈티지 왜곡이 작다. 관전점은 오히려 <b>ALG의 ASP 점프(대당 ~200억 보도 — 기존 ALD 대비 배수 미확인)</b>가 실현되는지다.</li>
+    <li><b>전방 교차 검증:</b> SK하이닉스는 상장사 — 컨콜 CAPEX 발언으로 사슬 검증 가능. 단 메모리사 CAPEX 가이던스는 시황 급변 시 분기 단위로 수정된 전례(2022년 감산 국면)가 있어, <b>가이던스보다 실제 장비 반입 통계(관세청·SEMI 빌링)가 후행이지만 확실</b>하다.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① ALG 첫 고객이 정말 해외 메모리사라면 — SK하이닉스가 아닌 이유는 무엇인가? (기존 핵심 고객과의 관계 신호로서 중요)<br>
+  ② 삼성전자 DRAM향 진입 시도는 진행 중인가 — 성사 시 컨센서스에 없는 순수 상방.</div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="s5">
+  <div class="sec-h"><span class="no">SEC 05</span><h2>트래킹 지표</h2></div>
+
+  <div class="callout info"><b>리스크 관리 유형 판정: 혼합형.</b> 본업(ALD 사이클)은 <b>지표 추세형</b>(DRAM 가격·CAPEX·잔고 감시)이지만, 주가의 옵션 프리미엄(ALG)은 <b>이벤트 캘린더형</b>(출하·공시·고객 공개·실적발표일)이 지배한다. 두 축을 분리해서 관리해야 하며, 특히 옵션 쪽은 뉴스 하나에 ±30%가 움직인 이력(5/15 −16.5% → 5/18 상한가)이 있다.</div>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>지표</th><th>선행성 이유</th><th>확인처</th><th>주기</th><th>무료</th><th>현재 수치·방향 (조회 시점)</th></tr>
+    <tr><td><b>SK하이닉스 CAPEX·M15X 일정</b></td><td>주성 발주의 원천 — 컨콜 언급이 2~4분기 선행</td><td>SKH IR 컨콜</td><td>분기</td><td>○</td><td>M15X 증설 진행·주성 장비 다수 도입 전망 (한투 26.5.27 재인용)</td></tr>
+    <tr><td><b>DRAM 고정거래가</b></td><td>메모리사 투자 여력의 원천 — CAPEX에 2~4분기 선행</td><td>뉴스(트렌드포스 인용)</td><td>월간</td><td>○</td><td>상승 사이클 지속, 단 26.6 말 "피크아웃 논란" 헤드라인 등장 (헤럴드 26.6 — 방향 감시 필요)</td></tr>
+    <tr><td><b>주성 수주잔고·계약부채</b></td><td>2~4분기 뒤 매출의 직접 예고</td><td>DART 분기보고서</td><td>분기</td><td>○</td><td><span class="pill unkn">1Q26 수치 미확인 — 원문 확인 필수</span></td></tr>
+    <tr><td><b>ALG 관련 공시</b></td><td>"전언 2조"가 공시로 확정되는 순간이 옵션 가치의 확정 이벤트</td><td>DART/KIND</td><td>수시</td><td>○</td><td>공급계약 공시 아직 없음 (26.7.15 검색 기준) — 보도만 존재</td></tr>
+    <tr><td><b>글로벌 장비사 3D DRAM 로드맵</b></td><td>ALG의 표준 경쟁 상대 — TEL·AMAT 발표가 옵션 가치를 좌우</td><td>IEDM·각사 IR</td><td>반기</td><td>○</td><td>VCT/4F² 전환 로드맵 공론화 단계 <span class="pill estm">추정</span></td></tr>
+    <tr><td><b>컨센서스 추정치 방향</b></td><td>2026E OP 1,150억의 상·하향이 멀티플 재계산 트리거</td><td>FnGuide 컨센</td><td>월간</td><td>△</td><td>상향 사이클 (평균 목표가 41,600→86,500원, 4월 말 — 단 주가가 그 2배 위)</td></tr>
+    <tr><td><b>미·중 수출규제</b></td><td>중국향 매출의 온오프 스위치</td><td>미 상무부 BIS·뉴스</td><td>수시</td><td>○</td><td>특이 변동 미확인 (26.7.15)</td></tr>
+  </table></div>
+
+  <h3>실전 체크리스트 (무료)</h3>
+  <ul>
+    <li><b>주간:</b> ① DART 주성 신규 공시(공급계약·정정) ② ALG·VCT 관련 국내외 보도 스캔 ③ 이벤트 없는 ±15% 변동 시 수급(신용잔고) 확인</li>
+    <li><b>월간:</b> ① DRAM 고정가 방향 ② 컨센서스 2026E OP 변화 ③ "메모리 피크아웃" 담론의 강도(대형주 컨콜 뉘앙스)</li>
+    <li><b>분기:</b> ① 8/7 실적 — 매출 복원폭·OPM·수주잔고 3종 세트 ② SK하이닉스 컨콜의 M15X·용인 발언 ③ 분기보고서 R&D 비용 추이</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 신용융자·대차잔고 — 11배 랠리 뒤의 수급 구조는 급락을 증폭시킬 상태인가?<br>
+  ② SEMI 한국 빌링스 데이터로 국내 장비 반입 사이클의 위치를 정량 확인할 수 있는가?</div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="s6">
+  <div class="sec-h"><span class="no">SEC 06</span><h2>영업 레버리지와 CAPEX</h2></div>
+
+  <h3>고정비/변동비 구조 <span class="tag">자체 추정</span></h3>
+  <p>R&D가 매출의 15~20%(뉴스밸류 26.6.10, 2025년 연 1,000억+ 보도)로 <b>고정비의 몸통이 R&D인 회사</b>다. 여기에 인건비(직원 482명)·용인 연구소 감가상각이 얹힌다. 변동비(재료·외주)는 매출총이익률이 높은 장비업 특성상 상대적으로 낮음. 결과: 분기 매출 ~700억 안팎이 BEP 임계 <span class="pill estm">자체 추정</span> (1Q26 549억 → −70억, 1Q25 1,208억 → +339억에서 내삽).</p>
+
+  <h3>증분이익률 실측 (Δ영업이익 ÷ Δ매출)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구간</th><th class="num">Δ매출 (억)</th><th class="num">ΔOP (억)</th><th class="num">증분이익률</th><th>비고</th></tr>
+    <tr><td>2023→2024</td><td class="num">+1,246</td><td class="num">+683</td><td class="num"><b>54.8%</b></td><td>상승 구간 (2023 베이스 2차자료 — 오차 가능)</td></tr>
+    <tr><td>2024→2025</td><td class="num">−987</td><td class="num">−659</td><td class="num neg">역방향 66.8%</td><td>매출 감소분의 2/3이 이익에서 소멸 — R&D 증액 겹침(일회성 아님, 정책적)</td></tr>
+    <tr><td>1Q25→1Q26</td><td class="num">−659</td><td class="num">−409</td><td class="num neg">역방향 62.1%</td><td>분기 단위에서도 동일 기울기 확인</td></tr>
+  </table></div>
+  <p class="tbl-note">상승·하락 모두 55~67%로 대칭 — 이 회사의 증분 공헌이익률은 <b>약 60%</b>로 실측된다. 일회성 제거 전/후: 2025 R&D 증액은 일회성이 아닌 정책 비용이므로 제거하지 않음.</p>
+
+  <h3>시각화 ① — 증분 매출 100원의 여정</h3>
+  <div class="lev-row">
+    <div class="cap"><span>2023→2024 (증가)</span><b>증분 100원 중 이익 54.8원</b></div>
+    <div class="lev-bar"><div class="cost" style="width:45.2%">비용 45.2</div><div class="profit" style="width:54.8%">이익 54.8</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>2024→2025 (감소 — 역방향)</span><b class="neg">매출 −100원당 이익 −66.8원</b></div>
+    <div class="lev-bar rev"><div class="cost" style="width:33.2%">잔존 33.2</div><div class="profit" style="width:66.8%">이익 소멸 66.8</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>1Q25→1Q26 (감소 — 역방향)</span><b class="neg">매출 −100원당 이익 −62.1원</b></div>
+    <div class="lev-bar rev"><div class="cost" style="width:37.9%">잔존 37.9</div><div class="profit" style="width:62.1%">이익 소멸 62.1</div></div>
+  </div>
+  <p class="fn">이익 증분이 100을 넘는 구간(비용 절대 감소 동반) 없음. 하락 구간의 역레버리지가 상승 구간과 같은 기울기라는 점이 핵심 — <b>이 레버리지는 왕복 모두에 작동하는 양날의 검</b>이다.</p>
+
+  <h3>시각화 ② — 배율 게이지</h3>
+  <div class="gauge">
+    <div class="ruler"></div>
+    <div class="mk opm" style="left:14.4%">2025 OPM 10.1%</div>
+    <div class="mk inc" style="left:85.7%">증분 공헌이익률 ~60%</div>
+    <div class="tick" style="left:0%">0%</div><div class="tick" style="left:28.6%">20%</div><div class="tick" style="left:57.1%">40%</div><div class="tick" style="left:85.7%">60%</div><div class="tick" style="left:100%">70%</div>
+  </div>
+  <div class="callout info"><b>배율 = 60 ÷ 10.1 ≈ 5.9배</b> (2025 OPM 기준): 매출 1% 변화가 이익 ~6%를 움직이는 초고레버리지 구간. 단 컨센서스대로 2026 OPM이 28~30%로 복원되면 같은 증분율에서 배율은 <b>~2.1배로 자연 감소</b>한다 — "레버리지가 극적인 것은 바닥 국면의 성질"이며, 이는 지금의 이익 복원 속도가 빠른 이유인 동시에 2027년 이후 성장률이 둔화될 산술적 이유다.</div>
+
+  <h3>시나리오 <span class="tag">2025 기준: 매출 3,107 / OP 313억 · 증분율 60% 적용</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>시나리오</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th>비고</th></tr>
+    <tr><td>+10%</td><td class="num">3,418</td><td class="num">~500</td><td class="num">14.6%</td><td>OP +60% — 게이지 배율(5.9배) 정합</td></tr>
+    <tr><td>+20%</td><td class="num">3,728</td><td class="num">~686</td><td class="num">18.4%</td><td>OP +119%</td></tr>
+    <tr><td>컨센 +30~56%</td><td class="num">4,030~4,850</td><td class="num">~870~1,360</td><td class="num">22~28%</td><td>컨센 OP 1,150~1,213억은 이 프레임의 상단 — 증분율 60%대 완전 실현 가정</td></tr>
+  </table></div>
+  <p>레버리지는 <b>물량 × BEP 통과 여부 × (옵션) ALG ASP 믹스</b>의 곱 구조. 셋 중 물량만 컨센서스에 들어 있고, ALG 믹스는 2026 숫자에 사실상 미반영 <span class="pill estm">추정</span> — 반영되기 시작하면 상방, 본업 물량이 밀리면 60% 기울기의 하방.</p>
+
+  <h3>CAPEX — 용인 제2연구소</h3>
+  <p><b>1,000억 투자, 용인 제2연구소 신설</b> (2025.6.9 발표, ZDNet). 생산 CAPA 증설이 아니라 <b>R&D 캠퍼스</b>라는 점이 특징 — 매출 회수 기간·ROIC를 직접 계산할 수 없는 투자다. 프레임 판정 <span class="pill estm">자체 추정</span>: 이 투자는 "ALG 생태계 선점 비용"으로, 회수는 ALG 양산 채택 성공 여부에 전부 걸려 있다. 성공 시 ROIC는 무의미할 만큼 높고, 실패 시 연 감가상각 ~100억 수준의 고정비 증가로 귀결. 별도 양산 CAPA 증설 공시는 미확인 — ALG "100대+" 시나리오가 현실화되면 <b>생산 CAPA 증설 공시가 후속 신호</b>로 나와야 한다.</p>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 현재 연 생산 CAPA는 몇 대이며, ALG 100대 시나리오를 기존 설비로 소화 가능한가?<br>
+  ② 용인 연구소 감가상각 개시 시점 — 2027년 고정비 단차가 컨센서스에 반영돼 있는가?</div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="s7">
+  <div class="sec-h"><span class="no">SEC 07</span><h2>리스크와 밸류에이션</h2></div>
+
+  <h3>실적 리스크 — 훼손 시나리오 3개</h3>
+  <div class="risk-grid">
+    <div class="risk"><div class="rt">① 2H26 발주 이연</div>
+      <div class="row"><b>원인</b> — SK하이닉스 M15X 장비 반입 일정 지연, 메모리 피크아웃 우려 현실화</div>
+      <div class="row"><b>영향</b> — 증분율 60% 역레버리지로 컨센 OP 1,150억이 반토막 경로</div>
+      <div class="sig">⚠ 조기 경보 — 2Q26 매출 900억 미만 / SKH 컨콜 CAPEX 하향 · 확인처: 8/7 실적, SKH IR · 대응: 경계→축소 즉시 이행</div></div>
+    <div class="risk"><div class="rt">② ALG 양산 채택 실패·지연</div>
+      <div class="row"><b>원인</b> — 평가 장비가 양산 전환에 탈락, 또는 "2조 전언"이 공시로 확정되지 않음</div>
+      <div class="row"><b>영향</b> — 실적이 아닌 멀티플 붕괴: 옵션 프리미엄(시총의 절반 이상 추정) 소멸</div>
+      <div class="sig">⚠ 조기 경보 — 출하 후 2~3분기 내 공급계약 공시 부재 / 고객 공개 지연 · 확인처: DART · 대응: 공시 부재 장기화 시 옵션 가치 0으로 재계산</div></div>
+    <div class="risk"><div class="rt">③ 고객 집중·규제</div>
+      <div class="row"><b>원인</b> — SK하이닉스 단일 의존 + 중국향 수출규제 강화</div>
+      <div class="row"><b>영향</b> — 2025년형 발주 공백의 재현(매출 −24%·분기 적자)</div>
+      <div class="sig">⚠ 조기 경보 — 분기보고서 주요 고객 비중, BIS 규제 뉴스 · 확인처: 사업보고서·외신 · 대응: 구조적 이슈이므로 축소 기준</div></div>
+  </div>
+
+  <h3>비영업 리스크</h3>
+  <ul>
+    <li><b>지배구조 — 분할 재추진 가능성 (최대 논점):</b> 2024.5 지주사 전환(주성홀딩스+반도체 인적분할+태양광·디스플레이 물적분할) 발표 → 10/8 주총 가결 → 주식매수청구 500억 초과로 <b>10/29 철회</b>. 이후 자사주 전량 소각(2024.7, 370억)·500억 자사주 취득·409억 추가 소각(2026.2)·배당으로 주주환원 선회. 다만 <b>분할의 동기(사업 전문화 + 2세 승계 구도)는 소멸하지 않았다</b> — 황은석 사장(외아들)이 공동대표로 승계 가동 중(2025.4 3인 각자대표: 황철주 R&D / 이우경 前 ASML코리아 영업 / 황은석). 주가가 높아진 지금이 오히려 재추진 유인이 커지는 국면일 수 있음 <span class="pill estm">자체 추정</span>.</li>
+    <li><b>대주주:</b> 황철주 약 24.6~25.1% (2024.9 기준) — 지배력 안정적이나 승계 과정의 지분 이동·블록딜 가능성 상시 감시.</li>
+    <li><b>CB·BW·증자:</b> 발행 이력 최근 미확인 <span class="pill unkn">미확인 — DART 재확인</span>. 순현금성 재무구조라 희석 조달 유인은 낮음.</li>
+    <li><b>소송·담합·계열 유출:</b> 특이사항 검색에서 미발견 <span class="pill unkn">미확인</span>.</li>
+  </ul>
+
+  <h3>밸류에이션 <span class="tag">웹 확인, 시점 병기</span></h3>
+  <div class="chart-box">
+    <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,Menlo,monospace">
+      <line x1="60" y1="15" x2="60" y2="205" stroke="#d3dce2"/>
+      <line x1="60" y1="205" x2="685" y2="205" stroke="#d3dce2"/>
+      <g font-size="10" fill="#66757f">
+        <text x="8" y="19">300k</text><line x1="60" y1="15" x2="685" y2="15" stroke="#e8eef2"/>
+        <text x="8" y="82">200k</text><line x1="60" y1="78" x2="685" y2="78" stroke="#e8eef2"/>
+        <text x="8" y="145">100k</text><line x1="60" y1="141.7" x2="685" y2="141.7" stroke="#e8eef2"/>
+        <text x="22" y="202">0</text>
+      </g>
+      <!-- y = 205 - price/300000*190 -->
+      <polyline fill="none" stroke="#0284C7" stroke-width="2.5"
+        points="85,188.5 200,173.9 300,126.5 360,89.6 420,109.3 470,25.8 540,70.4 630,92"/>
+      <g font-size="10">
+        <circle cx="85" cy="188.5" r="3.5" fill="#0284C7"/><text x="60" y="225" fill="#66757f">25.8.4 저점 26,050</text>
+        <circle cx="200" cy="173.9" r="3.5" fill="#0284C7"/><text x="168" y="192" fill="#66757f">26.2.10 49,150</text>
+        <circle cx="300" cy="126.5" r="3.5" fill="#0284C7"/><text x="255" y="115" fill="#66757f">4/23 123,900</text>
+        <circle cx="360" cy="89.6" r="3.5" fill="#0284C7"/><text x="308" y="77" fill="#66757f">5/18 상한가 182,200</text>
+        <circle cx="470" cy="25.8" r="4.5" fill="#b04a28"/><text x="430" y="14" fill="#b04a28" font-weight="700">6/12 고점 283,000</text>
+        <circle cx="630" cy="92" r="5" fill="#075985"/><text x="565" y="115" fill="#075985" font-weight="700">7/9 178,400</text>
+      </g>
+      <!-- consensus target band -->
+      <line x1="60" y1="150.2" x2="685" y2="150.2" stroke="#b04a28" stroke-dasharray="4 4"/>
+      <text x="470" y="164" font-size="10" fill="#b04a28">컨센 평균 목표가 86,500 (4월 말)</text>
+      <line x1="60" y1="85.3" x2="685" y2="85.3" stroke="#8a7430" stroke-dasharray="3 5"/>
+      <text x="66" y="98" font-size="10" fill="#8a7430">최고 목표가 189,000 (한투 4/29 '꿈이 현실로')</text>
+      <text x="60" y="243" font-size="10" fill="#66757f">경로는 확인된 점의 개략 연결(실측 차트 아님). 6월 목표가 개정 여부 미확인 — 재확인 필수.</text>
+    </svg>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>항목</th><th>수치</th><th>확인 시점·비고</th></tr>
+    <tr><td>주가 / 시가총액</td><td class="num">178,400원 / ≈8.5조</td><td>26.7.9 (버핏연구소 보도) / 시총은 발행주식 ~47.5백만주 × 주가 자체 계산. <b>변동성 극심 — 열람 시 재확인</b></td></tr>
+    <tr><td>52주 밴드</td><td class="num">26,050 ~ 283,000</td><td>저점 25.8.4 / 고점 26.6.12 — 11개월간 10.9배. 현 위치: 고점比 −37%, 저점比 +585%</td></tr>
+    <tr><td>12M 선행 지표</td><td class="num">시총/2026E OP ≈ 70~74배</td><td>컨센 OP 1,150~1,213억 기준 자체 계산. 트레일링 PER 296배(다움 6/15) — 선행으로도 국내 장비 피어(원익IPS 등 시총/OP 10~20배대 <span class="pill estm">추정</span>) 대비 3배+ 프리미엄</td></tr>
+    <tr><td>목표가 컨센서스</td><td class="num">평균 86,500원 (4월 말)</td><td>최고 189,000(한투 4/29) / BNK 120,000 / SK증권 160,000(시점 미상). <b>주가가 컨센 평균의 2배 위, 최고 목표가도 상회했던 구간</b>. 6월 이후 개정 미확인 — 재확인 필수</td></tr>
+  </table></div>
+
+  <div class="callout warn"><b>"가격이 증명을 앞서갔는가" 판정: 명백히 앞서갔다.</b> 이미 가격에 있는 것 — ① 2026E OP 1,150억 완전 복원 ② M15X·슈퍼사이클 수혜 ③ ALG "2조+" 전언의 상당 부분 ④ 삼성/비메모리 확장 기대 일부. 가격에 없는 것 — ① ALG 양산 탈락 리스크 ② 4Q 비용 패턴·분기 변동성 ③ 분할 재추진 리스크. 컨센 목표가와 주가의 역전(주가 &gt; 목표가 2배)은 시리즈 전체에서 처음 보는 구도로, <b>애널리스트가 숫자로 정당화하지 못하는 프리미엄이 시총의 절반 이상</b>이라는 뜻이다. 방산 리포트(6월 대화)에서 본 "목표가 괴리율 −30%대의 낙관 편향"과 정반대 — 여기는 컨센서스가 주가를 뒤쫓는 국면.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 6~7월 증권사 목표가 개정치 — 189,000 이후 누가 얼마까지 올렸는가? (컨센의 추격 속도 = 버블 온도계)<br>
+  ② 2027E 컨센서스 OP — ALG를 숫자에 넣기 시작한 하우스가 있는가, 있다면 몇 대·얼마로?</div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="s8">
+  <div class="sec-h"><span class="no">SEC 08</span><h2>종합 투자 판단</h2></div>
+
+  <h3>핵심 질문과 검증 순서</h3>
+  <p><b>Q1. ALG "수십 대·대당 200억·총 2조+"(언론 전언)가 공시로 확정되는가?</b> — 시총 8.5조의 절반 이상이 이 답에 걸려 있다. <b>Q2. 2H26 본업 복원이 컨센(OP 1,150억)을 채우는가?</b> — 옵션이 아닌 바닥의 문제.</p>
+  <p><b>검증 순서:</b> ① 1Q26 분기보고서의 수주잔고·계약부채 (즉시 — 2Q 복원의 선행 확인) → ② 8/7 2Q26 실적 (매출 900억+ 여부) → ③ ALG 공급계약 공시 도착 여부 (3Q26 내) → ④ SK하이닉스 3Q 컨콜의 M15X·차세대 DRAM 발언.</p>
+
+  <h3>3질문 프레임 좌표 <span class="tag">시리즈 상대 위치 포함</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>축</th><th>점수</th><th>판정·시리즈 비교</th></tr>
+    <tr><td>① 이익 업사이클 강도</td><td class="num"><b>3 / 3</b></td><td>OP 313→1,150억+(+268%) 컨센, 증분율 60%의 BEP 통과 국면 — 원익IPS와 같은 원형이되 진폭이 더 큼. 시리즈 최상급 강도</td></tr>
+    <tr><td>② 주가 반영도·잔여 룸</td><td class="num"><b>1 / 3</b></td><td>주가가 컨센 목표가 평균의 2배 위 — 시리즈에서 유일하게 "컨센이 주가를 추격"하는 종목. 2026 실적만으로는 룸이 없고, 룸은 전부 ALG 증명에 달림</td></tr>
+    <tr><td>③ 경로 변수 수</td><td class="num"><b>3 / 3 (많음·불리)</b></td><td>발주 타이밍 × ALG 채택 × 고객 집중 × 규제 × 분할 재추진 × 수급(11배 랠리 잔재) — 원익QnC(모멘티브 1변수)보다 많고 퍼스텍(5중 곱)과 유사한 복잡도</td></tr>
+  </table></div>
+
+  <h3>이탈 규율 3단계</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>단계</th><th>발동 조건</th><th>행동</th></tr>
+    <tr><td><b>경계</b></td><td>2Q26 매출 900억 미만 or DRAM 가격 하락 전환 or ALG 공시 3Q26까지 부재</td><td>신규 진입 금지, 잔고·컨콜 재확인</td></tr>
+    <tr><td><b>축소</b></td><td>2026E 컨센 OP 하향 시작 or SKH CAPEX 가이던스 하향 or 분할 재추진 공시</td><td>절반 축소 — 역레버리지 60%는 기다려주지 않음</td></tr>
+    <tr><td><b>이탈</b></td><td>ALG 양산 채택 실패 확인(고객 탈락·프로젝트 중단) — 옵션 논리 자체 붕괴</td><td>전량 이탈. 본업 가치만으로 시총 재계산 시 하방이 크게 열려 있음</td></tr>
+    <tr><td style="color:var(--accent-deep)"><b>노이즈 판별</b></td><td>급락이 ① 시장 전체·수급 요인이고 ② 잔고·컨센 OP 유지 ③ ALG 공시 트랙 정상일 때만 검토 기회. 단 <b>이 종목은 밸류 부담 자체가 노이즈가 아니라 신호</b>일 수 있음 — 판별 기준을 보수적으로 적용</td><td>3조건 확인 후에만</td></tr>
+  </table></div>
+
+  <h3>IR 핵심 질문 1개</h3>
+  <div class="callout good"><b>"5월 출하한 ALG 장비는 평가(demo)용입니까, 양산 발주(PO) 물량입니까 — 그리고 언론이 보도한 '수십 대' 물량은 단일판매공급계약 공시 요건에 왜 해당하지 않았습니까?"</b><br>— "양산 PO이고 공시 기준 미달은 분할 납품 때문"이면 2조 전언의 신뢰도가 급상승하고, "평가용"이면 옵션 프리미엄의 재계산(하향)이 필요하다. 답 하나로 시총의 절반이 갈린다.</div>
+
+  <h3>미확인 데이터 · 다음 갱신 트리거</h3>
+  <ul>
+    <li><b>미확인:</b> ① 2022~2023 확정 실적(2차 자료 의존) ② 2Q~4Q25 분기 분해 ③ 1Q26 수주잔고·계약부채 ④ ALG 고객·계약 형태 ⑤ 6월 이후 목표가 개정 ⑥ SK하이닉스 매출 의존도 수치 ⑦ CB/BW 유무 ⑧ 7/15 현재가</li>
+    <li><b>갱신 트리거·일정:</b> ① <b>2026.8.7 2Q26 실적 발표</b> (Investing.com 확인 — 최우선) ② ALG 공급계약 공시 (수시) ③ SK하이닉스 2Q 컨콜 (7월 말 추정) ④ 3Q26 분기보고서 (11월 중순) ⑤ 분할 관련 이사회 공시 (수시 감시)</li>
+  </ul>
+
+  <h3>이번 분석의 3대 발견 (재사용 가능한 일반 원리)</h3>
+  <ul>
+    <li><b>① "컨센서스-주가 역전"은 프리미엄의 성분 분석 지표다:</b> 목표가 괴리율이 −30%(방산형 낙관 편향)가 아니라 <b>+100%(주가가 목표가 위)</b>로 뒤집힌 종목은, 시총에서 컨센 기반 가치를 뺀 잔여분이 곧 "숫자 없는 꿈의 가격"이다. 이 잔여분의 크기 추적이 밸류에이션 밴드보다 유효한 온도계가 된다 — 어떤 종목에든 적용 가능한 계산.</li>
+    <li><b>② 첫 출하 ≠ 양산 채택 — 장비주의 옵션 검증은 '공시 도착'으로 한다:</b> 언론 전언(고객·금액)과 공시의 간극이 큰 장비사는, 전언이 공시 요건(매출 10% 이상 계약)으로 확정되는지가 옵션의 진위 판별 그 자체다. 퍼스텍에서 확립한 "계약 공시 &gt; 컨콜 발언" 원리의 장비업 버전.</li>
+    <li><b>③ 증분이익률의 대칭성 검사:</b> 상승 구간(54.8%)과 하락 구간(66.8%, 62.1%)의 기울기가 대칭이면 그 수치는 구조(공헌이익률)로 신뢰할 수 있고, 비대칭이면 일회성이 섞여 있다는 신호다. 주성은 대칭 → 60%를 시나리오 모수로 채택 가능. 다른 종목의 증분마진 신뢰도 검사에 재사용.</li>
+  </ul>
+</section>
+
+<!-- ================= footer ================= -->
+<footer>
+  <h4>분석 기준일 · 확정/추정 구분</h4>
+  <p>· 작성: <span class="mono">2026-07-15</span> · 데이터: 2026-07-15 웹 검색 (DART 원문 미열람 — 잔고·분기 분해 등은 원문 확인 전 2차 자료 기반)<br>
+  · <span class="mono">[확정]</span> 2024·2025 연간, 3Q24·1Q25·1Q26 분기(잠정공시), 부문 매출(2025), 분할 철회·자사주 소각·배당 공시, ALG 출하 발표(회사).<br>
+  · <span class="mono">[역산]</span> 4Q24, 2Q~4Q25 합산.<br>
+  · <span class="mono">[시장 추정]</span> 2026E 실적(한투 5/27·하나·SK증권), 목표가 컨센(4월 말), ALG 고객·규모(한국경제 5/18 전언 — 공시 아님).<br>
+  · <span class="mono">[자체 추정]</span> BEP 임계 ~700억/분기, 증분 공헌이익률 60%, 시총 계산, 옵션 프리미엄 비중, 용인 연구소 회수 프레임.<br>
+  · <span class="mono">[미확인]</span> 2022~2023 확정치, 수주잔고, SK하이닉스 의존도, 6월 이후 목표가, CB/BW, 현재가(7/15).</p>
+  <h4>주요 출처</h4>
+  <p>손익구조변동 공시(2026.2.10) · 1Q26 잠정실적 · 분할 철회 공시·보도(한경/시사저널e 2024.10.29) · ALG 출하 보도자료·기사(ZDNet/디일렉/한경 2026.5.17~19) · 한국투자증권 리포트 재인용(2026.4.29 '꿈이 현실로', 5.27) · FnGuide/다움/버핏연구소 시세(2026.6~7).</p>
+  <h4>자료 한계</h4>
+  <p>주가는 2026.7.9 확인치(178,400원) 기준 — 일중 변동성이 극단적이므로 모든 가격·멀티플은 열람 시점 재확인. ALG 계약 규모(2조+)는 공시가 아닌 언론 전언으로, 본 리포트의 옵션 가치 논의는 그 진위에 전적으로 종속됨.</p>
+  <h4>자매 리포트 (시리즈)</h4>
+  <p><span class="mono">솔브레인 · 이엔에프테크놀로지 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두 · 덕산하이메탈 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 이오테크닉스 · 원익IPS · 브이엠 · 코오롱인더 · 퍼스텍</span> — 특히 원익IPS(BEP 원형·4Q 함정)·브이엠(장비 사이클)·퍼스텍(공시 우선 원리)과 직접 연결.</p>
+  <p style="margin-top:14px;border-top:1px solid #1c3d52;padding-top:12px;color:#6f9cb8">본 리포트는 정보 제공 목적이며 투자 판단과 그 결과는 투자자 본인 책임입니다. 액센트 컬러: 스카이블루 <span class="mono">#0284C7</span> (주성엔지니어링 고유 — 기존 팔레트와 중복 없음).</p>
+</footer>
+
+</div>
+</body>
+</html>
