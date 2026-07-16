@@ -156,7 +156,35 @@ details.secmgr summary .sub{font-weight:400;font-size:.75rem;color:var(--muted)}
   <div class="inner">
     <div class="msg" id="savemsg"><b>변경 없음</b> — 불러온 상태 그대로입니다.</div>
     <button class="btn" id="reset" disabled>변경 초기화</button>
-    <button class="btn primary" id="export" disabled>master.json 내보내기</button>
+    <button class="btn" id="export" disabled>파일로 내보내기</button>
+    <button class="btn primary" id="pushgh" disabled>GitHub에 바로 저장</button>
+    <button class="btn" id="ghsettings" title="GitHub 저장 설정" style="padding:7px 11px">⚙</button>
+  </div>
+</div>
+
+<div id="ghmodal" style="display:none;position:fixed;inset:0;background:rgba(20,32,43,.45);z-index:50;align-items:center;justify-content:center">
+  <div style="background:var(--card);border-radius:12px;padding:26px;max-width:440px;width:90%;box-shadow:0 12px 40px rgba(0,0,0,.2)">
+    <h3 style="font-size:1.05rem;font-weight:750;margin-bottom:6px">GitHub 저장 설정</h3>
+    <p style="font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:16px">
+      토큰과 저장소 정보는 <b>이 브라우저에만</b> 저장되며 사이트·저장소에는 올라가지 않습니다.
+      GitHub의 Fine-grained 토큰(이 저장소 Contents: Read and write 권한)이 필요합니다.
+    </p>
+    <label style="font-size:.75rem;font-weight:600;display:block;margin-bottom:4px">저장소 (owner/repo)</label>
+    <input id="ghrepo" placeholder="firerjatls-svg/report-dashboard" style="width:100%;font:inherit;font-size:.85rem;padding:8px 11px;border:1.5px solid var(--line);border-radius:6px;margin-bottom:12px">
+    <label style="font-size:.75rem;font-weight:600;display:block;margin-bottom:4px">브랜치</label>
+    <input id="ghbranch" placeholder="main" value="main" style="width:100%;font:inherit;font-size:.85rem;padding:8px 11px;border:1.5px solid var(--line);border-radius:6px;margin-bottom:12px">
+    <label style="font-size:.75rem;font-weight:600;display:block;margin-bottom:4px">파일 경로</label>
+    <input id="ghpath" placeholder="data/master.json" value="data/master.json" style="width:100%;font:inherit;font-size:.85rem;padding:8px 11px;border:1.5px solid var(--line);border-radius:6px;margin-bottom:12px">
+    <label style="font-size:.75rem;font-weight:600;display:block;margin-bottom:4px">토큰 (Personal Access Token)</label>
+    <input id="ghtoken" type="password" placeholder="github_pat_… (저장돼 있으면 비워두면 유지)" style="width:100%;font:inherit;font-size:.85rem;padding:8px 11px;border:1.5px solid var(--line);border-radius:6px;margin-bottom:6px">
+    <div id="ghmsg" style="font-size:.75rem;min-height:1.2em;margin-bottom:14px"></div>
+    <div style="display:flex;gap:8px;justify-content:space-between;align-items:center">
+      <button class="btn" id="ghclear" style="font-size:.75rem;color:#9F1239;border-color:#e5c5cc">저장된 토큰 삭제</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="ghcancel">닫기</button>
+        <button class="btn primary" id="ghsave">저장</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -317,6 +345,7 @@ function updateDirty(){
   $('savebar').classList.toggle('clean', n===0 && sc===0);
   $('export').disabled = (n===0 && sc===0);
   $('reset').disabled = (n===0 && sc===0);
+  if(typeof refreshPushBtn === 'function') refreshPushBtn();
 }
 
 $('search').addEventListener('input', render);
@@ -326,9 +355,74 @@ $('export').onclick = ()=>{
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = 'master.json'; a.click();
   URL.revokeObjectURL(a.href);
-  // 내보내면 현재 상태를 새 원본으로 (중복 반영 방지)
   ORIG = JSON.parse(JSON.stringify(DATA)); render(); updateDirty();
   $('savemsg').innerHTML = `<b style="color:var(--ok)">내보냄</b> — master.json이 다운로드되었습니다. 저장소에 덮어쓰세요.`;
+};
+
+/* ── GitHub 직접 저장 ── */
+const GH = {
+  get repo(){ return localStorage.getItem('gh_repo')||''; },
+  get branch(){ return localStorage.getItem('gh_branch')||'main'; },
+  get path(){ return localStorage.getItem('gh_path')||'data/master.json'; },
+  get token(){ return localStorage.getItem('gh_token')||''; },
+};
+function ghReady(){ return GH.repo && GH.token; }
+function refreshPushBtn(){
+  const ch = changedList().length + secChangedCount();
+  $('pushgh').disabled = !(ch>0 && ghReady());
+  $('pushgh').title = ghReady() ? 'master.json을 GitHub에 커밋' : '먼저 ⚙ 에서 토큰·저장소를 설정하세요';
+}
+// 설정 모달
+$('ghsettings').onclick = ()=>{
+  $('ghrepo').value = GH.repo; $('ghbranch').value = GH.branch; $('ghpath').value = GH.path;
+  $('ghtoken').value = ''; $('ghmsg').textContent = GH.token ? '토큰이 저장돼 있습니다 (변경하려면 새로 입력).' : '';
+  $('ghmsg').style.color = 'var(--muted)';
+  $('ghmodal').style.display = 'flex';
+};
+$('ghcancel').onclick = ()=> $('ghmodal').style.display='none';
+$('ghsave').onclick = ()=>{
+  const repo = $('ghrepo').value.trim();
+  if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){ $('ghmsg').style.color='var(--dirty)'; $('ghmsg').textContent='저장소 형식 오류 — owner/repo 형태로'; return; }
+  localStorage.setItem('gh_repo', repo);
+  localStorage.setItem('gh_branch', $('ghbranch').value.trim()||'main');
+  localStorage.setItem('gh_path', $('ghpath').value.trim()||'data/master.json');
+  const tok = $('ghtoken').value.trim();
+  if(tok) localStorage.setItem('gh_token', tok);
+  $('ghmsg').style.color='var(--ok)'; $('ghmsg').textContent='저장됨';
+  refreshPushBtn();
+  setTimeout(()=> $('ghmodal').style.display='none', 600);
+};
+$('ghclear').onclick = ()=>{
+  localStorage.removeItem('gh_token');
+  $('ghtoken').value=''; $('ghmsg').style.color='var(--dirty)'; $('ghmsg').textContent='토큰이 삭제되었습니다.';
+  refreshPushBtn();
+};
+// 실제 커밋: 현재 SHA 조회 → PUT
+$('pushgh').onclick = async ()=>{
+  if(!ghReady()){ $('ghsettings').click(); return; }
+  const btn = $('pushgh'); btn.disabled=true; const orig=btn.textContent; btn.textContent='저장 중…';
+  const api = `https://api.github.com/repos/${GH.repo}/contents/${GH.path}`;
+  const headers = { 'Authorization':`Bearer ${GH.token}`, 'Accept':'application/vnd.github+json' };
+  try{
+    // 1) 현재 파일 SHA 조회 (덮어쓰기에 필요)
+    let sha = undefined;
+    const getr = await fetch(`${api}?ref=${GH.branch}`, {headers});
+    if(getr.ok){ sha = (await getr.json()).sha; }
+    else if(getr.status!==404){ throw new Error(`파일 조회 실패 (${getr.status}) — 토큰 권한·저장소 확인`); }
+    // 2) 커밋 (base64 인코딩, 한글 안전)
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(DATA, null, 1))));
+    const putr = await fetch(api, {
+      method:'PUT', headers:{...headers,'Content-Type':'application/json'},
+      body: JSON.stringify({ message:'edit: 섹터·스코어 수정 (edit.html)', content, branch:GH.branch, ...(sha?{sha}:{}) })
+    });
+    if(!putr.ok){ const e=await putr.json().catch(()=>({})); throw new Error(`커밋 실패 (${putr.status}) ${e.message||''}`); }
+    ORIG = JSON.parse(JSON.stringify(DATA)); render(); updateDirty();
+    $('savemsg').innerHTML = `<b style="color:var(--ok)">GitHub에 저장됨</b> — 1분 뒤 대시보드에 반영됩니다. (커밋 완료)`;
+  }catch(err){
+    $('savemsg').innerHTML = `<b style="color:var(--dirty)">저장 실패</b> — ${esc(err.message)}`;
+  }finally{
+    btn.textContent=orig; refreshPushBtn();
+  }
 };
 </script>
 </body>
