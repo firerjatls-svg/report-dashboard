@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>두산 (000150) — 지주 껍질 속의 CCL</title>
+<script type="application/json" id="dashboard-meta">
+{
+  "code": "000150",
+  "name": "두산",
+  "sector": "mat",
+  "intensity": 3,
+  "variables": 3,
+  "note": "자체사업 OP 4배·연결 OP +72%, 단 SK실트론 4조·지주할인·거버넌스",
+  "desc": "엔비디아 AI 가속기용 하이엔드 CCL 국내 독점 — 지주 껍질에 가려진 자체사업이 이익의 절반",
+  "tags": "CCL 동박적층판 전자BG 엔비디아 저손실 SK실트론 두산에너빌리티 지주할인",
+  "catalysts": [{"date": "2026-07-24", "label": "2Q26 실적 발표"}, {"date": "2026-09-30", "label": "SK실트론 인수 계약 확정 여부 (추정)"}]
+}
+</script>
+<style>
+  :root{
+    --bg:#f0ecea;
+    --paper:#ffffff;
+    --ink:#241a15;
+    --muted:#7a6a62;
+    --line:#e0d7d2;
+    --line-soft:#ece5e1;
+    --accent:#7C2D12;        /* 딥 코퍼(동박 산화색) — 두산 고유 액센트 (기존 팔레트와 중복 없음) */
+    --accent-deep:#521806;
+    --accent-bg:#f9ebe3;
+    --warn:#9a3a2a;
+    --warn-bg:#f7eae7;
+    --info:#41505f;
+    --info-bg:#eaeef2;
+    --est:#7a6a2a;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.62;-webkit-font-smoothing:antialiased;padding:20px 12px 80px;display:flex;justify-content:center;font-size:14.5px}
+  .wrap{width:100%;max-width:860px}
+  .mono{font-family:var(--mono)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .est{color:var(--est);font-weight:600}
+  .pos{color:var(--accent-deep);font-weight:600}
+  .neg{color:var(--warn);font-weight:600}
+  .fn{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+  .cover{background:linear-gradient(155deg,#2b1409 0%,#6a2410 55%,#a85424 100%);color:#f8ece4;border-radius:18px;padding:30px 24px 26px;position:relative;overflow:hidden;margin-bottom:14px}
+  .cover::before{ /* 적층 레이어 시그니처 (CCL 단면) */
+    content:"";position:absolute;right:-30px;top:20px;width:230px;height:170px;
+    background:repeating-linear-gradient(180deg,rgba(248,236,228,.20) 0 3px,transparent 3px 14px);
+    transform:skewY(-7deg);border-radius:6px}
+  .cover .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:#dfa87a;margin-bottom:10px;position:relative;z-index:1}
+  .cover h1{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.25;position:relative;z-index:1}
+  .cover h1 .code{font-family:var(--mono);font-size:15px;font-weight:500;color:#dfa87a;margin-left:8px}
+  .cover .sub{font-size:13.5px;color:#eccbb2;margin-top:8px;max-width:610px;position:relative;z-index:1}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px;position:relative;z-index:1}
+  @media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:11px 12px}
+  .kpi .l{font-size:10.5px;letter-spacing:.06em;color:#dfa87a;font-family:var(--mono)}
+  .kpi .v{font-size:16px;font-weight:800;font-family:var(--mono);margin-top:3px}
+  .kpi .d{font-size:10.5px;color:#efd2bb;margin-top:2px}
+
+  .thesis{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:18px 20px;margin-bottom:22px;box-shadow:0 1px 2px rgba(36,26,21,.04),0 8px 22px rgba(36,26,21,.05)}
+  .thesis .t{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700;margin-bottom:8px}
+  .thesis p{font-size:14.5px}
+  .thesis p b{color:var(--accent-deep)}
+
+  .nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+  .nav a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;border:1px solid var(--line);background:var(--paper);border-radius:99px;padding:5px 11px;transition:.15s}
+  .nav a:hover{color:var(--accent-deep);border-color:var(--accent)}
+
+  section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin-bottom:18px;position:relative;box-shadow:0 1px 2px rgba(36,26,21,.03),0 6px 18px rgba(36,26,21,.04)}
+  @media(min-width:640px){section{padding:26px 28px}}
+  section::before{content:"";position:absolute;top:10px;right:10px;width:14px;height:14px;border-top:2px solid var(--line);border-right:2px solid var(--line);border-radius:0 4px 0 0}
+  .sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .sec-h .no{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:#fff;background:var(--accent);border-radius:6px;padding:3px 8px}
+  .sec-h h2{font-size:19px;font-weight:800;letter-spacing:-.01em}
+  h3{font-size:15px;font-weight:700;margin:20px 0 8px;color:var(--accent-deep)}
+  h3 .tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--muted);margin-left:6px}
+  p{margin-bottom:10px}
+  ul{margin:0 0 10px 18px}
+  li{margin-bottom:5px}
+
+  .tbl-wrap{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;min-width:540px;font-size:12.5px}
+  th{background:#f5ece7;color:var(--accent-deep);font-weight:700;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:7px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl-note{font-size:11px;color:var(--muted);margin-top:6px}
+
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;vertical-align:1px}
+  .pill.conf{background:var(--accent-bg);color:var(--accent-deep)}
+  .pill.estm{background:#f2ecd7;color:var(--est)}
+  .pill.calc{background:var(--info-bg);color:var(--info)}
+  .pill.unkn{background:var(--warn-bg);color:var(--warn)}
+
+  .callout{border-radius:10px;padding:12px 14px;margin:10px 0;font-size:13.5px;border:1px solid}
+  .callout.warn{background:var(--warn-bg);border-color:#e5c6bd;color:#6e2214}
+  .callout.info{background:var(--info-bg);border-color:#ced6dd;color:#32404d}
+  .callout.good{background:var(--accent-bg);border-color:#eccdb9;color:var(--accent-deep)}
+
+  .q2{background:#f8f4f1;border:1px dashed var(--line);border-radius:10px;padding:11px 14px;margin-top:14px;font-size:13px}
+  .q2 .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:5px}
+
+  .stackbar{display:flex;height:38px;border-radius:9px;overflow:hidden;border:1px solid var(--line);margin:12px 0 6px}
+  .stackbar div{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--c)}
+
+  .tree{margin:14px 0;font-size:12.5px}
+  .tree .lv{border:1px solid var(--line);border-radius:10px;padding:9px 13px;margin-bottom:4px;background:#f8f4f1}
+  .tree .lv b{color:var(--accent-deep)}
+  .tree .d1{border-left:4px solid var(--accent)}
+  .tree .d2{margin-left:20px;border-left:4px solid #b06033}
+  .tree .conn{margin-left:12px;color:var(--accent);font-size:11px}
+
+  .chain{margin:14px 0}
+  .chain .node{background:#f8f4f1;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:13px}
+  .chain .node b{display:block;font-size:13.5px;color:var(--accent-deep)}
+  .chain .node .chk{font-family:var(--mono);font-size:10.5px;color:var(--info);margin-top:3px;display:block}
+  .chain .arrow{display:flex;justify-content:center;color:var(--accent);font-size:15px;padding:2px 0;font-weight:700}
+
+  .lev-row{margin:14px 0}
+  .lev-row .cap{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;gap:8px;flex-wrap:wrap}
+  .lev-row .cap b{font-family:var(--mono)}
+  .lev-bar{display:flex;height:30px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+  .lev-bar .cost{background:#d3c6bf;color:#4a3c34;display:flex;align-items:center;padding-left:10px;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar .profit{background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar.hatch{background:repeating-linear-gradient(45deg,#7C2D12,#7C2D12 6px,#a34a24 6px,#a34a24 12px)}
+  .lev-bar.hatch div{width:100%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;color:#fff;font-weight:700;text-align:center;padding:0 6px}
+
+  .gauge{position:relative;height:76px;margin:18px 4px 6px}
+  .gauge .ruler{position:absolute;left:0;right:0;top:38px;height:10px;border-radius:5px;background:linear-gradient(90deg,#eee5e0,#e3b391 55%,#8f3616)}
+  .gauge .tick{position:absolute;top:50px;font-family:var(--mono);font-size:10px;color:var(--muted);transform:translateX(-50%)}
+  .gauge .mk{position:absolute;top:8px;transform:translateX(-50%);text-align:center;font-family:var(--mono);font-size:10.5px;font-weight:700;white-space:nowrap}
+  .gauge .mk::after{content:"";display:block;width:2px;height:24px;margin:2px auto 0}
+  .gauge .mk.opm{color:var(--info)} .gauge .mk.opm::after{background:var(--info)}
+  .gauge .mk.inc{color:var(--accent-deep)} .gauge .mk.inc::after{background:var(--accent)}
+
+  .chart-box{border:1px solid var(--line);border-radius:12px;padding:12px 8px 6px;margin:12px 0;background:#fdfaf8}
+  .chart-box svg{width:100%;height:auto;display:block}
+
+  .risk-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0}
+  @media(min-width:640px){.risk-grid{grid-template-columns:repeat(3,1fr)}}
+  .risk{border:1px solid #e5c6bd;background:var(--warn-bg);border-radius:12px;padding:13px 14px;font-size:12.5px}
+  .risk .rt{font-weight:800;color:#6e2214;font-size:13px;margin-bottom:5px}
+  .risk .row{margin-top:5px}
+  .risk .row b{font-family:var(--mono);font-size:10.5px;color:#8c4030;letter-spacing:.06em}
+  .risk .sig{margin-top:7px;padding-top:7px;border-top:1px dashed #ddc0b6;font-family:var(--mono);font-size:11px;color:#8c4030}
+
+  footer{background:#20130c;color:#c4a894;border-radius:16px;padding:22px 22px;font-size:12px;line-height:1.7}
+  footer h4{color:#f3e2d6;font-size:13px;margin-bottom:6px;margin-top:14px}
+  footer h4:first-child{margin-top:0}
+  footer .mono{color:#cf8a55}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= 표지 ================= -->
+<div class="cover">
+  <div class="eyebrow">EQUITY DEEP-DIVE // 지주 + AI 반도체 소재 // 기준일 2026-07-15</div>
+  <h1>두산 <span class="code">KOSPI 000150</span></h1>
+  <div class="sub">엔비디아 AI 가속기에 들어가는 하이엔드 CCL을 국내에서 유일하게 만드는 회사 — 다만 그 사업이 23개 계열사를 거느린 지주회사의 '자체사업'이라는 껍질 안에 들어 있다</div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">주가 (7/8 확인치)</div><div class="v">1,330,000원</div><div class="d">고점 2,489,000 대비 −46.6%</div></div>
+    <div class="kpi"><div class="l">시가총액 (자체계산)</div><div class="v">≈19.7조</div><div class="d">6/24 22.89조에서 하락</div></div>
+    <div class="kpi"><div class="l">2025 연결 매출 / OP</div><div class="v">19.78조 / 1.06조</div><div class="d">+9.1% / +5.9%</div></div>
+    <div class="kpi"><div class="l">자체사업 OP (2025)</div><div class="v">3,282억 <span style="font-size:12px">4배↑</span></div><div class="d">1Q26 연결 OP의 55%</div></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <div class="t">핵심 투자 명제</div>
+  <p>두산을 "기계·발전 대기업 지주"로 읽으면 이 종목을 놓친다. <b>2025년 전자소재 매출이 1조 8,757억(+86%)으로 뛰며 자체사업 영업이익이 4배 넘게 증가</b>했고, <b>1Q26에는 자체사업(1,878억)이 연결 영업이익(3,408억)의 55%</b>를 차지했다. 엔비디아 블랙웰·베라루빈에 들어가는 저손실 CCL을 <b>국내 유일</b>로 공급하며 ASP는 2년 만에 38.5% 올랐다. 그런데 주가는 고점 대비 −46.6%이고 PER은 362배로 표시된다 — <b>연결 이익의 대부분이 상장 자회사의 비지배지분으로 빠져나가기 때문에 지배주주 순이익이 작게 잡히는 지주회사 특유의 착시</b>다. 이 종목의 질문은 셋이다: ①CCL 사이클이 얼마나 갈 것인가 ②<b>4조원짜리 SK실트론 인수가 성사되면 그 돈은 어디서 오는가</b> ③2024년 밥캣-로보틱스 합병 무산의 기억을 가진 시장이 이 지주에 얼마의 할인을 계속 매길 것인가.</p>
+</div>
+
+<nav class="nav">
+  <a href="#s1">01 사업</a><a href="#s2">02 수익구조</a><a href="#s3">03 트랙레코드</a><a href="#s4">04 전방·성장경로</a>
+  <a href="#s5">05 트래킹</a><a href="#s6">06 레버리지·CAPEX</a><a href="#s7">07 리스크·밸류</a><a href="#s8">08 종합</a>
+</nav>
+
+<!-- ================= 01 ================= -->
+<section id="s1">
+  <div class="sec-h"><span class="no">SEC 01</span><h2>사업의 이해 — 무엇을 만들어 누구에게 파는가</h2></div>
+
+  <p>㈜두산은 <b>23개 계열회사를 거느린 두산그룹 지주회사</b>인 동시에, <b>직접 공장을 돌리는 사업회사</b>다. 이 이중성이 분석의 출발점이다. 자체사업(별도 직원 1,671명)은 셋으로 나뉜다:</p>
+  <ul>
+    <li><b>전자BG (핵심):</b> <b>CCL(동박적층판, Copper Clad Laminate)</b> 제조. CCL은 수지·유리섬유·충진재로 만든 절연층에 동박을 적층한 판으로, <b>PCB(인쇄회로기판)의 기초 소재</b>다. AI 서버는 데이터 처리량이 폭증해 <b>고주파·고속·저손실</b> 특성을 갖춘 하이엔드 CCL이 필요하다. 1970년대 후반 PCB 사업으로 쌓은 화학·소재 기술이 뿌리.</li>
+    <li><b>디지털이노베이션BU:</b> IT 컨설팅·시스템 통합·클라우드.</li>
+    <li><b>두타몰:</b> 부동산 임대.</li>
+  </ul>
+
+  <h3>지배구조 — 이익이 어디로 흐르는가</h3>
+  <div class="tree">
+    <div class="lv d1"><b>㈜두산 (000150, 코스피)</b> — 지주 + 자체사업<br><span style="color:var(--accent)">▸ 자체사업(전자BG·DDI·두타몰) 이익은 <b>100% 두산 몫</b></span></div>
+    <div class="conn">├─ 상장 자회사 (이익은 <b>지분율만큼만</b> 귀속)</div>
+    <div class="lv d2"><b>두산에너빌리티</b>(034020) — 원전·가스터빈. 2025 신규수주 14조 7,280억(+106.5%, 사상 최대), 수주잔고 23조+ → 산하에 <b>두산밥캣</b>(건설기계)</div>
+    <div class="lv d2"><b>두산로보틱스</b>(454910) — 협동로봇. 지분 68% → PRS 매각으로 <b>50.06%</b>로 축소(2026.2 예정) · <b>두산퓨얼셀</b> — 연료전지</div>
+    <div class="conn">└─ 반도체 밸류체인: <b>두산테스나</b>(후공정 테스트) · 엔지온 · <b>SK실트론</b>(웨이퍼, 인수 협상 중)</div>
+  </div>
+  <div class="callout warn"><b>지주회사의 첫 번째 함정:</b> 연결 재무제표는 자회사 매출·이익을 <b>100% 합산</b>하지만, 그중 두산 주주 몫은 <b>지분율만큼</b>이다. 나머지는 비지배지분으로 빠진다. 그래서 <b>연결 영업이익 1조 627억(2025)에도 PER이 362배로 표시</b>되는 것이다 — 미코 리포트에서 정립한 "지주 OPM 감쇠" 원리의 대기업 버전이며, 이 종목에서는 <b>감쇠를 거치지 않는 자체사업이 가치의 핵심</b>이라는 반전이 있다.</div>
+
+  <h3>자체사업 매출 구성 <span class="tag">1Q26 확정</span></h3>
+  <div class="legend">
+    <span style="--c:#7C2D12">전자BG (CCL)</span><span style="--c:#b06033">디지털이노베이션 + 두타몰</span>
+  </div>
+  <div class="stackbar">
+    <div style="width:88%;background:#7C2D12">전자BG 6,173억 (88%)</div>
+    <div style="width:12%;background:#b06033">기타 12%</div>
+  </div>
+  <p class="fn">1Q26 자체사업 매출 7,023억 중 전자BG 6,173억 <span class="pill conf">확정</span>. <b>자체사업 = 사실상 CCL 사업</b>으로 봐도 무방하다. 전자소재 매출 추이: 2023년 7,500억 → 2024년 1조 돌파 → <b>2025년 1조 8,757억(+86%)</b> → 2026E 2조 7,000억대 → 2027E 3조 3,000억대 <span class="pill estm">업계 전망</span>.</p>
+
+  <h3>제품 — 두 종류의 CCL</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>제품</th><th>용도</th><th>현황</th></tr>
+    <tr><td><b>NWB CCL</b> (네트워크 기판소재)</td><td>AI 데이터센터 서버·네트워크 장비 — 엔비디아 AI 가속기 서버랙</td><td><b>2025년 연매출 1조원 돌파</b> <span class="pill conf">확정</span>. 블랙웰 GPU 서버용 납품이 2024.11부터 본격화</td></tr>
+    <tr><td><b>PKG CCL</b> (패키지 기판소재)</td><td>메모리 반도체 패키지 — <b>DDR5·GDDR7</b> 등 차세대 규격</td><td>차세대 메모리 수요로 성장 <span class="pill conf">확정</span></td></tr>
+    <tr><td>신규</td><td><b>광모듈</b>(옵티컬) 등</td><td>2Q26부터 신규 애플리케이션 확대 (회사 설명)</td></tr>
+  </table></div>
+
+  <h3>고객 — 직접 고객 vs 최종 수요</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>단계</th><th>주체</th><th>내용</th></tr>
+    <tr><td><b>직접 고객</b></td><td>PCB 제조사(기판업체) — CCL을 사서 PCB로 가공</td><td>두산은 <b>소재사</b>로 PCB사에 판매. 팹이나 빅테크에 직접 팔지 않는 <b>Tier-2 구조</b></td></tr>
+    <tr><td><b>최종 수요</b></td><td><b>엔비디아·아마존</b> 등 빅테크의 AI 가속기 <span class="pill conf">회사·업계 확인</span></td><td>최종 고객이 소재를 지정(spec-in)하는 구조라, <b>Tier-2임에도 최종 수요와 직결</b>된다는 점이 퍼스텍형 낙수 구조와 다른 지점</td></tr>
+  </table></div>
+
+  <h3>경쟁 구도 — 제품별 분리</h3>
+  <ul>
+    <li><b>하이엔드(저손실) CCL:</b> <b>국내 유일 공급사</b>. 글로벌 경쟁은 <b>대만 EMC(Elite Material)·일본 파나소닉</b> — 고유전·저손실 기술에서 두산이 대등 이상의 평가를 받는다는 것이 회사·업계 시각 <span class="pill estm">2차 자료</span>. 진입장벽은 <b>수지·유리섬유·충진재의 "최적 조성비율"</b>이라는 배합 노하우와 고객 인증.</li>
+    <li><b>범용 CCL:</b> 대만·중국계 다수 업체가 경쟁하는 레드오션 — 두산의 <b>하이엔드 비중 82%(2025)</b>가 이 영역을 피해간 결과다.</li>
+    <li><b>간접 추적법:</b> 대만 EMC(상장)의 월별 매출 공시가 <b>업황의 실시간 거울 지표</b>. 그 외 엔비디아 서버랙 출하량, PCB사(이수페타시스 등) 실적으로 교차 확인.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 엔비디아향 CCL의 실질 점유율과 EMC·파나소닉과의 배분 구조는? (독점인가 복수 벤더인가)<br>
+  ② PKG CCL(메모리향)의 매출 비중과 성장률 — NWB(AI 서버)에 대한 의존도를 낮출 수 있는가?</div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="s2">
+  <div class="sec-h"><span class="no">SEC 02</span><h2>수익 구조 — 돈을 어떻게 버는가</h2></div>
+
+  <h3>손익 공식 — 두 층으로 쓴다</h3>
+  <div class="callout info mono" style="font-size:13px">
+    [자체사업] 매출 = CCL 출하량(㎡) × ASP(하이엔드 믹스에 연동) ; 이익 = 매출 × OPM(2025 18.6% → 1Q26 26.7%)<br>
+    [지주] 두산 주주 귀속 = <b>자체사업 이익 × 100%</b> + Σ(자회사 이익 × 지분율) − 지주 비용 − 이자
+  </div>
+  <p>두산 분석의 핵심은 <b>이 두 줄을 절대 섞지 않는 것</b>이다. 연결 손익계산서 한 장으로 보면 매출 19.8조·영업이익 1조의 거대 기업이지만, <b>주주에게 온전히 오는 것은 자체사업 3,282억(2025)뿐</b>이고 나머지는 지분율로 나뉜다.</p>
+
+  <h3>가격 결정 구조 판정</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>항목</th><th>분류</th><th>원가 전가</th></tr>
+    <tr><td><b>하이엔드 CCL 판가</b></td><td><b>고객 인증 기반 협상형 + 믹스 상향</b> — 스팟도 빈티지도 아님</td><td><b>전가력 높음</b>. 회사 자료가 "판가 전가력"을 명시했고, <b>ASP가 2024 3Q 49,676원 → 2026 1Q 68,799원(+38.5%)</b>으로 실증됐다. 동박·유리섬유 등 원재료 상승분을 판가에 반영 가능</td></tr>
+    <tr><td>범용 CCL</td><td>경쟁 노출 — 판가 압력</td><td>제한적. 그래서 <b>믹스를 하이엔드로 옮기는 것 자체가 방어 수단</b>(73%→82%)</td></tr>
+    <tr><td>자회사(에너빌리티 등)</td><td>수주 시 고정(빈티지형) — 발전 플랜트 EPC</td><td>전가 불가. 두산밥캣은 <b>미국 관세</b>라는 정책 원가에 노출(2025 수익성 급락)</td></tr>
+  </table></div>
+  <div class="callout good"><b>구조 판정:</b> ASP +38.5%는 <b>단순 인상이 아니라 믹스 상향(하이엔드 73→82%)의 결과</b>다. 즉 이 사업의 가격 결정력은 "값을 올리는 힘"이 아니라 <b>"더 비싼 제품을 만들 수 있는 기술력"</b>에서 나온다 — 이것이 지속되려면 엔비디아의 차세대 플랫폼(베라루빈)에 계속 스펙인되어야 한다.</div>
+
+  <h3>이익 기여 분해 — 매출 비중과 이익 비중의 극단적 괴리</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구분</th><th class="num">1Q26 매출</th><th class="num">1Q26 영업이익</th><th class="num">비중</th><th>귀속</th></tr>
+    <tr><td><b>자체사업</b> (전자BG 중심)</td><td class="num">7,023억</td><td class="num"><b>1,878억</b></td><td class="num">매출 14% / <b>이익 55%</b></td><td><b>100% 두산 주주</b></td></tr>
+    <tr><td>자회사 전체 (에너빌리티·밥캣·퓨얼셀·로보틱스 등)</td><td class="num calc">~4조 3,580억</td><td class="num calc">~1,530억</td><td class="num">매출 86% / 이익 45%</td><td>지분율만큼 <span class="pill unkn">지분율 미확인</span></td></tr>
+    <tr><td><b>연결 합계</b></td><td class="num"><b>5조 603억</b></td><td class="num"><b>3,408억</b></td><td class="num">OPM 6.7%</td><td>—</td></tr>
+  </table></div>
+  <p class="tbl-note"><span class="pill calc">역산</span> 자회사 항목은 연결−자체사업. 내부거래 제거 효과가 섞여 있어 정밀치가 아니다. <b>핵심은 방향</b>: <b>매출의 14%가 이익의 55%를 만들고, 그 이익은 희석 없이 100% 주주 몫</b>이다. 시리즈에서 "매출 20%가 이익 70%"의 전형으로 다뤄온 구조가 여기서 가장 극단적으로 나타난다.</p>
+
+  <h3>마진의 원천(+)과 훼손(−)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>원천 (+)</th><th>훼손 (−)</th></tr>
+    <tr><td>하이엔드 믹스 상향 → ASP +38.5%·OPM 18.6%→26.7%</td><td><b>엔비디아 단일 수요 의존</b> — AI 투자 사이클에 이익이 직결</td></tr>
+    <tr><td>국내 유일·글로벌 3강 지위 → 판가 전가력</td><td>자회사 부진이 연결을 갉음: 밥캣 <b>미국 관세</b>, 퓨얼셀·로보틱스 <b>대규모 적자</b>(2025)</td></tr>
+    <tr><td>자체사업 이익은 <b>비지배지분 희석 없음</b></td><td><b>SK실트론 4조원대 인수</b> 시 차입·희석 부담 (7절)</td></tr>
+    <tr><td>에너빌리티 수주잔고 23조 — 자회사 가치의 하방 지지</td><td>지주 할인 + 2024년 합병 무산이 남긴 <b>거버넌스 신뢰 비용</b></td></tr>
+  </table></div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 전자BG 단독 영업이익률은 몇 %인가? (자체사업 26.7%에서 DDI·두타몰을 걷어내면)<br>
+  ② 두산의 두산에너빌리티·밥캣·퓨얼셀 지분율은 각각 몇 %인가? — SOTP의 필수 입력값</div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="s3">
+  <div class="sec-h"><span class="no">SEC 03</span><h2>실적 트랙레코드</h2></div>
+
+  <h3>연결 + 자체사업 병기 (억원)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>기간</th><th class="num">연결 매출</th><th class="num">연결 OP</th><th class="num">자체사업 OP</th><th class="num">전자소재 매출</th><th>표기</th></tr>
+    <tr><td>2023</td><td class="num">미확인</td><td class="num">미확인</td><td class="num">미확인</td><td class="num">7,500</td><td><span class="pill estm">업계 자료</span></td></tr>
+    <tr><td>2024</td><td class="num calc">~181,340</td><td class="num calc">~10,035</td><td class="num calc">~820</td><td class="num">10,090</td><td><span class="pill calc">역산</span> 2025 증감률로부터. 전자소재 1조 돌파</td></tr>
+    <tr><td><b>2025</b></td><td class="num"><b>197,841</b><br><span style="font-size:11px">+9.1%</span></td><td class="num"><b>10,627</b><br><span style="font-size:11px">+5.9%</span></td><td class="num"><b>3,282</b><br><span class="pos" style="font-size:11px">4배↑</span></td><td class="num"><b>18,757</b><br><span class="pos" style="font-size:11px">+86%</span></td><td><span class="pill conf">확정</span> 자체사업 OPM 18.6%·하이엔드 82%</td></tr>
+    <tr><td><b>1Q26</b></td><td class="num"><b>50,603</b><br><span class="pos" style="font-size:11px">+17.7%</span></td><td class="num"><b>3,408</b><br><span class="pos" style="font-size:11px">+71.7%</span></td><td class="num"><b>1,878</b><br><span class="pos" style="font-size:11px">+45~55%</span></td><td class="num">6,173<br><span class="pos" style="font-size:11px">+53%</span></td><td><span class="pill conf">확정</span> 순이익 1,015억(+799%) · 자체 OPM 26.7%</td></tr>
+    <tr><td>1H26E</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num est">12,770<br><span style="font-size:11px">+45.2%</span></td><td><span class="pill estm">회사 가이던스</span> 고부가 비중 81%</td></tr>
+    <tr><td>2Q26E</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num est">6,510 / OP 2,000</td><td><span class="pill estm">메리츠 6/23</span> +36.7% / +46.8%, OPM 30.7%</td></tr>
+  </table></div>
+  <p class="tbl-note">⚠ <b>자료 간 정합 주의:</b> 2025년 "자체사업 OPM 18.6%"와 "영업이익 3,282억"을 조합하면 자체사업 매출 ≈1조 7,645억이 나오는데, 전자소재 매출만 1조 8,757억이라 <b>산술적으로 맞지 않는다</b>. 18.6%가 전자BG 단독 기준이거나 특정 분기 기준일 가능성 <span class="pill unkn">사업보고서 원문 확인 필요</span>. 본 리포트는 <b>영업이익 절대액(3,282억)</b>을 신뢰 축으로 삼았다.</p>
+
+  <h3>증익의 질 분해</h3>
+  <ul>
+    <li><b>구조적(+) — 자체사업:</b> 물량(엔비디아 서버랙 확대) × 믹스(하이엔드 73→82%) × ASP(+38.5%)의 <b>삼중 상승</b>. 일회성 요소가 개입할 여지가 적은 <b>순수 사업 성장</b>이다. 2025년 자체사업 OP 4배는 이 종목에서 가장 신뢰할 만한 숫자.</li>
+    <li><b>구조적(−) — 자회사:</b> 2025년 두산에너빌리티 연결은 <b>영업이익 −25.0%</b>. 부문별로는 에너빌리티 본체가 +24.1%(수주 사상 최대)였으나 <b>두산밥캣이 미국 관세로 수익성 급락</b>, 퓨얼셀·로보틱스는 대규모 적자. 즉 <b>연결 OP가 +5.9%에 그친 것은 자체사업이 4배 뛴 것을 자회사가 상쇄했기 때문</b>이다.</li>
+    <li><b>1Q26의 반전:</b> 연결 OP +71.7%는 자체사업(+45~55%)에 더해 <b>두산에너빌리티의 수익성 회복</b>이 겹친 결과(BNK "쌍끌이"). 자회사 부진이 걷히기 시작했다는 첫 신호.</li>
+    <li><b>순이익-영업이익 괴리 — 판정:</b> 1Q26 연결 OP 3,408억에 순이익 1,015억(+799%). PER 362배·EPS 3,760~4,230원은 <b>비지배지분 공제 후 지배주주 순이익이 작기 때문</b>이며, 여기에 자회사 적자·금융비용이 겹친다. <b>따라서 이 종목은 PER로 보면 안 되고, ①자체사업 영업이익 ②자회사 지분가치의 SOTP(부분합산)로 봐야 한다</b>. 하나마이크론에서 세운 "지배주주 조정이익" 원리의 확장이다.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 2025년 지배주주 순이익 절대액은 얼마이며, 비지배지분이 가져간 몫은?<br>
+  ② 두산밥캣 관세 영향의 크기와 2026년 완화 경로는? (연결 이익 회복의 최대 변수)</div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="s4">
+  <div class="sec-h"><span class="no">SEC 04</span><h2>전방산업과 성장 경로</h2></div>
+
+  <div class="callout good"><b>팩터 선언:</b> 두산 자체사업의 팩터는 <b>"AI 가속기 서버랙 출하량 × 기판 층수·소재 사양 상향"</b>이다. 이는 시리즈의 메모리 사이클 종목들(하나머티·티에스이·주성)과 <b>완전히 다른 팩터</b>다 — 메모리 가격이 아니라 <b>엔비디아의 GPU 플랫폼 로드맵</b>이 수요를 결정한다. 시리즈 내에서 <b>AI 연산(로직) 사이드에 직접 노출된 유일한 종목</b>이라 분산 가치가 크다. 여기에 자회사 축(원전·가스터빈·건설기계)이라는 <b>완전히 이질적인 두 번째 팩터</b>가 얹혀 있어, 한 종목이 두 개의 무관한 사이클을 동시에 탄다.</div>
+
+  <h3>인과 사슬 — 자체사업(CCL)</h3>
+  <div class="chain">
+    <div class="node"><b>① 빅테크 AI 인프라 투자 → 엔비디아 서버랙 출하 급증</b>2025년 약 28,965대 → 2026년 약 85,000대 전망 (메리츠)<span class="chk">선행지표: 엔비디아 실적·가이던스, 하이퍼스케일러 CAPEX / 시차: 1~2분기 / 방향: 급증</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>② 플랫폼 세대교체 → 기판 사양 상향 (콘텐츠 증가)</b>컴퓨팅 트레이 기판 <b>층수 22→26층</b>, HVLP4 동박 적용 — 서버 1대당 CCL 사용량·단가 동시 상승<span class="chk">확인처: 엔비디아 플랫폼 발표(블랙웰→베라루빈), 기판업체 사양 뉴스</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>③ PCB사 발주 → 두산 CCL 출하</b>베라루빈향 제품 <b>2Q26부터 일부 출하 시작</b> 예상 (메리츠 1월)<span class="chk">확인처: 분기 실적의 전자BG 매출·하이엔드 비중·ASP / 시차: 1분기 내외</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>④ 매출·이익 — 이미 실측 중</b>1Q26 전자BG 6,173억(+53%) · 1H26E 1조 2,770억(+45.2%) · 2026E 2.7조<span class="chk">확인: <b>7/24 2Q26 실적</b>이 베라루빈 출하 개시의 첫 검증</span></div>
+  </div>
+
+  <h3>병행 트랙 — 자회사(원전·가스터빈)</h3>
+  <p>두산에너빌리티는 <b>2025년 신규수주 14조 7,280억(+106.5%, 사상 최대)</b>, 수주잔고 23조원 이상을 확보했다. 체코 두코바니 원전, 북미 데이터센터향 가스터빈, 복합 EPC가 집중된 결과다. <b>흥미로운 연결점</b>: AI 데이터센터는 CCL(두산 자체사업) 수요와 <b>전력 수요(가스터빈·원전 → 두산에너빌리티)</b>를 동시에 만든다 — 한 종목 안에서 <b>AI의 소재 측면과 전력 측면에 동시 노출</b>되는 드문 구조다. 다만 자회사 이익은 지분율만큼만 온다는 점을 잊지 말 것.</p>
+
+  <h3>수주·시차 체크</h3>
+  <ul>
+    <li><b>자체사업(CCL):</b> 수주잔고 개념 약함 — 반복 발주 소재. 시차 짧음(1분기 내외). <b>"잔고" 역할을 하는 것은 엔비디아 플랫폼 로드맵</b>이다.</li>
+    <li><b>자회사:</b> 진짜 수주산업. 잔고 23조 = 에너빌리티 부문 매출(7조 8,813억)의 <b>약 3년치</b>. 수주→매출 시차 2~4년이라 <b>2025년 수주 폭증의 메아리는 2027~2029년 매출</b>에 나타난다.</li>
+    <li><b>ASP 빈티지:</b> CCL은 협상형이라 빈티지 왜곡 작음. 대신 <b>플랫폼 세대별 ASP 계단</b>이 실질적 빈티지 지도 역할 — 블랙웰 세대 대비 베라루빈 세대의 단가가 관전점.</li>
+    <li><b>전방 교차 검증:</b> <b>엔비디아</b>(상장)의 실적·플랫폼 발표가 최상위 지표. <b>대만 EMC</b>(경쟁사, 월별 매출 공시)가 업황의 실시간 거울. 단 AI CAPEX 전망은 낙관 편향 전례가 있으므로 <b>실제 서버랙 출하·기판업체 가동률</b>을 후행이지만 확실한 지표로 병행할 것.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 베라루빈 세대의 CCL 콘텐츠(대당 사용량 × 단가)는 블랙웰 대비 몇 배인가?<br>
+  ② 대만 EMC의 월별 매출 성장률과 두산 전자BG 분기 매출의 상관을 정량화할 수 있는가?</div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="s5">
+  <div class="sec-h"><span class="no">SEC 05</span><h2>트래킹 지표</h2></div>
+
+  <div class="callout info"><b>리스크 관리 유형 판정: 혼합형(이벤트 비중 높음).</b> 자체사업은 지표 추세형(엔비디아 출하·EMC 매출)이지만, 2026년 주가를 지배하는 것은 <b>이벤트</b>다 — ①<b>SK실트론 인수 계약 확정</b>(4조원대) ②7/24 실적 ③지배구조 관련 이사회 결의. 특히 SK실트론은 <b>성사·무산 어느 쪽이든 주가에 큰 방향성</b>을 주므로 캘린더 관리가 필수다.</div>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>지표</th><th>선행성 이유</th><th>확인처</th><th>주기</th><th>무료</th><th>현재 수치·방향 (조회 시점)</th></tr>
+    <tr><td><b>엔비디아 실적·플랫폼 로드맵</b></td><td>CCL 수요의 원천 — 서버랙 출하량이 곧 매출</td><td>엔비디아 IR (상장)</td><td>분기</td><td>○</td><td>서버랙 2025 28,965대 → 2026E 85,000대 (메리츠 1월 인용)</td></tr>
+    <tr><td><b>대만 EMC 월별 매출</b></td><td>동일 업황을 공유하는 경쟁사 — <b>실시간 거울 지표</b></td><td>대만 증시 공시</td><td>월간</td><td>○</td><td><span class="pill unkn">최신 미확인 — 확인 시 가장 빠른 선행 신호</span></td></tr>
+    <tr><td><b>전자BG 분기 매출·하이엔드 비중·ASP</b></td><td>믹스 상향의 직접 계측 (이익의 본체)</td><td>두산 IR·실적발표</td><td>분기</td><td>○</td><td>1Q26 6,173억(+53%), 하이엔드 82%(2025), ASP 68,799원(+38.5% vs 24.3Q)</td></tr>
+    <tr><td><b>SK실트론 협상 진행</b></td><td>4조원대 자금 소요 — 재무구조·희석의 분기점</td><td>공시·언론</td><td>수시</td><td>○</td><td>2025.12.17 우선협상대상자 선정(지분 70.6%, 4조원대). <b>협상 장기화 중</b> — SK측 매각 주저</td></tr>
+    <tr><td><b>두산에너빌리티 실적·수주</b></td><td>자회사 지분가치의 핵심 — 연결 이익 회복 여부</td><td>에너빌리티 공시 (상장)</td><td>분기</td><td>○</td><td>2025 신규수주 14.7조(+106.5%), 잔고 23조+. 단 연결 OP −25.0%(밥캣 관세)</td></tr>
+    <tr><td><b>두산밥캣 관세·북미 수요</b></td><td>연결 이익 회복의 최대 변수</td><td>밥캣 공시 (상장)</td><td>분기</td><td>○</td><td>1Q26 북미 주택·농업·조경 수요 확대로 개선 (FnGuide)</td></tr>
+    <tr><td><b>지배구조 관련 이사회 결의</b></td><td>2024년 합병 무산 전례 — 재추진 시 주주가치 변동</td><td>DART</td><td>수시</td><td>○</td><td>2024 밥캣-로보틱스 합병 무산. 2026.2 로보틱스 지분 68%→50.06% PRS 매각</td></tr>
+  </table></div>
+
+  <h3>실전 체크리스트 (무료)</h3>
+  <ul>
+    <li><b>주간:</b> ① DART 두산·에너빌리티·로보틱스 공시 동시 스캔(인수·지분·합병) ② SK실트론 협상 보도 ③ 엔비디아·AI CAPEX 헤드라인</li>
+    <li><b>월간:</b> ① <b>대만 EMC 월매출</b>(가장 빠른 업황 신호) ② AI 서버 출하·기판 사양 뉴스 ③ 목표주가 컨센 방향</li>
+    <li><b>분기:</b> ① <b>7/24 실적</b> — 전자BG 매출·하이엔드 비중·ASP 3종 ② 자체사업 OP vs 연결 OP 비중 ③ 에너빌리티·밥캣 실적 ④ 순차입금·이자비용(SK실트론 대비)</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① PRS(주가수익스왑) 계약의 정산 구조 — 로보틱스 주가 하락 시 두산이 부담하는 손실은?<br>
+  ② 두산 별도 기준 순차입금과 SK실트론 인수 시 추가 조달 필요액은?</div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="s6">
+  <div class="sec-h"><span class="no">SEC 06</span><h2>영업 레버리지와 CAPEX</h2></div>
+
+  <h3>고정비/변동비 구조 <span class="tag">자체 추정</span></h3>
+  <p>CCL은 <b>배합·함침·적층 설비의 감가상각 + 인력이 고정비</b>, 동박·유리섬유·수지가 변동비인 <b>장치형 소재업</b>이다. 다만 이 사업의 이익 증가는 고정비 희석보다 <b>믹스·ASP 상승</b>에서 나온 비중이 크다 — 하이엔드 비중이 73%→82%로 오르며 <b>같은 물량에서도 매출과 마진이 동시에 올라가는</b> 구조였기 때문이다. 자체사업 OPM 궤적(2024 추정 한 자릿수 → 2025 18.6% → 1Q26 26.7%)이 그 결과다.</p>
+
+  <h3>증분이익률 실측 — 자체사업 기준</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구간</th><th class="num">Δ매출 (억)</th><th class="num">ΔOP (억)</th><th class="num">증분이익률</th><th>비고</th></tr>
+    <tr><td>2024→2025 (자체사업)</td><td class="num calc">~+5,645</td><td class="num">+2,462</td><td class="num pos"><b>~43.6%</b></td><td><span class="pill calc">역산</span> OP는 "4배 증가"에서 역산, 매출은 OPM 18.6%로 역산 — <b>오차 큼</b></td></tr>
+    <tr><td>2024→2025 (전자소재 매출 기준)</td><td class="num">+8,667</td><td class="num">+2,462</td><td class="num">28.4%</td><td><span class="pill calc">역산</span> 분모를 전자소재 매출로 잡은 보수적 계산</td></tr>
+    <tr><td>1Q25→1Q26 (자체사업)</td><td class="num calc">~+2,100</td><td class="num calc">~+600</td><td class="num">~28.6%</td><td><span class="pill calc">역산</span> 전자BG +53%·자체 OP +45~55%에서 추정</td></tr>
+    <tr><td>2Q26E (메리츠 전자BG)</td><td class="num est">+1,748</td><td class="num est">+638</td><td class="num est">36.5%</td><td><span class="pill estm">시장 추정</span> 매출 6,510억·OP 2,000억 전망 기준</td></tr>
+  </table></div>
+  <p class="tbl-note"><b>대칭성·일관성 검사:</b> 계산 방식에 따라 28~44%로 흩어지나 <b>세 구간 모두 양(+)이고 30% 안팎에 수렴</b>한다 → 구조로 신뢰 가능. 본 리포트는 보수적으로 <b>증분 공헌이익률 ~30%</b>를 채택한다. 매출 감소 구간은 없었고(5분기 연속 성장), 이익 증분이 100을 넘는 구간도 없다.</p>
+
+  <h3>시각화 ① — 증분 매출 100원의 여정 (자체사업)</h3>
+  <div class="lev-row">
+    <div class="cap"><span>2024→2025 (전자소재 매출 기준·보수)</span><b>증분 100원 중 이익 28.4원</b></div>
+    <div class="lev-bar"><div class="cost" style="width:71.6%">비용 71.6</div><div class="profit" style="width:28.4%">28.4</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>2024→2025 (자체사업 매출 기준·낙관)</span><b>증분 100원 중 이익 43.6원 (빗금: 분모 추정 오차)</b></div>
+    <div class="lev-bar hatch"><div>같은 이익 증분(+2,462억)에 분모를 무엇으로 잡느냐로 28~44% — 자체사업 매출 미공시가 원인</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>1Q25→1Q26 (자체사업)</span><b>증분 100원 중 이익 ~28.6원</b></div>
+    <div class="lev-bar"><div class="cost" style="width:71.4%">비용 71.4</div><div class="profit" style="width:28.6%">28.6</div></div>
+  </div>
+  <p class="fn">시리즈의 다른 소재주(하나머티 36%, 코미코 정상기 39.7%)와 비슷한 대역이다. 다만 두산은 <b>OPM이 이미 26.7%로 높아</b>, 같은 증분율에서도 배율(아래)이 낮게 나온다 — 이익의 안정성이 높다는 뜻이자, 여기서부터의 상방은 <b>레버리지가 아니라 물량·ASP</b>가 만든다는 뜻이다.</p>
+
+  <h3>시각화 ② — 배율 게이지 (자체사업)</h3>
+  <div class="gauge">
+    <div class="ruler"></div>
+    <div class="mk opm" style="left:37.2%">2025 자체 OPM 18.6%</div>
+    <div class="mk inc" style="left:60%">증분 공헌이익률 ~30%</div>
+    <div class="tick" style="left:0%">0%</div><div class="tick" style="left:20%">10%</div><div class="tick" style="left:40%">20%</div><div class="tick" style="left:60%">30%</div><div class="tick" style="left:80%">40%</div><div class="tick" style="left:100%">50%</div>
+  </div>
+  <div class="callout info"><b>배율 = 30 ÷ 18.6 ≈ 1.6배</b>(2025 기준). 1Q26 OPM 26.7% 기준으로는 <b>1.1배</b>로 더 낮아진다 — <b>"OPM이 오를수록 배율은 자연 감소한다"는 원리가 시리즈에서 가장 뚜렷하게 나타난 사례</b>다. 주성(5.9배)·티에스이(3.6배)·하나머티(2.0배)와 비교하면 두산 자체사업은 <b>이미 레버리지 구간을 통과해 고마진 정상 상태에 진입</b>했다. 따라서 향후 이익 증가는 <b>거의 전적으로 물량(엔비디아 출하)과 ASP(플랫폼 세대교체)</b>에 달려 있으며, 이는 <b>상방의 질은 좋지만 예측이 외부 변수에 종속</b>된다는 뜻이다.</div>
+
+  <h3>시나리오 <span class="tag">전자BG 기준 · 증분율 30% 적용</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>시나리오</th><th class="num">전자BG 매출</th><th class="num">추정 OP</th><th class="num">OPM</th><th>비고</th></tr>
+    <tr><td>2025 실적</td><td class="num">18,757</td><td class="num calc">~3,282<span style="font-size:10px">(자체사업)</span></td><td class="num">17.5%</td><td>기준점</td></tr>
+    <tr><td>+10%</td><td class="num">20,633</td><td class="num est">~3,845</td><td class="num est">18.6%</td><td>OP +17% — 배율 1.6배 정합</td></tr>
+    <tr><td>+20%</td><td class="num">22,508</td><td class="num est">~4,407</td><td class="num est">19.6%</td><td>OP +34%</td></tr>
+    <tr><td><b>업계 전망 2026E (+44%)</b></td><td class="num est">27,000</td><td class="num est">~5,750</td><td class="num est">21.3%</td><td>보수적 30% 증분율 적용 시. <b>메리츠 2Q OPM 30.7% 전망이 맞으면 OP 7,000~8,000억까지 가능</b> — 상·하단 폭이 큼</td></tr>
+    <tr><td>2027E</td><td class="num est">33,000</td><td class="num est">~7,550</td><td class="num est">22.9%</td><td><span class="pill estm">업계 전망</span> 매출 기준</td></tr>
+  </table></div>
+  <p>레버리지는 <b>서버랙 출하량 × 세대별 콘텐츠(층수·사양) × 하이엔드 믹스 × 신규 애플리케이션(광모듈)</b>의 4중 곱. 단일 변수가 아니며, 특히 <b>②세대별 콘텐츠는 두산이 통제할 수 없는 엔비디아의 설계 결정</b>이다.</p>
+
+  <h3>CAPEX — 태국 신공장</h3>
+  <p><b>2026.4 태국 CCL 생산거점 구축 발표</b> <span class="pill conf">확정</span>(회사 보도자료) — AI 데이터센터 수요 확대에 선제 대응 및 고객 다변화 목적. <b>투자액·CAPA·가동 시점은 이번 검색에서 확인되지 않음</b> <span class="pill unkn">미확인 — IR 확인 필요</span>. 프레임 판정 <span class="pill estm">자체 추정</span>: 하이엔드 CCL은 OPM 25~30%대의 고마진 사업이라 정상 가동 시 <b>payback 3~5년·ROIC 두 자릿수 중반</b>이 가능하나, 코미코 리포트에서 확인했듯 <b>신규 해외 거점은 가동 전까지 감가상각만 발생</b>한다. <b>태국 공장 가동 시점과 2027년 감가상각 계단을 컨센서스가 반영했는지 확인이 필요</b>하다.</p>
+  <div class="callout warn"><b>진짜 CAPEX는 따로 있다 — SK실트론 4조원.</b> 태국 공장보다 훨씬 큰 자금 소요가 <b>인수</b>다. 재원 마련을 위해 이미 <b>두산로보틱스 지분 1,170만주를 PRS(주가수익스왑)로 9,477억에 처분</b>(주당 81,000원, 3년, 처분예정일 2026.2.27)해 지분율을 68%→50.06%로 낮췄다. <b>4조원대 거래에 1조도 안 되는 재원</b>이므로, 성사 시 <b>대규모 차입 또는 추가 자산 매각·희석</b>이 불가피하다(7절).</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 태국 공장 투자액·CAPA·가동 시점과 감가상각 개시 시기는?<br>
+  ② SK실트론 인수 자금 조달 계획의 구체안(차입 vs 지분 매각 vs 증자)은 공개된 적 있는가?</div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="s7">
+  <div class="sec-h"><span class="no">SEC 07</span><h2>리스크와 밸류에이션</h2></div>
+
+  <h3>실적 리스크 — 훼손 시나리오 3개</h3>
+  <div class="risk-grid">
+    <div class="risk"><div class="rt">① AI CAPEX 사이클 둔화</div>
+      <div class="row"><b>원인</b> — 빅테크 AI 투자 감속, 엔비디아 서버랙 출하 전망(8.5만대) 미달</div>
+      <div class="row"><b>영향</b> — 자체사업 이익 직격. 연결 OP의 55%가 여기서 나오므로 그룹 전체 이익 하향</div>
+      <div class="sig">⚠ 조기경보 — 대만 EMC 월매출 둔화, 엔비디아 가이던스 하향, 전자BG 분기 매출 QoQ 감소 · 확인처: EMC 공시·엔비디아 IR · 대응: 축소</div></div>
+    <div class="risk"><div class="rt">② 스펙인 탈락·경쟁 심화</div>
+      <div class="row"><b>원인</b> — 차세대 플랫폼(베라루빈)에서 EMC·파나소닉에 물량 잠식, 하이엔드 믹스 하락</div>
+      <div class="row"><b>영향</b> — ASP 상승 논리 붕괴, OPM 26.7%→10%대 회귀</div>
+      <div class="sig">⚠ 조기경보 — 하이엔드 비중 82% 하회, ASP 하락 전환 · 확인처: 분기 실적발표 자료 · 대응: 이탈 검토</div></div>
+    <div class="risk"><div class="rt">③ SK실트론 인수의 재무 부담</div>
+      <div class="row"><b>원인</b> — 4조원대 인수 성사 시 차입 급증·희석. 반대로 무산 시 성장 스토리 훼손</div>
+      <div class="row"><b>영향</b> — 이자비용 확대로 지배주주 순이익 추가 잠식, 또는 "승자의 저주"</div>
+      <div class="sig">⚠ 조기경보 — 조달 구조 공시, 순차입금 급증, 추가 자산 매각 · 확인처: DART · 대응: 조건 확인 후 판단</div></div>
+  </div>
+
+  <h3>비영업 리스크 — 이 종목의 본론</h3>
+  <ul>
+    <li><b>거버넌스 전례 — 2024년 합병 무산:</b> 두산은 <b>두산로보틱스와 두산밥캣의 합병</b>을 뼈대로 한 지배구조 개편을 추진했으나, <b>2대 주주 국민연금(6.2%)이 주주가치 훼손을 이유로 반대</b>하고 일반주주 반발이 거세지며 <b>무산</b>됐다. <b>이 사건의 잔여 효과가 지금의 지주 할인에 반영돼 있다</b>고 보는 것이 합리적이며, 시리즈 관점에서는 퍼스텍(유콘 지분 계열 이동)에서 정립한 <b>"자산 이동형 그룹 리스크"의 대기업 버전</b>이다. 재추진 가능성을 상수로 감시할 것.</li>
+    <li><b>PRS를 통한 지분 매각:</b> 두산로보틱스 1,170만주를 <b>주가수익스왑</b>으로 처분(9,477억) — 형식은 매각이나 <b>3년 후 정산 구조라 주가 하락 시 두산이 손실을 부담</b>할 수 있는 파생 계약이다 <span class="pill estm">계약 상세 미확인</span>. 회계상 지분율은 50.06%로 낮아지지만 경제적 위험은 완전히 이전되지 않았을 가능성 — <b>구조 확인 필요</b>.</li>
+    <li><b>SK실트론 딜 구조:</b> 대상은 SK㈜ 보유 <b>70.6%</b>, 거래규모 <b>4조원대</b>(기업가치 ~5조). <b>최태원 회장 개인 보유 29.4%는 협상 범위 밖</b>이라 인수 후에도 잔여 지분 이슈가 남는다. 반도체 슈퍼사이클로 <b>SK측이 매각을 주저</b>하며 협상이 장기화 중 — 가격 상승 압력.</li>
+    <li><b>자회사 리스크 전이:</b> 두산퓨얼셀·두산로보틱스의 <b>대규모 적자</b>(2025), 두산밥캣의 <b>미국 관세</b> 노출이 연결 이익과 자회사 지분가치를 동시에 훼손.</li>
+    <li><b>CB·BW·증자:</b> 최근 희석성 발행 <span class="pill unkn">미확인 — DART 재확인</span>. 4조원 인수 국면이라 <b>가능성을 상수로 감시</b>.</li>
+  </ul>
+
+  <h3>밸류에이션 — PER이 아니라 SOTP로 <span class="tag">웹 확인, 시점 병기</span></h3>
+  <div class="chart-box">
+    <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,Menlo,monospace">
+      <line x1="70" y1="15" x2="690" y2="15" stroke="#f0e8e4"/>
+      <line x1="70" y1="15" x2="70" y2="205" stroke="#e0d7d2"/>
+      <line x1="70" y1="205" x2="690" y2="205" stroke="#e0d7d2"/>
+      <g font-size="10" fill="#7a6a62">
+        <text x="8" y="19">250만</text>
+        <text x="8" y="72">200만</text><line x1="70" y1="68" x2="690" y2="68" stroke="#f0e8e4"/>
+        <text x="8" y="125">150만</text><line x1="70" y1="121" x2="690" y2="121" stroke="#f0e8e4"/>
+        <text x="8" y="178">100만</text><line x1="70" y1="174" x2="690" y2="174" stroke="#f0e8e4"/>
+      </g>
+      <!-- y = 205 - (price-500000)/2000000*190 ; 468,000→208 ; 2,489,000→16.1 -->
+      <polyline fill="none" stroke="#7C2D12" stroke-width="2.5"
+        points="95,208 175,155 265,60 340,16.1 420,72 500,88 570,116 650,136.5"/>
+      <g font-size="10">
+        <circle cx="95" cy="208" r="3.5" fill="#7C2D12"/><text x="74" y="224" fill="#7a6a62">52주 저점 468,000</text>
+        <circle cx="340" cy="16.1" r="4.5" fill="#9a3a2a"/><text x="288" y="12" fill="#9a3a2a" font-weight="700">52주 고점 2,489,000</text>
+        <circle cx="500" cy="88" r="3.5" fill="#7C2D12"/><text x="462" y="78" fill="#7a6a62">6/22 1,631,000</text>
+        <circle cx="570" cy="116" r="3.5" fill="#7C2D12"/><text x="534" y="107" fill="#7a6a62">6/24 1,545,000</text>
+        <circle cx="650" cy="136.5" r="5" fill="#521806"/><text x="576" y="158" fill="#521806" font-weight="700">7/8 1,330,000</text>
+      </g>
+      <line x1="70" y1="50.6" x2="690" y2="50.6" stroke="#7a6a2a" stroke-dasharray="4 4"/>
+      <text x="74" y="47" font-size="10" fill="#7a6a2a">컨센 평균 목표가 2,125,000 (6/24) · 메리츠 2,600,000</text>
+      <line x1="70" y1="138.5" x2="690" y2="138.5" stroke="#41505f" stroke-dasharray="3 5"/>
+      <text x="450" y="151" font-size="10" fill="#41505f">최저 목표가 1,200,000</text>
+      <text x="70" y="243" font-size="10" fill="#7a6a62">경로는 확인된 점의 개략 연결(실측 아님). 고점·저점 시점은 미확인. 7/8 이후 시세 미확인 — 열람 시 재확인 필수.</text>
+    </svg>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>항목</th><th>수치</th><th>확인 시점·비고</th></tr>
+    <tr><td>주가 / 시가총액</td><td class="num">1,330,000원 / ≈19.7조</td><td>2026.7.8 (피플로/KRX 인용). 시총은 6/24 22.89조@1,545,000에서 역산한 ~1,481만주 기준 <span class="pill calc">자체계산</span>. <b>7/8 이후 미확인</b></td></tr>
+    <tr><td>52주 밴드</td><td class="num">468,000 ~ 2,489,000</td><td>고점比 <b>−46.6%</b>, 저점比 +184.2%. 이동평균 <b>역배열</b>(5일 &lt; 20일 &lt; 60일) — 하락 추세 진행 중</td></tr>
+    <tr><td>PER / PBR</td><td class="num">362.6배 / 12.6배</td><td>2026.6.10 기준. <b>지주 착시 — 밸류 판단에 사용 불가</b>(3절). PBR 12.6배는 지주 순자산 대비 과대해 보이나 자체사업 성장이 반영된 결과</td></tr>
+    <tr><td>자체사업 기준 배수</td><td class="num">시총/2025 자체 OP ≈ <b>60배</b><br>시총/2026E 자체 OP ≈ 25~34배</td><td><span class="pill calc">자체계산</span> 2026E 자체 OP 5,750~8,000억 가정. <b>자체사업만으로 시총을 설명하려면 상당한 성장 프리미엄이 필요</b>하며, 나머지는 자회사 지분가치가 메워야 한다</td></tr>
+    <tr><td>목표가 컨센서스</td><td class="num">평균 2,125,000<br>최고 2,800,000 / 최저 1,200,000</td><td>2026.6.24 기준(10명 매수·0명 매도). <b>주가 대비 +60% 여력</b>. 메리츠 2,600,000(6/23, 8.3% 상향 — 전자BG 추정치 상향 반영)</td></tr>
+  </table></div>
+
+  <div class="callout good"><b>SOTP 프레임 — 이 종목의 유일한 정합적 밸류 방법</b><br>
+  두산 시총(19.7조) = <b>①자체사업 가치</b>(전자BG 2026E OP 5,750~8,000억 × 멀티플, 비지배 희석 <b>없음</b>) + <b>②자회사 지분가치</b>(에너빌리티·밥캣·로보틱스·퓨얼셀·테스나 시가 × 지분율) − <b>③순차입금·지주 할인</b>.<br>
+  <b>필수 입력값인 각 자회사 지분율과 시가총액은 이번 검색에서 확인하지 못했다</b> <span class="pill unkn">미확인 — 계산 불가</span>. 다만 메리츠는 6/23 리포트에서 <b>"전자BG가 압도적 수익성을 기록함에도 두산 주가가 부진해, 현 주가에 내재된 전자BG의 기업가치는 여전히 저평가 구간"</b>이라고 판단했다. 즉 <b>시장이 자회사 지분가치를 온전히 인정한다고 가정하면 전자BG가 거의 공짜에 가깝게 붙어 있다</b>는 논리다. 이 계산을 스스로 완성하는 것이 다음 숙제다.</div>
+
+  <div class="callout warn"><b>"가격이 증명을 앞서갔는가" 판정: 오히려 뒤처져 있다 — 시리즈에서 드문 역방향.</b> 실적은 증명 중이다(자체사업 OP 4배, 1Q26 연결 +71.7%, 순이익 +799%). 그런데 주가는 <b>고점 대비 −46.6%</b>, 컨센 목표가 대비 <b>−37%</b>(즉 목표가가 주가보다 60% 위)다. 주성·티에스이·코미코에서 본 "컨센-주가 역전"의 <b>정확한 반대</b>. <b>가격에 이미 반영된 부정</b>: ①AI 사이클 피크아웃 우려 ②SK실트론 4조원 부담 ③2024년 합병 무산이 남긴 거버넌스 할인 ④자회사(밥캣·퓨얼셀) 부진. <b>가격에 덜 반영된 긍정</b>: 자체사업의 구조적 이익 레벨업과 비지배 희석 없는 100% 귀속. <b>단, 낙폭이 크다는 것과 싸다는 것은 다르다</b> — 지주 할인은 해소 촉매가 없으면 영구히 지속될 수 있고, 이동평균 역배열은 추세가 아직 아래를 향한다는 뜻이다.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 각 상장 자회사의 지분율·시가총액을 넣은 SOTP 실계산 — 전자BG에 시장이 매기고 있는 값은 실제 얼마인가?<br>
+  ② 고점(2,489,000)이 형성된 시점과 그 이후 −46.6% 하락의 트리거는 무엇이었나?</div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="s8">
+  <div class="sec-h"><span class="no">SEC 08</span><h2>종합 투자 판단</h2></div>
+
+  <h3>핵심 질문과 검증 순서</h3>
+  <p><b>Q1. 현 주가에 내재된 전자BG의 가치는 얼마인가?</b> — SOTP를 완성해야 "싸다/비싸다"를 말할 수 있다. <b>Q2. SK실트론 4조원은 어떻게 조달되며, 그 대가는 누가 치르는가?</b> — 차입이면 이자, 증자면 희석, 무산이면 성장 스토리 훼손. 세 갈래 모두 주주 몫이다.</p>
+  <p><b>검증 순서:</b> ① 각 자회사 지분율·시총 확보 → <b>SOTP 실계산</b>(즉시 가능, 최우선) → ② <b>7/24 2Q26 실적</b> — 전자BG 매출·하이엔드 비중·ASP 3종과 베라루빈 출하 개시 확인 → ③ SK실트론 조달 구조 공시 → ④ 대만 EMC 월매출로 업황 교차 확인.</p>
+
+  <h3>3질문 프레임 좌표 <span class="tag">시리즈 상대 위치</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>축</th><th>점수</th><th>판정·시리즈 비교</th></tr>
+    <tr><td>① 이익 업사이클 강도</td><td class="num"><b>3 / 3</b></td><td>자체사업 OP 4배(2025)·연결 OP +71.7%(1Q26)·순이익 +799%. 전자소재 매출 7,500억(2023)→2.7조(2026E)의 3.6배 궤적. <b>하나마이크론·하나머티와 동급의 최상급 강도</b>이며, 물량·믹스·ASP 삼중 상승이라 질도 좋음</td></tr>
+    <tr><td>② 주가 반영도·잔여 룸</td><td class="num"><b>3 / 3</b></td><td>고점比 −46.6%, <b>컨센 목표가 대비 +60% 여력</b>. 주성·티에스이·코미코(모두 1점, 주가&gt;목표가)와 <b>정반대 위치</b>로 <b>시리즈에서 가장 유리한 축</b>. 단 지주 할인은 촉매 없이 해소되지 않음</td></tr>
+    <tr><td>③ 경로 변수 수</td><td class="num"><b>3 / 3 (많음·불리)</b></td><td>AI CAPEX × 엔비디아 스펙인 × SK실트론 4조 × 거버넌스 전례 × 자회사 3사(밥캣 관세·퓨얼셀/로보틱스 적자) × 지분율 구조 — <b>시리즈 최다</b>. 미코(3점)보다도 변수가 많고, 그중 다수가 두산이 통제할 수 없는 외부 변수</td></tr>
+  </table></div>
+  <div class="callout info"><b>좌표의 해석:</b> 강도 3·반영도 3·변수 3은 시리즈에서 <b>처음 나오는 조합</b>이다. "이익도 좋고 주가도 안 올랐지만 변수가 극도로 많다" — 즉 <b>수익 기회와 불확실성이 동시에 최대인 종목</b>이다. 이런 좌표에서는 포지션 크기를 줄이고 <b>검증 이벤트(7/24 실적, SK실트론 결론)에 맞춰 분할 접근</b>하는 것이 규율에 맞는다.</div>
+
+  <h3>이탈 규율 3단계</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>단계</th><th>발동 조건</th><th>행동</th></tr>
+    <tr><td><b>경계</b></td><td>대만 EMC 월매출 둔화 or 전자BG 분기 매출 QoQ 감소 or 하이엔드 비중 82% 하회</td><td>신규 진입 유보, 업황 지표 주간 격상</td></tr>
+    <tr><td><b>축소</b></td><td>ASP 하락 전환 or 2026E 컨센 하향 or SK실트론 조달이 대규모 희석(증자) 방식으로 확정 or 지배구조 재편 이사회 결의</td><td>절반 축소 — 특히 거버넌스 이벤트는 2024년 전례상 <b>주가가 먼저 반응</b></td></tr>
+    <tr><td><b>이탈</b></td><td>차세대 플랫폼 스펙인 탈락 확인(경쟁사에 물량 이전) — 자체사업 논리 자체 붕괴</td><td>전량 이탈. 자회사 지분가치만 남으면 지주 할인이 지배</td></tr>
+    <tr><td style="color:var(--accent-deep)"><b>노이즈 판별</b></td><td>급락이 ① 시장·AI 섹터 동반 ② 전자BG 매출·하이엔드 비중·ASP 무손상 ③ 고유 악재(조달·거버넌스) 공시 부재일 때 <b>검토 기회</b>. <b>이 종목은 이미 −46.6% 하락한 상태라 "노이즈성 급락"의 조건에 근접</b>해 있으나, ②의 확인이 7/24 실적까지 미뤄져 있다</td><td>7/24 실적 확인 후 3조건 재판정</td></tr>
+  </table></div>
+
+  <h3>IR 핵심 질문 1개</h3>
+  <div class="callout good"><b>"SK실트론 인수 대금 4조원대의 조달 계획을 차입·자산매각·자본조달로 나누면 각각 얼마이며, 인수 후 ㈜두산 별도 기준 순차입금과 이자비용은 어느 수준이 됩니까?"</b><br>— "대부분 차입이되 자체사업 현금흐름으로 감당 가능"이면 전자BG의 이익이 주주에게 남고, "상당 부분 자본조달(증자·교환사채)"이면 <b>자체사업 성장의 과실이 희석으로 상쇄</b>된다. 또 "무산 시 대안"까지 물으면 성장 스토리의 두께를 알 수 있다. 답 하나로 이 종목의 주주가치 방정식이 갈린다.</div>
+
+  <h3>미확인 데이터 · 다음 갱신 트리거</h3>
+  <ul>
+    <li><b>미확인:</b> ① <b>자회사별 지분율·시가총액</b>(SOTP 필수 — 최우선) ② 2025 지배주주 순이익·비지배지분 ③ 전자BG 단독 OPM ④ 태국 공장 투자액·CAPA·가동시점 ⑤ SK실트론 조달 구조 ⑥ PRS 계약 상세 ⑦ 발행주식수 정확치 ⑧ 고점 형성 시점 ⑨ 7/8 이후 주가</li>
+    <li><b>갱신 트리거·일정:</b> ① <b>2026.7.24 2Q26 실적 발표</b> <span class="pill conf">확정</span> — 최우선 ② SK실트론 최종 계약 or 결렬 (수시) ③ 엔비디아 실적·베라루빈 로드맵 ④ 대만 EMC 월매출 (매월) ⑤ 지배구조 관련 이사회 결의 (수시)</li>
+  </ul>
+
+  <h3>이번 분석의 3대 발견 (재사용 가능한 일반 원리)</h3>
+  <ul>
+    <li><b>① 지주회사에서 "자체사업"은 유일하게 희석되지 않는 이익이다:</b> 두산 1Q26 연결 OP 3,408억 중 자체사업 1,878억(55%)은 <b>비지배지분 공제 없이 100% 주주 몫</b>인 반면, 나머지는 지분율만큼만 온다. <b>지주회사 분석의 첫 단계는 "연결 이익 중 자체사업 비중"을 계산하는 것</b>이며, 이 비중이 높을수록 지주 할인이 부당해진다. 미코(자체사업 미미 → 할인 정당) ↔ 두산(자체사업 55% → 할인 과도 가능)의 대비가 이 원리를 보여준다.</li>
+    <li><b>② PER 362배는 밸류가 아니라 구조의 신호다:</b> 지주회사에서 극단적 PER은 고평가가 아니라 <b>"지배주주 순이익이 구조적으로 작게 잡힌다"는 회계적 사실</b>을 알려줄 뿐이다. 이런 종목에서 PER·PBR을 근거로 판단하면 반드시 오독한다 — <b>SOTP(자체사업 가치 + 자회사 지분가치 − 순차입금)만이 정합적</b>이다. 지주·다층 구조 종목 전반에 재사용.</li>
+    <li><b>③ "컨센-주가 역전"은 양방향 온도계다:</b> 시리즈에서 주성·티에스이·코미코는 <b>주가가 목표가를 1.7~2배 상회</b>하는 과열 신호를 보였다. 두산은 정반대로 <b>목표가가 주가보다 60% 위</b>에 있다. 같은 지표가 방향만 바뀌면 <b>과열 경보에서 소외 신호로 전환</b>된다 — 단, 소외에는 반드시 이유(여기서는 지주 할인·거버넌스 전례·4조 인수 부담)가 있으므로 <b>"싸다"가 아니라 "왜 싼가"를 먼저 목록화</b>해야 한다.</li>
+  </ul>
+</section>
+
+<!-- ================= footer ================= -->
+<footer>
+  <h4>분석 기준일 · 확정/추정 구분</h4>
+  <p>· 작성: <span class="mono">2026-07-15</span> · 데이터: 2026-07-15 웹 검색 (DART 원문 미열람 — 지분율·비지배지분·부문 손익은 원문 확인 전 2차 자료 기반)<br>
+  · <span class="mono">[확정]</span> 2025 연결(매출 19조 7,841억 +9.1%·OP 1조 627억 +5.9%), 자체사업 OP 3,282억(4배)·OPM 18.6%·하이엔드 82%, 전자소재 매출 1조 8,757억(+86%)·NWB CCL 1조 돌파, 1Q26(매출 5조 603억 +17.7%·OP 3,408억 +71.7%·순이익 1,015억 +799%), 자체사업 1Q26(매출 7,023억·OP 1,878억·전자BG 6,173억), ASP 49,676→68,799원, 두산에너빌리티 2025 수주 14.7조·잔고 23조, SK실트론 우선협상대상자 선정(2025.12.17, 70.6%·4조원대), 로보틱스 PRS 9,477억(68%→50.06%), 태국 공장 발표, 2024 밥캣-로보틱스 합병 무산.<br>
+  · <span class="mono">[역산]</span> 2024 연결·자체사업, 자회사 합계 손익, 증분이익률, 시가총액·발행주식수.<br>
+  · <span class="mono">[시장 추정]</span> 2026E 전자BG 2.7조·2027E 3.3조, 메리츠 2Q26E(매출 6,510억·OP 2,000억)·목표가 260만원, 엔비디아 서버랙 8.5만대, 컨센 목표가(6/24).<br>
+  · <span class="mono">[자체 추정]</span> 증분 공헌이익률 30%, 시나리오 OP, 태국공장 payback 프레임, 자체사업 기준 배수.<br>
+  · <span class="mono">[미확인]</span> 자회사 지분율·시총(SOTP 불가), 지배주주 순이익, 전자BG 단독 OPM, 태국 투자액, SK실트론 조달구조, PRS 상세, CB/BW, 7/8 이후 주가.</p>
+  <h4>주요 출처</h4>
+  <p>두산 1Q26 실적발표(2026.4.29) · ZDNet·뉴스웨이·비즈니스포스트(전자BG 상세) · 대한경제 그룹 2025 실적 분석(2026.2.20) · 메리츠증권(2026.1·6.16·6.23 목표가 260만원) · BNK투자증권(2026.5) · FnGuide Company Guide(1Q26 증감률) · 뉴스1·이코노미트리뷴(SK실트론 우선협상·PRS, 2025.12) · 데일리한국(협상 장기화) · 디지털타임스(2024 합병 무산) · Investing.com·피플로·밸류라인(시세·컨센).</p>
+  <h4>자료 한계</h4>
+  <p><b>본 리포트의 최대 한계는 SOTP를 완성하지 못한 것</b>이다. 각 상장 자회사(두산에너빌리티·밥캣·로보틱스·퓨얼셀)의 두산 보유 지분율과 시가총액을 확보하지 못해, 시총 19.7조에 내재된 전자BG 가치를 직접 계산할 수 없었다. 메리츠의 "저평가" 판단을 인용했으나 <b>독립 검증은 다음 개정판 과제</b>다. 또한 2025년 "자체사업 OPM 18.6%"와 매출 수치가 산술적으로 정합하지 않아 영업이익 절대액을 신뢰 축으로 삼았다. 주가는 2026.7.8 확인치(1,330,000원) 기준이며 하락 추세 중이므로 열람 시 재확인이 필수다.</p>
+  <h4>자매 리포트 (시리즈)</h4>
+  <p><span class="mono">솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두 · 덕산하이메탈 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 이오테크닉스 · 원익IPS · 브이엠 · 코오롱인더 · 퍼스텍 · 주성엔지니어링 · 티에스이 · 하나머티리얼즈 · 하나마이크론 · 미코 · 코미코</span> — 특히 <b>미코·코미코</b>(지주 할인·SOTP 원리의 중소형 버전)·<b>하나마이크론</b>(지배주주 조정이익)·<b>퍼스텍</b>(자산 이동형 거버넌스 리스크)와 직접 연결. 팩터 측면에서는 <b>시리즈 내 유일한 AI 로직(엔비디아) 직접 노출</b> 종목으로, 메모리 사이클 종목들과 분산 효과가 크다.</p>
+  <p style="margin-top:14px;border-top:1px solid #3d2418;padding-top:12px;color:#a8825f">본 리포트는 정보 제공 목적이며 투자 판단과 그 결과는 투자자 본인 책임입니다. 액센트 컬러: 딥 코퍼 <span class="mono">#7C2D12</span> (두산 고유 — 동박적층판의 구리색에서 착안, 기존 팔레트와 중복 없음). 섹터는 지정에 따라 <span class="mono">mat</span>로 분류했으나 실제로는 자체사업(CCL)을 품은 지주회사임에 유의.</p>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>티에스이 (131290) — 검사 3종 세트와 DRAM 프로브카드 전환</title>
+<script type="application/json" id="dashboard-meta">
+{
+  "code": "131290",
+  "name": "티에스이",
+  "sector": "pkg",
+  "intensity": 3,
+  "variables": 3,
+  "note": "DRAM·HBM 프로브카드 전환 강력, 단 급등·수직계열·밸류 3변수",
+  "desc": "낸드 프로브카드에서 DRAM·HBM4로 전환하는 검사 3종 세트 유일 기업 — 실적 뒤 급등이 붙은 국면",
+  "tags": "프로브카드 인터페이스보드 테스트소켓 HBM4 DRAM SK하이닉스 타이거일렉 후공정검사",
+  "catalysts": [{"date": "2026-08-14", "label": "2Q26 실적 발표 (추정)"}, {"date": "2026-03-25", "label": "2025 사업보고서·연간확정"}]
+}
+</script>
+<style>
+  :root{
+    --bg:#efece6;
+    --paper:#ffffff;
+    --ink:#221e19;
+    --muted:#7a7268;
+    --line:#ddd7cc;
+    --line-soft:#eae5db;
+    --accent:#B45309;        /* 번트오렌지/앰버브라운 — 티에스이 고유 액센트 (기존 팔레트와 중복 없음) */
+    --accent-deep:#7c3a06;
+    --accent-bg:#f7ecdf;
+    --warn:#9a3d20;
+    --warn-bg:#f6e9e2;
+    --info:#3f5560;
+    --info-bg:#e9eef1;
+    --est:#7a6a2a;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.62;-webkit-font-smoothing:antialiased;padding:20px 12px 80px;display:flex;justify-content:center;font-size:14.5px}
+  .wrap{width:100%;max-width:860px}
+  .mono{font-family:var(--mono)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .est{color:var(--est);font-weight:600}
+  .pos{color:var(--accent-deep);font-weight:600}
+  .neg{color:var(--warn);font-weight:600}
+  .fn{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+  .cover{background:linear-gradient(155deg,#2a1c0c 0%,#5c3410 58%,#8a4f14 100%);color:#f6ecdf;border-radius:18px;padding:30px 24px 26px;position:relative;overflow:hidden;margin-bottom:14px}
+  .cover::before{content:"";position:absolute;right:-40px;top:-30px;width:240px;height:240px;
+    background:radial-gradient(circle,rgba(246,236,223,.10) 1.5px,transparent 1.6px);background-size:16px 16px;transform:rotate(8deg)}
+  .cover .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:#d9b483;margin-bottom:10px;position:relative;z-index:1}
+  .cover h1{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.25;position:relative;z-index:1}
+  .cover h1 .code{font-family:var(--mono);font-size:15px;font-weight:500;color:#d9b483;margin-left:8px}
+  .cover .sub{font-size:13.5px;color:#e3ccae;margin-top:8px;max-width:610px;position:relative;z-index:1}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px;position:relative;z-index:1}
+  @media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:11px 12px}
+  .kpi .l{font-size:10.5px;letter-spacing:.06em;color:#d9b483;font-family:var(--mono)}
+  .kpi .v{font-size:16px;font-weight:800;font-family:var(--mono);margin-top:3px}
+  .kpi .d{font-size:10.5px;color:#dcc3a3;margin-top:2px}
+
+  .thesis{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:18px 20px;margin-bottom:22px;box-shadow:0 1px 2px rgba(34,30,25,.04),0 8px 22px rgba(34,30,25,.05)}
+  .thesis .t{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700;margin-bottom:8px}
+  .thesis p{font-size:14.5px}
+  .thesis p b{color:var(--accent-deep)}
+
+  .nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+  .nav a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;border:1px solid var(--line);background:var(--paper);border-radius:99px;padding:5px 11px;transition:.15s}
+  .nav a:hover{color:var(--accent-deep);border-color:var(--accent)}
+
+  section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin-bottom:18px;position:relative;box-shadow:0 1px 2px rgba(34,30,25,.03),0 6px 18px rgba(34,30,25,.04)}
+  @media(min-width:640px){section{padding:26px 28px}}
+  section::before{content:"";position:absolute;top:10px;right:10px;width:14px;height:14px;border-top:2px solid var(--line);border-right:2px solid var(--line);border-radius:0 4px 0 0}
+  .sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .sec-h .no{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:#fff;background:var(--accent);border-radius:6px;padding:3px 8px}
+  .sec-h h2{font-size:19px;font-weight:800;letter-spacing:-.01em}
+  h3{font-size:15px;font-weight:700;margin:20px 0 8px;color:var(--accent-deep)}
+  h3 .tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--muted);margin-left:6px}
+  p{margin-bottom:10px}
+  ul{margin:0 0 10px 18px}
+  li{margin-bottom:5px}
+
+  .tbl-wrap{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;min-width:540px;font-size:12.5px}
+  th{background:#f4ede2;color:var(--accent-deep);font-weight:700;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:7px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl-note{font-size:11px;color:var(--muted);margin-top:6px}
+
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;vertical-align:1px}
+  .pill.conf{background:var(--accent-bg);color:var(--accent-deep)}
+  .pill.estm{background:#f2ecd7;color:var(--est)}
+  .pill.calc{background:var(--info-bg);color:var(--info)}
+  .pill.unkn{background:var(--warn-bg);color:var(--warn)}
+
+  .callout{border-radius:10px;padding:12px 14px;margin:10px 0;font-size:13.5px;border:1px solid}
+  .callout.warn{background:var(--warn-bg);border-color:#e3c6b6;color:#682712}
+  .callout.info{background:var(--info-bg);border-color:#cdd8dd;color:#2c414b}
+  .callout.good{background:var(--accent-bg);border-color:#e6d0af;color:var(--accent-deep)}
+
+  .q2{background:#f6f2ea;border:1px dashed var(--line);border-radius:10px;padding:11px 14px;margin-top:14px;font-size:13px}
+  .q2 .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:5px}
+
+  .stackbar{display:flex;height:38px;border-radius:9px;overflow:hidden;border:1px solid var(--line);margin:12px 0 6px}
+  .stackbar div{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--c)}
+
+  .chain{margin:14px 0}
+  .chain .node{background:#f6f2ea;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:13px}
+  .chain .node b{display:block;font-size:13.5px;color:var(--accent-deep)}
+  .chain .node .chk{font-family:var(--mono);font-size:10.5px;color:var(--info);margin-top:3px;display:block}
+  .chain .arrow{display:flex;justify-content:center;color:var(--accent);font-size:15px;padding:2px 0;font-weight:700}
+
+  .lev-row{margin:14px 0}
+  .lev-row .cap{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;gap:8px;flex-wrap:wrap}
+  .lev-row .cap b{font-family:var(--mono)}
+  .lev-bar{display:flex;height:30px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+  .lev-bar .cost{background:#cfc6b6;color:#4b4335;display:flex;align-items:center;padding-left:10px;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar .profit{background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar.rev .cost{background:#e0bfab;color:#682712}
+  .lev-bar.rev .profit{background:var(--warn)}
+
+  .gauge{position:relative;height:76px;margin:18px 4px 6px}
+  .gauge .ruler{position:absolute;left:0;right:0;top:38px;height:10px;border-radius:5px;background:linear-gradient(90deg,#ece6db,#e0c79f 55%,#c07f2a)}
+  .gauge .tick{position:absolute;top:50px;font-family:var(--mono);font-size:10px;color:var(--muted);transform:translateX(-50%)}
+  .gauge .mk{position:absolute;top:8px;transform:translateX(-50%);text-align:center;font-family:var(--mono);font-size:10.5px;font-weight:700;white-space:nowrap}
+  .gauge .mk::after{content:"";display:block;width:2px;height:24px;margin:2px auto 0}
+  .gauge .mk.opm{color:var(--info)} .gauge .mk.opm::after{background:var(--info)}
+  .gauge .mk.inc{color:var(--accent-deep)} .gauge .mk.inc::after{background:var(--accent)}
+
+  .chart-box{border:1px solid var(--line);border-radius:12px;padding:12px 8px 6px;margin:12px 0;background:#fbf8f2}
+  .chart-box svg{width:100%;height:auto;display:block}
+
+  .risk-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0}
+  @media(min-width:640px){.risk-grid{grid-template-columns:repeat(3,1fr)}}
+  .risk{border:1px solid #e3c6b6;background:var(--warn-bg);border-radius:12px;padding:13px 14px;font-size:12.5px}
+  .risk .rt{font-weight:800;color:#682712;font-size:13px;margin-bottom:5px}
+  .risk .row{margin-top:5px}
+  .risk .row b{font-family:var(--mono);font-size:10.5px;color:#8a4a2a;letter-spacing:.06em}
+  .risk .sig{margin-top:7px;padding-top:7px;border-top:1px dashed #dbbda9;font-family:var(--mono);font-size:11px;color:#8a4a2a}
+
+  footer{background:#241a0e;color:#cbb593;border-radius:16px;padding:22px 22px;font-size:12px;line-height:1.7}
+  footer h4{color:#f2e6d3;font-size:13px;margin-bottom:6px;margin-top:14px}
+  footer h4:first-child{margin-top:0}
+  footer .mono{color:#c39a63}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= 표지 ================= -->
+<div class="cover">
+  <div class="eyebrow">EQUITY DEEP-DIVE // 후공정 검사 // 기준일 2026-07-15</div>
+  <h1>티에스이 <span class="code">KOSDAQ 131290</span></h1>
+  <div class="sub">프로브카드·인터페이스보드·테스트소켓 3종을 동시에 쥔 유일한 반도체 검사 기업 — 낸드에서 DRAM·HBM4 프로브카드로 갈아타는 전환의 한복판</div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">주가 (7/10 급등後 추정)</div><div class="v">≈271,000원</div><div class="d">시총 3조 ÷ 1,106만주 · 자체계산</div></div>
+    <div class="kpi"><div class="l">시가총액 (7/10)</div><div class="v">≈3조</div><div class="d">52주 신고가, 1년 +582%</div></div>
+    <div class="kpi"><div class="l">2025 매출 / OP</div><div class="v">3,481 / 415억</div><div class="d">+0% / +4% · 4Q25 OP 137억 서프</div></div>
+    <div class="kpi"><div class="l">강도 3 / 변수 3</div><div class="v">2026E OP 745~924억</div><div class="d">DRAM 프로브카드 전환</div></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <div class="t">핵심 투자 명제</div>
+  <p>티에스이는 <b>웨이퍼 검사(프로브카드)와 패키지 검사(인터페이스보드·테스트소켓)를 한 지붕에서 공급하는 세계 유일 기업</b>이고, 수직계열화한 PCB 자회사(타이거일렉)까지 낀 원가 구조가 해자다. 지금의 스토리는 명확하다 — <b>단가·기술장벽이 낮은 낸드 프로브카드에서, 웨이퍼당 다이가 2~3배 많고 HBM4에선 카드가 5~6개씩 필요한 DRAM 프로브카드로 갈아타는 P·Q 동시 상승</b>. 문제는 이 전환이 2024~2025 실적으로 <b>이미 일부 증명됐음에도</b>, 7월 +21% 급등으로 시총이 3조(2026E OP의 30~40배)에 닿았다는 것. <b>증명과 가격이 함께 달렸고, 이제 남은 질문은 "DRAM 전환 속도가 이 배수를 정당화하느냐"</b>다.</p>
+</div>
+
+<nav class="nav">
+  <a href="#s1">01 사업</a><a href="#s2">02 수익구조</a><a href="#s3">03 트랙레코드</a><a href="#s4">04 전방·성장경로</a>
+  <a href="#s5">05 트래킹</a><a href="#s6">06 레버리지·CAPEX</a><a href="#s7">07 리스크·밸류</a><a href="#s8">08 종합</a>
+</nav>
+
+<!-- ================= 01 ================= -->
+<section id="s1">
+  <div class="sec-h"><span class="no">SEC 01</span><h2>사업의 이해 — 무엇을 만들어 누구에게 파는가</h2></div>
+
+  <p>1994년(설립)~1995년(법인) 권상준 회장이 세운 <b>반도체 검사 부품·장비 전문사</b>. 핵심 4대 제품:</p>
+  <ul>
+    <li><b>프로브카드(Probe Card):</b> 전공정 끝 웨이퍼 테스트(EDS)에서, 미세 탐침으로 웨이퍼 위 각 다이에 전기 신호를 넣어 양품·불량을 가려내는 <b>소모성 정밀 접촉 장치</b>. "반도체 체온계". 웨이퍼당 개수·단가가 사업의 핵심 변수.</li>
+    <li><b>인터페이스보드(Interface Board):</b> 후공정 패키지 테스트에서 테스터(ATE)와 칩을 잇는 중간 기판. 티에스이의 창업 원류(수입 대체).</li>
+    <li><b>테스트소켓(Test Socket):</b> 패키지 테스트에서 칩을 고정해 신호를 주고받는 부품. 인터페이스보드와 패키지로 함께 공급되는 경우가 많음.</li>
+    <li><b>OLED 검사장비:</b> 디스플레이 테스트. 분기 변동성이 큰 사이드 사업.</li>
+  </ul>
+  <p>회사는 이 <b>검사 3종(프로브카드·보드·소켓)을 동시 공급하는 세계 유일 기업</b>임을 내세우며 통합 브랜드 <b>i3unify</b>를 론칭했다.</p>
+
+  <h3>제품별 매출 구성 <span class="tag">별도 기준</span></h3>
+  <p style="font-size:12.5px;margin-bottom:2px"><b>2025년 상반기 별도</b> (씽크풀/신한 인용) — 프로브카드가 이미 최대 품목으로 역전</p>
+  <div class="legend">
+    <span style="--c:#B45309">프로브카드</span><span style="--c:#c9820f">인터페이스보드</span><span style="--c:#3f5560">테스트소켓</span><span style="--c:#9a8b5a">OLED 검사</span>
+  </div>
+  <div class="stackbar">
+    <div style="width:45%;background:#B45309">PC 45%</div>
+    <div style="width:28%;background:#c9820f">IB 28%</div>
+    <div style="width:12%;background:#3f5560">소켓 12%</div>
+    <div style="width:15%;background:#9a8b5a">OLED 14%</div>
+  </div>
+  <p class="fn">불과 1년 전(2024 2Q 별도)엔 인터페이스보드 40.1% &gt; 프로브카드 23.8%였다. <b>1년 만에 프로브카드가 최대 품목으로 뒤집힌 것 자체가 이 종목의 스토리</b>. 단, 연결 기준으로 보면 자회사(타이거일렉·메가터치·지엠테스트) 매출이 크게 얹혀 별도와 구성이 다름에 유의.</p>
+
+  <div class="callout info"><b>수직계열화 구조(중요):</b> 프로브카드·보드의 원재료인 <b>PCB는 상장 자회사 타이거일렉(219130, 지분 ~44.7%)</b>, 포고핀·인터포저는 <b>메가터치(~40.7%)</b>, 테스트 용역은 <b>지엠테스트</b>가 공급. 2025.12엔 반도체 설계사 <b>엘디티(096870, ~43.8%)</b>까지 3자배정 유증으로 편입. 즉 티에스이는 단일 회사가 아니라 <b>검사 밸류체인을 통째로 연결로 안은 소그룹</b>이며, 연결 실적엔 이 자회사들의 손익이 그대로 섞인다.</div>
+
+  <h3>고객 — 직접 고객 vs 최종 수요</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구분</th><th>주체</th><th>내용</th></tr>
+    <tr><td><b>직접 고객</b></td><td>SK하이닉스·삼성전자(S사·H사), 마이크론, 인텔, YMTC, 중국 C사, AMD·WD·샌디스크(보드) <span class="pill conf">회사 확인</span></td><td>칩 제조사에 직접 납품하는 1차 벤더. 프로브카드는 전통적으로 SK하이닉스 낸드 의존이 컸음</td></tr>
+    <tr><td><b>DRAM 신규</b></td><td>2024 중국 C사 DRAM 프로브카드 개시, <b>2026 1Q 국내 S사 HBM4 프로브카드 공급 개시</b> (LS증권 2026.1.21)</td><td>낸드→DRAM/HBM 전환의 실제 진입 신호. HBM4는 수율 확보용으로 카드가 5~6개씩 필요(정민규 하나 추정)</td></tr>
+    <tr><td><b>최종 수요</b></td><td>AI 데이터센터 → HBM·고성능 DRAM/낸드 → 메모리사 웨이퍼 생산량·전환투자</td><td>프로브카드는 <b>생산량(출하)에 연동되는 소모품</b> 성격이 강해 CAPEX보다 가동률·출하에 민감</td></tr>
+  </table></div>
+
+  <h3>경쟁 구도 — 제품별 분리</h3>
+  <ul>
+    <li><b>프로브카드:</b> 글로벌 빅4(폼팩터 FormFactor·MJC·TSE 등 해외 강자) 과점. DRAM/HBM 고난도 영역은 해외 빅4가 선점, 티에스이는 <b>낸드에서 검증된 기술로 DRAM 국산화 침투 중</b>. STO-ML 국산화 성공 이력. 국내 경쟁사로 마이크로투나노·피엠티 등(비상장·중소) — 간접 추적: 고객사 퀄 통과 뉴스, 리포트 채널체크.</li>
+    <li><b>인터페이스보드:</b> 티에스이가 국내외 폭넓게 납품(삼성·SK·AMD·인텔·WD 등)하는 상대적 강세 영역. 고마진.</li>
+    <li><b>테스트소켓:</b> ISC·리노공업(포고 소켓 강자)·마이크로컨택솔 등과 경쟁 — 티에스이는 보드와 묶음 공급으로 방어.</li>
+    <li><b>OLED 검사:</b> 디스플레이 장비사와 경쟁, 분기 변동성 큼.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① HBM4 프로브카드에서 티에스이 vs 해외 빅4(FormFactor)의 실제 점유·단가 격차는? (전환 스토리의 실체)<br>
+  ② 연결 매출에서 자회사 비중과 내부거래 제거 규모 — "별도 성장"과 "연결 성장"의 괴리는 얼마인가?</div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="s2">
+  <div class="sec-h"><span class="no">SEC 02</span><h2>수익 구조 — 돈을 어떻게 버는가</h2></div>
+
+  <h3>손익 공식</h3>
+  <div class="callout info mono" style="font-size:13px">
+    매출 ≈ Σ[제품별 (고객 웨이퍼·칩 출하량 × 소모 카드/보드 수) × ASP] + 자회사 연결매출<br>
+    영업이익 = 매출 × GPM − (인건비·R&D 고정비) ; 믹스(낸드→DRAM) 상승이 ASP·GPM을 동시에 밀어올림
+  </div>
+  <p>프로브카드는 <b>소모품</b>(마모→교체)이라 고객 <b>출하량·가동률에 연동</b>되는 반복 수요다. 여기에 <b>미세화로 카드당 핀 수↑ → ASP↑</b>, <b>낸드→DRAM 믹스 전환 → 단가·기술장벽↑</b>이 겹치는 <b>P·Q 동시 상승 구조</b>. 이것이 이 종목이 단순 장비 사이클주와 다른 지점.</p>
+
+  <h3>가격 결정 구조 판정</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>제품</th><th>가격 방식</th><th>원가 전가</th></tr>
+    <tr><td>프로브카드</td><td><b>고객 맞춤 설계·분기 협상 혼합</b> — 제품별 커스텀 견적, 낸드는 가격 압력 있으나 DRAM/HBM 고난도는 방어력 큼</td><td>고난도 제품일수록 전가력↑. 낸드 범용은 전가 제한 → <b>믹스 상향이 곧 전가 수단</b></td></tr>
+    <tr><td>인터페이스보드·소켓</td><td>고객 프로그램별 견적</td><td>보드는 상대적 고마진, 소켓은 경쟁 노출</td></tr>
+    <tr><td>원재료(PCB 등)</td><td>자회사 타이거일렉 내재화 — <b>원가 변동을 그룹 내부에서 흡수</b></td><td>수직계열화가 원가 방어 수단 그 자체</td></tr>
+  </table></div>
+  <div class="callout good"><b>구조적 논점:</b> 원가 상승 전가가 "가능한가"의 답은 <b>제품에 따라 다르다</b> — 낸드 범용 프로브카드는 전가 제한적이나, DRAM/HBM 고난도 카드는 전가력이 크고, 무엇보다 <b>믹스를 낸드→DRAM으로 옮기는 것 자체가 마진 방어·개선의 핵심 수단</b>이다. 원재료 측면에선 타이거일렉 내재화가 완충.</div>
+
+  <h3>제품별 이익 기여</h3>
+  <p>부문 손익 미공시. 다만 리포트 정황상 <b>인터페이스보드가 상대적 고마진</b>(신한: "수익성 상대적으로 높은 IB"), 프로브카드는 <b>DRAM 전환 전까진 낸드 저마진</b>이었다가 전환과 함께 이익 기여가 커지는 구조 <span class="pill estm">추정</span>. 별도 OPM(2Q~4Q24 16~23%)이 연결 OPM(11~18%)보다 높은 것은 <b>자회사가 연결 마진을 희석</b>함을 시사 — 즉 매출 비중과 이익 비중이 별도/연결 간 크게 갈린다.</p>
+
+  <h3>마진의 원천(+)과 훼손(−)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>원천 (+)</th><th>훼손 (−)</th></tr>
+    <tr><td>낸드→DRAM/HBM 믹스 상승 (P·Q 동시)</td><td>DRAM 카드 개발용 공격적 인력 증가 — 인건비 3Q24누적 632억→3Q25누적 797억 (분기 평균 +55억)</td></tr>
+    <tr><td>검사 3종 + PCB 수직계열화 원가 방어</td><td>중국 C사 프로브카드 공급 관련 <b>대손상각비</b> — 2024 12억 → 3Q25누적 100억 (일회성 성격)</td></tr>
+    <tr><td>미세화·핀수 증가 → ASP 구조적 상승</td><td>자회사(OLED·지엠테스트 등) 손익 변동이 연결 이익 희석</td></tr>
+    <tr><td>인터페이스보드 고마진·해외 다변화</td><td>낸드 업황(고객 가동률) 하강 시 소모품 수요 직접 타격</td></tr>
+  </table></div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 중국 C사 대손 100억은 완전 종결인가, 추가 발생 여지가 있나? (2026 이익의 기저효과 크기 결정)<br>
+  ② DRAM/HBM 프로브카드의 GPM이 낸드 대비 몇 %p 높은가 — 믹스 전환의 이익 기울기?</div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="s3">
+  <div class="sec-h"><span class="no">SEC 03</span><h2>실적 트랙레코드</h2></div>
+
+  <h3>연간 (연결, 억원)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>연도</th><th class="num">매출</th><th class="num">YoY</th><th class="num">영업이익</th><th class="num">OPM</th><th class="num">순이익</th><th>표기</th></tr>
+    <tr><td>2022</td><td class="num">3,393</td><td class="num">+10%</td><td class="num">566</td><td class="num">16.7%</td><td class="num">534</td><td><span class="pill conf">확정</span> 직전 사이클 고점</td></tr>
+    <tr><td>2023</td><td class="num">2,491</td><td class="num neg">−26.6%</td><td class="num neg">−23</td><td class="num">−0.9%</td><td class="num neg">−21</td><td><span class="pill conf">확정</span> 낸드 감산 직격 — 적자</td></tr>
+    <tr><td>2024</td><td class="num">3,481</td><td class="num pos">+39.7%</td><td class="num">399</td><td class="num">11.5%</td><td class="num">450</td><td><span class="pill conf">확정</span> 흑전 — DRAM 프로브카드 가세</td></tr>
+    <tr><td><b>2025</b></td><td class="num"><b>~3,481</b></td><td class="num">~0%</td><td class="num"><b>~415</b></td><td class="num"><b>~11.9%</b></td><td class="num">~351</td><td><span class="pill estm">추정/잠정</span> — 자료 편차 큼 (아래)</td></tr>
+    <tr><td>2026E</td><td class="num est">4,743~5,412</td><td class="num est">+15~26%</td><td class="num est">745~924</td><td class="num est">15.7~17.1%</td><td class="num">—</td><td><span class="pill estm">시장 추정</span> 하나 745 / 신한 924 (2026.3)</td></tr>
+  </table></div>
+  <p class="tbl-note">⚠ <b>2025 연간은 자료마다 상이</b>: 초기 추정 OP 415억(LS 7월)~521억(신한 초기), 매출 ~3,600억 추정도 있었으나, 실제는 3Q 부진(3Q25 매출 −6%·OP −44% YoY, 대손 100억·인건비 급증)과 4Q 서프라이즈(OP 137억)가 상쇄. <b>2025 연간 확정치는 사업보고서(2026.3.25경)로 재확인 필요.</b> 표는 매출 정체·이익 소폭 성장으로 보수 표기.</p>
+
+  <h3>분기 (억원) — 연결 vs 별도 분리</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>분기</th><th class="num">연결 매출</th><th class="num">연결 OP</th><th class="num">연결 OPM</th><th class="num">별도 OP</th><th>비고</th></tr>
+    <tr><td>3Q24</td><td class="num">1,107</td><td class="num">206</td><td class="num">18.6%</td><td class="num">165</td><td>사이클 분기 고점</td></tr>
+    <tr><td>4Q24</td><td class="num">1,031</td><td class="num">137</td><td class="num">13.3%</td><td class="num">153</td><td>PC 330억(+186%) 서프</td></tr>
+    <tr><td>1Q25</td><td class="num">830</td><td class="num">31</td><td class="num">3.8%</td><td class="num">81</td><td><b>연결 OP 급감</b> — 자회사·믹스 희석</td></tr>
+    <tr><td>2Q25</td><td class="num">1,102</td><td class="num">125</td><td class="num">11.4%</td><td class="num">108</td><td>OLED 174억(+125%) 반영</td></tr>
+    <tr><td>3Q25</td><td class="num">1,044</td><td class="num">115</td><td class="num">11.0%</td><td class="num">101</td><td>대손 100억·인건비 급증 부담</td></tr>
+    <tr><td>4Q25</td><td class="num est">~1,100</td><td class="num est">~137</td><td class="num est">~12%</td><td class="num est">~115</td><td><span class="pill estm">LS 추정</span> — 확정 필요</td></tr>
+  </table></div>
+
+  <h3>증익·감익의 질 분해</h3>
+  <ul>
+    <li><b>구조적:</b> 2024 흑전의 몸통 = <b>낸드 회복 + DRAM 프로브카드 가세(Q·믹스)</b>. 2023 적자는 낸드 감산 직격(순수 업황).</li>
+    <li><b>일회성(2025 이익 정체의 정체):</b> ① <b>중국 C사 대손 100억</b>(3Q25 누적, 2024 12억 대비 급증) ② <b>DRAM 개발 인력 선제 증원</b>(인건비 분기 +55억) — 둘 다 2025 이익을 눌렀고 <b>2026 기저효과로 반전</b>될 항목. LS·하나가 2026 이익 급증을 보는 핵심 근거.</li>
+    <li><b>1Q 저점 패턴:</b> 반도체 검사 부품은 <b>1분기가 계절적 저점</b>(1Q25 연결 OPM 3.8%, 별도는 13.9%로 방어). 연결 기준 1Q만 보면 실력을 과소평가 — <b>별도 OPM과 병행 판독 필요</b>. (시리즈 "4Q 함정"의 변형: 여기선 "1Q 함정 + 연결/별도 괴리")</li>
+    <li><b>순이익 &lt; 영업이익(2025):</b> 2024 NP 450 &gt; OP 399였으나 <b>2025는 NP ~351 &lt; OP ~415로 역전</b> — 3Q25 누적 순이익 −7.8% YoY. 원인은 <b>대손·자회사 손실·금융비용</b>일 개연성 <span class="pill estm">추정</span>. <b>밸류에이션은 영업이익 기준</b>이 안전하며, 순이익 기반 PER은 일회성으로 왜곡됐을 수 있다.</li>
+  </ul>
+
+  <div class="callout warn"><b>판독 기준:</b> 이 회사의 "실력"은 ① <b>별도 OPM</b>(13~23%, 본업 프로브카드·보드의 진짜 마진)과 ② <b>연결 OPM</b>(자회사 희석 후, 11~18%)을 <b>쌍으로</b> 봐야 한다. 2025년 연결 이익 정체를 "성장 둔화"로 오독하면 안 되고, <b>대손·인건비 선행이라는 일회성을 걷어낸 뒤 2026 DRAM 전환의 기울기</b>로 봐야 한다는 것이 핵심.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 2025 확정 연간(사업보고서) — 대손·인건비 제거 후 정상 이익력은 얼마인가?<br>
+  ② 별도 vs 연결 OPM 격차가 벌어지는 분기의 원인 — 어느 자회사가 희석 주범인가?</div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="s4">
+  <div class="sec-h"><span class="no">SEC 04</span><h2>전방산업과 성장 경로</h2></div>
+
+  <div class="callout good"><b>팩터 선언:</b> 이 종목의 팩터는 <b>"메모리 출하량(가동률) × 미세화·HBM 검사 강도 상승"</b> — WFE(장비 발주) 팩터가 아니라 <b>소모품·출하 연동 팩터</b>다. 이 점이 시리즈에서 중요: 원익IPS·주성엔지니어링(장비=CAPEX 발주 연동, 사이클 진폭 큼)과 <b>다른 팩터</b>이며, 오히려 <b>가동률이 유지되는 한 발주 공백기에도 소모 수요가 도는</b> 방어적 성격 + HBM 검사 강도라는 성장 옵션이 결합. <b>분산 가치 있음</b> — 장비주 사이클의 골에서 상대적으로 덜 빠지는 포지션.</div>
+
+  <h3>인과 사슬</h3>
+  <div class="chain">
+    <div class="node"><b>① AI·데이터센터 → 메모리 출하·미세화 + HBM 확대</b>HBM4는 수율 위해 프로브카드 5~6개/제품 필요 (기존 DRAM 2개)<span class="chk">선행지표: DRAM/HBM 출하·미세화 로드맵 / 시차: 즉시~1분기 / 방향: 상승</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>② 메모리사(S·H사) 웨이퍼 테스트 수요 → 프로브카드 소모</b>출하량·핀수 증가에 연동 (CAPEX가 아니라 생산량 연동이 핵심)<span class="chk">확인처: SK하이닉스·삼성 출하·가동률, 컨콜 HBM 계획 (상장사 교차검증)</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>③ 티에스이 수주·납품 (커스텀 견적)</b>2024 중국 C사 DRAM 개시 → 2026 1Q S사 HBM4 공급 개시<span class="chk">확인처: 분기보고서 제품별 매출, 리포트 채널체크 / 시차: 1~2분기</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>④ 매출·이익 (믹스 상승 → OPM 개선)</b>2026E OP 745~924억, OPM 16~17% (대손·인건비 기저 반전)<span class="chk">확인: 분기 실적의 별도 OPM 추이 + 프로브카드 매출 성장률</span></div>
+  </div>
+
+  <h3>수주·시차 체크</h3>
+  <ul>
+    <li><b>수주잔고:</b> 대형 개별 계약 공시보다 <b>제품별 매출·출하로 확인</b>하는 유형 — 잔고 개념보다 <b>고객 가동률·퀄 통과가 선행지표</b>. 잔고 수치 <span class="pill unkn">미확인</span>.</li>
+    <li><b>수주→매출 시차:</b> 프로브카드는 커스텀 제작 1~2분기. <b>퀄 테스트 통과 → 양산 공급</b>까지가 관문(HBM4는 2026 1Q 통과·개시).</li>
+    <li><b>과거 공백의 메아리:</b> 2022 하반기~2023 낸드 감산 → 2023 적자로 즉시 반영(소모품이라 시차 짧음). 역으로 <b>2024~2025 가동률 회복이 곧바로 실적</b>. 장비주보다 시차가 짧고 골이 얕은 것이 특징.</li>
+    <li><b>ASP 빈티지:</b> 커스텀·단기라 빈티지 왜곡 작음. 관전점은 <b>DRAM/HBM 카드의 대당 ASP가 낸드 대비 몇 배인가</b>(핀수·난이도 프리미엄).</li>
+    <li><b>전방 교차검증:</b> SK하이닉스·삼성 상장사 — HBM 생산계획·가동률 컨콜로 검증. 단 메모리사 출하 가이던스는 시황 급변 시 수정 전례 있음 → <b>실제 출하 통계가 후행이지만 확실</b>.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① HBM4 프로브카드 "카드 5~6개/제품"이 실제 발주로 확인되는 시점·규모는? (2026 성장의 핵심 수치)<br>
+  ② 삼성 HBM4 재진입/양산 일정이 티에스이 S사 물량에 주는 상방은?</div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="s5">
+  <div class="sec-h"><span class="no">SEC 05</span><h2>트래킹 지표</h2></div>
+
+  <div class="callout info"><b>리스크 관리 유형 판정: 혼합형(추세 우위).</b> 본업은 메모리 출하·가동률에 연동되는 <b>지표 추세형</b>이지만, 2026년은 <b>DRAM/HBM4 퀄 통과·양산 개시라는 이벤트</b>가 이익 기울기를 결정하므로 이벤트 축이 겹친다. 급등(1년 +582%) 이후엔 <b>수급·밸류 재계산 이벤트</b>(실적 발표일)의 비중이 커진다.</div>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>지표</th><th>선행성 이유</th><th>확인처</th><th>주기</th><th>무료</th><th>현재 수치·방향 (조회 시점)</th></tr>
+    <tr><td><b>SK하이닉스·삼성 HBM 생산계획·가동률</b></td><td>프로브카드 소모의 원천 (출하 연동)</td><td>메모리사 IR 컨콜</td><td>분기</td><td>○</td><td>HBM 확대 사이클 지속, HBM4 램프 국면 <span class="pill estm">추정</span> (26.7)</td></tr>
+    <tr><td><b>티에스이 제품별 매출 (특히 PC)</b></td><td>DRAM 전환 속도의 직접 계측</td><td>DART 분기보고서·리포트</td><td>분기</td><td>○</td><td>PC 2025 +72~79% 추정, 2026 +47% 전망(신한/데일리인베스트)</td></tr>
+    <tr><td><b>글로벌 프로브카드 빅4 실적</b></td><td>산업 수요·티에스이 침투 여지의 벤치마크</td><td>FormFactor 등 해외 IR</td><td>분기</td><td>○</td><td>빅4 매출 2025 +28%, 2026 +23% 전망(하나 인용)</td></tr>
+    <tr><td><b>DRAM 고정가·낸드 가동률</b></td><td>소모품 수요의 기저</td><td>트렌드포스 인용 뉴스</td><td>월간</td><td>○</td><td>메모리 상승 사이클, 단 "피크아웃 논란" 헤드라인 등장 감시</td></tr>
+    <tr><td><b>자회사 타이거일렉 실적</b></td><td>연결 이익의 스윙 요인 (PCB 풀가동 여부)</td><td>타이거일렉(219130) 공시</td><td>분기</td><td>○</td><td>3Q25 누적 흑전(−2억→+49억), 풀가동 지속 보도</td></tr>
+    <tr><td><b>중국 C사 대손 추이</b></td><td>2026 기저 반전 크기 결정</td><td>분기보고서 주석</td><td>분기</td><td>○</td><td>2024 12억 → 3Q25누적 100억, 추가분 미미 전망(LS) — 확인 필요</td></tr>
+    <tr><td><b>신용잔고·수급</b></td><td>+582% 급등 후 하락 증폭 변수</td><td>KRX·증권사 HTS</td><td>주간</td><td>○</td><td><span class="pill unkn">미확인</span> — 급등 직후 점검 필수</td></tr>
+  </table></div>
+
+  <h3>실전 체크리스트 (무료)</h3>
+  <ul>
+    <li><b>주간:</b> ① DART 티에스이·타이거일렉 신규 공시 ② 프로브카드·HBM 관련 보도 ③ 이벤트 없는 ±15% 변동 시 신용·수급 확인</li>
+    <li><b>월간:</b> ① DRAM/낸드 가격·가동률 방향 ② 메모리 "피크아웃" 담론 강도 ③ FormFactor 등 빅4 뉴스</li>
+    <li><b>분기:</b> ① 실적의 <b>제품별 PC 매출 + 별도/연결 OPM 쌍</b> ② SK하이닉스·삼성 HBM4 컨콜 ③ 대손·인건비 기저 반전 확인 ④ 자회사 타이거일렉 실적</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 프로브카드 매출을 낸드/DRAM으로 분해 추적할 공개 소스가 있는가(리포트 채널체크 외)?<br>
+  ② 타이거일렉 지분 44.7%의 연결 방식 — 지분법이 아닌 완전연결이면 소수주주 지분이 순이익을 얼마나 깎는가?</div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="s6">
+  <div class="sec-h"><span class="no">SEC 06</span><h2>영업 레버리지와 CAPEX</h2></div>
+
+  <h3>고정비/변동비 구조 <span class="tag">자체 추정</span></h3>
+  <p>검사 부품업은 <b>인건비(직원 911명, 2025.3Q)·설비 감가상각이 고정비의 몸통</b>. 2024→2025 인건비가 누적 632억→797억으로 급증한 것이 2025 이익을 눌렀다. 변동비는 재료(PCB 등)이나 자회사 내재화로 통제. 결과: <b>매출 임계 통과 시 이익 레버리지가 크되, 2025년은 DRAM 개발 인력·대손이라는 선행비용이 레버리지를 상쇄</b>한 해였다.</p>
+
+  <h3>증분이익률 실측 (연결, Δ영업이익 ÷ Δ매출)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구간</th><th class="num">Δ매출 (억)</th><th class="num">ΔOP (억)</th><th class="num">증분이익률</th><th>비고</th></tr>
+    <tr><td>2023→2024</td><td class="num">+990</td><td class="num">+422</td><td class="num"><b>42.6%</b></td><td>적자탈출 구간 — 레버리지 극대</td></tr>
+    <tr><td>2024→2025</td><td class="num est">~0</td><td class="num est">~+16</td><td class="num est">n/a (매출 정체)</td><td>대손·인건비 선행이 물량 레버리지 상쇄 — 일회성 제거 시 실질 증분 &gt; 표면</td></tr>
+    <tr><td>2025→2026E</td><td class="num est">+1,262~1,931</td><td class="num est">+330~509</td><td class="num est"><b>~26%</b></td><td>컨센 기준 — 기저 반전 포함(대손 소멸·인건비 안정)</td></tr>
+  </table></div>
+  <p class="tbl-note">2024→2025 구간은 매출 정체+일회성으로 증분율 계산 무의미 → <b>일회성 제거 전/후 병기 필요</b>: 대손 100억·인건비 증분 ~220억을 정상화하면 실질 이익력은 표면보다 높음. 유효 증분 공헌이익률은 <b>~40%대(2024 기준)</b>로 채택.</p>
+
+  <h3>시각화 ① — 증분 매출 100원의 여정</h3>
+  <div class="lev-row">
+    <div class="cap"><span>2023→2024 (적자탈출)</span><b>증분 100원 중 이익 42.6원</b></div>
+    <div class="lev-bar"><div class="cost" style="width:57.4%">비용 57.4</div><div class="profit" style="width:42.6%">이익 42.6</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>2024→2025 (매출 정체·일회성 흡수)</span><b class="est">증분 무의미 — 대손·인건비가 이익 상쇄</b></div>
+    <div class="lev-bar" style="background:repeating-linear-gradient(45deg,#e0bfab,#e0bfab 6px,#efd9c8 6px,#efd9c8 12px)"><div style="width:100%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;color:#682712;font-weight:700">일회성(대손 100억·인건비 +220억) 제거 시 실질 이익력 &gt; 표면</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>2025→2026E (기저 반전)</span><b>증분 100원 중 이익 ~26원</b></div>
+    <div class="lev-bar"><div class="cost" style="width:74%">비용 74</div><div class="profit" style="width:26%">이익 26</div></div>
+  </div>
+  <p class="fn">이익 증분이 100을 넘는 구간 없음. 2024→2025는 매출이 안 늘고 일회성이 이익을 갉은 특수 구간이라 빗금 처리. 2026E 증분율(~26%)이 2024(42.6%)보다 낮은 건 <b>OPM이 이미 올라와 배율이 자연 감소</b>했기 때문(아래 게이지).</p>
+
+  <h3>시각화 ② — 배율 게이지</h3>
+  <div class="gauge">
+    <div class="ruler"></div>
+    <div class="mk opm" style="left:23.8%">2025 OPM ~11.9%</div>
+    <div class="mk inc" style="left:85.2%">증분 공헌이익률 ~42.6%</div>
+    <div class="tick" style="left:0%">0%</div><div class="tick" style="left:20%">10%</div><div class="tick" style="left:40%">20%</div><div class="tick" style="left:60%">30%</div><div class="tick" style="left:80%">40%</div><div class="tick" style="left:100%">50%</div>
+  </div>
+  <div class="callout info"><b>배율 = 42.6 ÷ 11.9 ≈ 3.6배</b>: 매출 1% 변화가 이익 ~3.6% 움직이는 구간. 2026 OPM이 16~17%로 오르면 같은 공헌이익률에서 배율은 <b>~2.5배로 자연 감소</b>. 주성엔지니어링(배율 5.9배, OPM 10%대)과 유사한 위치이나, 티에스이는 <b>소모품 성격으로 하방 골이 얕아 역레버리지 리스크가 상대적으로 작다</b>.</div>
+
+  <h3>시나리오 <span class="tag">2025 기준: 매출 ~3,481 / OP ~415억 · 공헌이익률 42% 적용</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>시나리오</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th>비고</th></tr>
+    <tr><td>+10%</td><td class="num">3,829</td><td class="num">~561</td><td class="num">14.6%</td><td>OP +35% — 배율 3.6배 정합</td></tr>
+    <tr><td>+20%</td><td class="num">4,177</td><td class="num">~707</td><td class="num">16.9%</td><td>OP +70%</td></tr>
+    <tr><td>컨센 +15~26%</td><td class="num">4,743~5,412</td><td class="num">745~924</td><td class="num">16~17%</td><td>대손·인건비 기저 반전 포함 시 컨센 정합</td></tr>
+  </table></div>
+  <p>레버리지는 <b>물량(출하) × 믹스(낸드→DRAM/HBM) × 일회성 소멸(대손 기저)</b>의 곱. 2026 컨센 급증의 상당 부분이 세 번째(기저 반전)에 기대고 있다는 점이 중요 — <b>순수 물량·믹스 성장분과 기저효과분을 구분</b>해야 지속성을 판단할 수 있다.</p>
+
+  <h3>CAPEX·증설 <span class="tag">공시 미확인 — 프레임</span></h3>
+  <p>대형 증설 CAPEX 공시는 이번 검색에서 특정되지 않음 <span class="pill unkn">미확인</span>. 프로브카드는 장치산업보다 <b>인력·클린룸 중심</b>이라 CAPA 확장이 인력 증원(이미 진행)과 설비 증설로 나뉨. 자회사 타이거일렉의 PCB 풀가동은 <b>증설 여부가 병목·상방 변수</b>. 투자액·회수기간은 공시 확인 후 산정 과제.</p>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 2026 컨센 OP 급증에서 순수 성장분 vs 기저효과분(대손·인건비)의 비중은?<br>
+  ② 타이거일렉 PCB CAPA가 티에스이 프로브카드 성장의 병목이 될 가능성은?</div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="s7">
+  <div class="sec-h"><span class="no">SEC 07</span><h2>리스크와 밸류에이션</h2></div>
+
+  <h3>실적 리스크 — 훼손 시나리오 3개</h3>
+  <div class="risk-grid">
+    <div class="risk"><div class="rt">① DRAM/HBM4 전환 지연</div>
+      <div class="row"><b>원인</b> — S사 HBM4 프로브카드 양산 램프 지연, 빅4(FormFactor) 방어로 점유 확대 실패</div>
+      <div class="row"><b>영향</b> — 2026 믹스 상승 가정 붕괴, 컨센 OP 745~924억 하향</div>
+      <div class="sig">⚠ 조기경보 — 분기 PC 매출 성장률 둔화, 별도 OPM 정체 · 확인처: 분기보고서·채널체크 · 대응: 경계→축소</div></div>
+    <div class="risk"><div class="rt">② 메모리 가동률 하강</div>
+      <div class="row"><b>원인</b> — "피크아웃" 현실화로 낸드·DRAM 출하 둔화 (소모품 수요 직접 타격)</div>
+      <div class="row"><b>영향</b> — 2023년형 급락 재현(적자까진 아니어도 이익 반감)</div>
+      <div class="sig">⚠ 조기경보 — DRAM 고정가 하락 전환, 메모리사 가동률 조정 · 확인처: 트렌드포스·컨콜 · 대응: 축소</div></div>
+    <div class="risk"><div class="rt">③ 일회성 재발·자회사 손실</div>
+      <div class="row"><b>원인</b> — 중국 C사 추가 대손, 자회사(OLED·엘디티 등) 적자 확대</div>
+      <div class="row"><b>영향</b> — 2026 기저 반전 시나리오 훼손, 연결 이익 희석 지속</div>
+      <div class="sig">⚠ 조기경보 — 분기 대손상각비·자회사 순손실 · 확인처: 분기보고서 주석 · 대응: 경계</div></div>
+  </div>
+
+  <h3>비영업 리스크</h3>
+  <ul>
+    <li><b>지배구조·수직계열 복잡성(최대 논점):</b> 티에스이는 <b>상장 자회사 타이거일렉(219130)·엘디티(096870) + 비상장 메가터치·지엠테스트</b>를 거느린 소그룹. 최대주주 권상준 회장 외 특수관계인 <b>~50~61%</b>(자료별 상이, 대부분 친인척). 리스크는 ① <b>내부거래·일감</b>(타이거일렉 PCB 내부공급)의 이전가격 투명성 ② <b>엘디티 3자배정 유증 편입</b>(2025.12, 적자 설계사) 등 <b>계열 지원성 자금 이동</b> 가능성 ③ 상장 자회사 중복상장에 따른 밸류 할인. 과거 다수 자회사 흡수합병(피엠피·메가프로브·이노글로벌) 이력 — 합병·편입이 잦은 구조.</li>
+    <li><b>대주주·승계:</b> 권상준(1958년생) → 전문경영인(김철호·김명진 각자대표) 체제. 승계 구도상 지분 이동 감시.</li>
+    <li><b>CB·BW·증자:</b> 티에스이 본체의 최근 희석성 발행 <span class="pill unkn">미확인 — DART 재확인</span>. 단 지엠테스트 FI 풋옵션(기타금융채무) 존재 — 우발부채 성격.</li>
+    <li><b>소송·규제:</b> 특이사항 미발견 <span class="pill unkn">미확인</span>.</li>
+  </ul>
+
+  <h3>밸류에이션 <span class="tag">웹 확인, 시점 병기</span></h3>
+  <div class="chart-box">
+    <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,Menlo,monospace">
+      <line x1="60" y1="15" x2="60" y2="205" stroke="#ddd7cc"/>
+      <line x1="60" y1="205" x2="685" y2="205" stroke="#ddd7cc"/>
+      <g font-size="10" fill="#7a7268">
+        <text x="8" y="19">300k</text><line x1="60" y1="15" x2="685" y2="15" stroke="#ece7dd"/>
+        <text x="8" y="82">200k</text><line x1="60" y1="78" x2="685" y2="78" stroke="#ece7dd"/>
+        <text x="8" y="145">100k</text><line x1="60" y1="141.7" x2="685" y2="141.7" stroke="#ece7dd"/>
+        <text x="22" y="202">0</text>
+      </g>
+      <!-- y = 205 - price/300000*190 ; 저점 36,150(25.8) ~ 271,000(26.7) -->
+      <polyline fill="none" stroke="#B45309" stroke-width="2.5"
+        points="90,182.1 200,162.4 300,142.5 380,135.3 440,135.3 520,109.3 600,62.4 650,33.4"/>
+      <g font-size="10">
+        <circle cx="90" cy="182.1" r="3.5" fill="#B45309"/><text x="66" y="199" fill="#7a7268">25.8 저점 36,150</text>
+        <circle cx="300" cy="142.5" r="3.5" fill="#B45309"/><text x="270" y="132" fill="#7a7268">26.1 67,200</text>
+        <circle cx="440" cy="135.3" r="3.5" fill="#B45309"/><text x="405" y="125" fill="#7a7268">26.3 110,000</text>
+        <circle cx="600" cy="62.4" r="4" fill="#B45309"/><text x="556" y="52" fill="#7a7268">7/9 전 22.9만대</text>
+        <circle cx="650" cy="33.4" r="5" fill="#7c3a06"/><text x="560" y="26" fill="#7c3a06" font-weight="700">7/10 +21% ≈271,000</text>
+      </g>
+      <!-- target band -->
+      <line x1="60" y1="122" x2="685" y2="122" stroke="#9a3d20" stroke-dasharray="4 4"/>
+      <text x="430" y="118" font-size="10" fill="#9a3d20">신한 목표가 14만 (3/6 상향, 現 대비 −48%)</text>
+      <text x="60" y="242" font-size="10" fill="#7a7268">경로는 확인된 점의 개략 연결(실측 아님). 7/10 주가는 시총 3조÷1,106만주 자체계산 — 열람 시 재확인 필수.</text>
+    </svg>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>항목</th><th>수치</th><th>확인 시점·비고</th></tr>
+    <tr><td>주가 / 시가총액</td><td class="num">≈271,000원 / ≈3조</td><td>2026.7.10 (더위드카 "시총 3조") — 주가는 시총÷1,106만주 자체계산. <b>급등 직후·변동성 극심, 열람 시 재확인</b></td></tr>
+    <tr><td>52주 밴드</td><td class="num">36,150 ~ 신고가(7/10)</td><td>저점 25.8 → 신고가 26.7, 1년 +582%. 現 위치: 밴드 최상단</td></tr>
+    <tr><td>12M 선행 지표</td><td class="num">시총/2026E OP ≈ 32~40배</td><td>컨센 OP 745~924억 기준 자체계산. 2026E PER은 급등 전 10.9배(1월)에서 급등 후 20배+ 추정 — <b>1월의 "저평가" 논거는 급등으로 소멸</b></td></tr>
+    <tr><td>목표가 컨센서스</td><td class="num">신한 14만(3/6) / 하나 13만(3/11)</td><td>급등 전 상향치. <b>7/10 주가가 최고 목표가(14만)의 약 2배</b> — 6~7월 개정 <span class="pill unkn">미확인, 재확인 필수</span></td></tr>
+  </table></div>
+
+  <div class="callout warn"><b>"가격이 증명을 앞서갔는가" 판정: 실적이 증명한 부분 위에 가격이 더 크게 앞서갔다.</b> 증명된 것 — 2024 흑전(적자→OP 399억)·프로브카드 DRAM 가세·4Q24 서프라이즈는 <b>숫자로 확인된 사실</b>. 반면 <b>7/10 +21% 급등으로 시총 3조는 2026E OP의 32~40배</b>로, 3월 시점 "PER 10.9배 저평가" 논거를 완전히 벗어났다. 이미 가격에 있는 것: ① 2026 DRAM 전환 이익 급증 ② HBM4 S사 공급의 대량 확대 기대 ③ 대손 기저 반전. 가격에 없던(=급등이 새로 반영한) 것: HBM4 "5~6개/제품" 시나리오의 <b>대량·조기 실현</b>. <b>주성엔지니어링과 같은 "컨센-주가 역전"(주가 &gt; 목표가 2배) 구도</b>가 여기서도 나타났다 — 실적 스토리는 진짜지만, 7월 급등분은 컨센서스가 아직 정당화하지 못한 프리미엄이다.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 7/10 +21% 급등의 직접 트리거(특정 수주·뉴스)는 무엇이며, 공시로 확인되는가?<br>
+  ② 6~7월 증권사 목표가 개정 — 14만 이후 누가 얼마까지 올렸나(컨센의 추격 속도)?</div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="s8">
+  <div class="sec-h"><span class="no">SEC 08</span><h2>종합 투자 판단</h2></div>
+
+  <h3>핵심 질문과 검증 순서</h3>
+  <p><b>Q1. DRAM/HBM4 프로브카드 전환이 2026 컨센(OP 745~924억)을 채우고 그 이상으로 가속하는가?</b> — 실적 스토리의 본체. <b>Q2. 시총 3조(OP 32~40배)를 정당화할 만큼 전환이 빠른가, 아니면 7월 급등분이 앞서간 것인가?</b> — 진입 타이밍의 문제.</p>
+  <p><b>검증 순서:</b> ① 2025 사업보고서(2026.3.25경)로 <b>대손·인건비 제거 후 정상 이익력</b> 확인 → ② 분기 실적의 <b>프로브카드 매출 성장률 + 별도 OPM</b> → ③ S사 HBM4 양산 물량 확대 확인 → ④ 7/10 급등 트리거의 공시 실체.</p>
+
+  <h3>3질문 프레임 좌표 <span class="tag">시리즈 상대 위치</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>축</th><th>점수</th><th>판정·시리즈 비교</th></tr>
+    <tr><td>① 이익 업사이클 강도</td><td class="num"><b>3 / 3</b></td><td>OP ~415→745~924억(+80~120%) 컨센, DRAM·HBM4 믹스의 P·Q 동시 상승 + 대손 기저 반전. 소모품 연동이라 사이클 골이 얕음 — 강도 높고 질도 좋음</td></tr>
+    <tr><td>② 주가 반영도·잔여 룸</td><td class="num"><b>1 / 3</b></td><td>7/10 +21%로 목표가(14만)의 2배 도달, 1년 +582%. 주성처럼 "컨센이 주가를 추격"하는 국면 진입 — 2026 실적만으론 룸 소진, 추가 룸은 HBM4 조기·대량 실현 필요</td></tr>
+    <tr><td>③ 경로 변수 수</td><td class="num"><b>3 / 3 (많음)</b></td><td>DRAM 전환속도 × 메모리 가동률 × 일회성(대손) × 수직계열 지배구조 × 급등 후 수급 — 원익QnC(1변수)보다 많고 주성(3변수)과 유사. 단 소모품 방어성으로 하방 골은 상대적으로 얕음</td></tr>
+  </table></div>
+
+  <h3>이탈 규율 3단계</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>단계</th><th>발동 조건</th><th>행동</th></tr>
+    <tr><td><b>경계</b></td><td>분기 프로브카드 매출 성장률 둔화 or 별도 OPM 정체 or 대손 추가 발생</td><td>신규 진입 금지, 제품별 매출 재확인</td></tr>
+    <tr><td><b>축소</b></td><td>2026E 컨센 OP 하향 or 메모리 가동률 조정 or DRAM 고정가 하락 전환 or 계열 지원성 자금이동 공시</td><td>절반 축소</td></tr>
+    <tr><td><b>이탈</b></td><td>HBM4/DRAM 전환 실패(빅4에 밀려 점유 확대 무산) — 성장 논리 자체 붕괴</td><td>전량 이탈. 낸드 소모품 밸류로 재계산 시 하방 큼</td></tr>
+    <tr><td style="color:var(--accent-deep)"><b>노이즈 판별</b></td><td>급락이 ① 시장·수급 요인이고 ② 프로브카드 매출·별도 OPM 유지 ③ DRAM 전환 트랙 정상일 때만 검토 기회. 단 <b>+582% 급등 후 밸류 부담은 노이즈가 아닌 신호</b>일 수 있어 보수 적용</td><td>3조건 확인 후에만</td></tr>
+  </table></div>
+
+  <h3>IR 핵심 질문 1개</h3>
+  <div class="callout good"><b>"2026년 프로브카드 매출에서 DRAM/HBM4 비중과 그 대당 ASP(낸드 대비 배수), 그리고 S사 HBM4 물량이 '제품당 5~6개' 시나리오대로 발주되고 있습니까?"</b><br>— "DRAM 비중이 빠르게 오르고 ASP가 낸드의 몇 배 + HBM4 다수 발주 확인"이면 시총 3조가 성장으로 정당화되는 경로가 열리고, "아직 낸드 중심·DRAM은 초기"면 7월 급등분은 앞서간 프리미엄이다. 답 하나로 밸류 정당성이 갈린다.</div>
+
+  <h3>미확인 데이터 · 다음 갱신 트리거</h3>
+  <ul>
+    <li><b>미확인:</b> ① 2025 연간 확정치(사업보고서) ② 프로브카드 낸드/DRAM 분해 ③ HBM4 실제 발주 규모 ④ 6~7월 목표가 개정 ⑤ 7/10 급등 공시 트리거 ⑥ 연결 내부거래·소수주주 지분 크기 ⑦ 티에스이 본체 CB/BW ⑧ 7/15 현재가</li>
+    <li><b>갱신 트리거·일정:</b> ① <b>2026.3.25 2025 사업보고서·연간 확정</b> (Investing.com 기재 — 대손·인건비 정상화 확인) ② 2Q26 실적(8월 중순 추정) ③ SK하이닉스·삼성 HBM4 컨콜 ④ 타이거일렉 분기 실적 ⑤ 프로브카드 대형 수주·퀄 통과 뉴스</li>
+  </ul>
+
+  <h3>이번 분석의 3대 발견 (재사용 가능한 일반 원리)</h3>
+  <ul>
+    <li><b>① 별도 OPM과 연결 OPM을 쌍으로 읽는다:</b> 수직계열화로 자회사를 완전연결한 소그룹(티에스이=검사 3종+PCB+설계)은 <b>연결 OPM이 본업 실력(별도 OPM)을 희석</b>한다. 1Q25 연결 3.8% vs 별도 13.9%처럼 괴리가 큰 분기의 연결 숫자만 보면 실력을 오독한다. 자회사 다수 보유 종목 전반에 재사용.</li>
+    <li><b>② 소모품 연동 팩터는 장비(CAPEX) 팩터와 분리한다:</b> 프로브카드는 발주(CAPEX)가 아니라 <b>출하·가동률에 연동되는 소모품</b>이라 장비주(주성·원익IPS) 사이클보다 골이 얕고 시차가 짧다. "반도체 소부장"으로 뭉뚱그리지 말고 <b>CAPEX 연동 vs 출하 연동</b>으로 팩터를 쪼개야 분산 가치와 하방 방어성이 보인다.</li>
+    <li><b>③ "일회성이 이익을 누른 정체 해"는 기저 반전의 예약이다:</b> 2025년처럼 매출은 정체인데 대손(100억)·개발 인력(선행 인건비)이 이익을 눌러 증분율이 무의미해진 해는, 그 일회성이 소멸하는 이듬해에 <b>기저효과로 이익이 튀는 것이 예약</b>돼 있다. 단, 컨센 급증에서 <b>순수 성장분과 기저 반전분을 반드시 분리</b>해야 지속성을 오판하지 않는다. (주성 "증분율 대칭성 검사"의 짝 원리)</li>
+  </ul>
+</section>
+
+<!-- ================= footer ================= -->
+<footer>
+  <h4>분석 기준일 · 확정/추정 구분</h4>
+  <p>· 작성: <span class="mono">2026-07-15</span> · 데이터: 2026-07-15 웹 검색 (DART 원문 일부 미열람 — 2025 연간 확정·연결주석은 사업보고서 확인 전 2차 자료/리포트 기반)<br>
+  · <span class="mono">[확정]</span> 2022~2024 연간, 3Q24~3Q25 분기(잠정·리포트), 제품별 매출(LS 리포트), 자회사 지분, 엘디티 편입, 4Q24 OP 137억.<br>
+  · <span class="mono">[역산]</span> 4Q25 추정, 일부 연간 구성.<br>
+  · <span class="mono">[시장 추정]</span> 2026E 실적(하나 745억·신한 924억), 목표가(신한 14만·하나 13만, 3월), 프로브카드 성장률, HBM4 "5~6개" 시나리오.<br>
+  · <span class="mono">[자체 추정]</span> 7/10 주가(시총 3조÷1,106만주), 공헌이익률 42%, 시총/OP 배수, 별도/연결 희석 해석.<br>
+  · <span class="mono">[미확인]</span> 2025 연간 확정, 낸드/DRAM 프로브카드 분해, HBM4 발주규모, 6~7월 목표가, 7/10 급등 트리거, 본체 CB/BW, 현재가(7/15).</p>
+  <h4>주요 출처</h4>
+  <p>LS증권 리포트(2025.7.25, 2026.1.21 — 분기·제품별 상세) · 신한투자증권(2026.2.25·3.6) · 하나증권(2025.9, 2026.3.11) · 더위드카(2026.7.10 "시총 3조·신고가") · 씽크풀/비즈니스포스트(지배구조) · KIND 분기보고서(2025.11.14).</p>
+  <h4>자료 한계</h4>
+  <p>주가는 2026.7.10 시총 3조 기준 자체계산(≈271,000원) — 급등 직후·변동성 극심하므로 모든 가격·멀티플은 열람 시점 재확인. 2025 연간 실적은 자료 간 편차(OP 415~521억)가 있어 사업보고서 확정 전 잠정. 제품별·자회사별 수치는 증권사 리포트 추정이 섞여 있음.</p>
+  <h4>자매 리포트 (시리즈)</h4>
+  <p><span class="mono">솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두 · 덕산 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 이오테크닉스 · 원익IPS · 브이엠 · 코오롱인더 · 퍼스텍 · 주성엔지니어링</span> — 특히 주성엔지니어링(컨센-주가 역전·증분율 검사)·원익IPS(BEP 레버리지)·원익QnC(자회사 희석)와 직접 연결.</p>
+  <p style="margin-top:14px;border-top:1px solid #3a2a15;padding-top:12px;color:#a8895f">본 리포트는 정보 제공 목적이며 투자 판단과 그 결과는 투자자 본인 책임입니다. 액센트 컬러: 번트오렌지 <span class="mono">#B45309</span> (티에스이 고유 — 기존 팔레트와 중복 없음).</p>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>하나머티리얼즈 (166090) — 식각 챔버 속 실리콘 소모품</title>
+<script type="application/json" id="dashboard-meta">
+{
+  "code": "166090",
+  "name": "하나머티리얼즈",
+  "sector": "mat",
+  "intensity": 3,
+  "variables": 2,
+  "note": "1Q26 OP +144% 실측·컨센 +50%, TEL집중·모회사보증 변수",
+  "desc": "TEL향 실리콘 식각부품 과점사 — 가동률 스톡형 수혜에 SiC·선단 믹스로 OPM 리레이팅 구간",
+  "tags": "실리콘부품 일렉트로드 포커스링 SiC 식각 도쿄일렉트론 가동률 소모품",
+  "catalysts": [{"date": "2026-08-19", "label": "2Q26 실적 발표"}, {"date": "2026-10-30", "label": "NAND V10 전환투자 발주 확인 (추정)"}]
+}
+</script>
+<style>
+  :root{
+    --bg:#edecf2;
+    --paper:#ffffff;
+    --ink:#1d1a26;
+    --muted:#6f6a7e;
+    --line:#d9d6e3;
+    --line-soft:#e7e5ef;
+    --accent:#6D28D9;        /* 딥 바이올렛 — 하나머티리얼즈 고유 액센트 (기존 팔레트와 중복 없음) */
+    --accent-deep:#4c1d95;
+    --accent-bg:#efe9fb;
+    --warn:#a03c2a;
+    --warn-bg:#f7eae6;
+    --info:#44506b;
+    --info-bg:#eaedf4;
+    --est:#7a6a2a;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.62;-webkit-font-smoothing:antialiased;padding:20px 12px 80px;display:flex;justify-content:center;font-size:14.5px}
+  .wrap{width:100%;max-width:860px}
+  .mono{font-family:var(--mono)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .est{color:var(--est);font-weight:600}
+  .pos{color:var(--accent-deep);font-weight:600}
+  .neg{color:var(--warn);font-weight:600}
+  .fn{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+  .cover{background:linear-gradient(155deg,#170f2b 0%,#33206b 58%,#5423ab 100%);color:#f0ecfa;border-radius:18px;padding:30px 24px 26px;position:relative;overflow:hidden;margin-bottom:14px}
+  .cover::before{ /* 웨이퍼 링 시그니처 */
+    content:"";position:absolute;right:-60px;top:-60px;width:250px;height:250px;border-radius:50%;
+    border:1px solid rgba(240,236,250,.18);
+    box-shadow:0 0 0 28px rgba(240,236,250,.05),0 0 0 56px rgba(240,236,250,.04)}
+  .cover .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:#b9a4ee;margin-bottom:10px;position:relative;z-index:1}
+  .cover h1{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.25;position:relative;z-index:1}
+  .cover h1 .code{font-family:var(--mono);font-size:15px;font-weight:500;color:#b9a4ee;margin-left:8px}
+  .cover .sub{font-size:13.5px;color:#d4c7f2;margin-top:8px;max-width:610px;position:relative;z-index:1}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px;position:relative;z-index:1}
+  @media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:11px 12px}
+  .kpi .l{font-size:10.5px;letter-spacing:.06em;color:#b9a4ee;font-family:var(--mono)}
+  .kpi .v{font-size:16px;font-weight:800;font-family:var(--mono);margin-top:3px}
+  .kpi .d{font-size:10.5px;color:#cbbcef;margin-top:2px}
+
+  .thesis{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:18px 20px;margin-bottom:22px;box-shadow:0 1px 2px rgba(29,26,38,.04),0 8px 22px rgba(29,26,38,.05)}
+  .thesis .t{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700;margin-bottom:8px}
+  .thesis p{font-size:14.5px}
+  .thesis p b{color:var(--accent-deep)}
+
+  .nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+  .nav a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;border:1px solid var(--line);background:var(--paper);border-radius:99px;padding:5px 11px;transition:.15s}
+  .nav a:hover{color:var(--accent-deep);border-color:var(--accent)}
+
+  section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin-bottom:18px;position:relative;box-shadow:0 1px 2px rgba(29,26,38,.03),0 6px 18px rgba(29,26,38,.04)}
+  @media(min-width:640px){section{padding:26px 28px}}
+  section::before{content:"";position:absolute;top:10px;right:10px;width:14px;height:14px;border-top:2px solid var(--line);border-right:2px solid var(--line);border-radius:0 4px 0 0}
+  .sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .sec-h .no{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:#fff;background:var(--accent);border-radius:6px;padding:3px 8px}
+  .sec-h h2{font-size:19px;font-weight:800;letter-spacing:-.01em}
+  h3{font-size:15px;font-weight:700;margin:20px 0 8px;color:var(--accent-deep)}
+  h3 .tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--muted);margin-left:6px}
+  p{margin-bottom:10px}
+  ul{margin:0 0 10px 18px}
+  li{margin-bottom:5px}
+
+  .tbl-wrap{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;min-width:540px;font-size:12.5px}
+  th{background:#f0eef7;color:var(--accent-deep);font-weight:700;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:7px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl-note{font-size:11px;color:var(--muted);margin-top:6px}
+
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;vertical-align:1px}
+  .pill.conf{background:var(--accent-bg);color:var(--accent-deep)}
+  .pill.estm{background:#f2ecd7;color:var(--est)}
+  .pill.calc{background:var(--info-bg);color:var(--info)}
+  .pill.unkn{background:var(--warn-bg);color:var(--warn)}
+
+  .callout{border-radius:10px;padding:12px 14px;margin:10px 0;font-size:13.5px;border:1px solid}
+  .callout.warn{background:var(--warn-bg);border-color:#e5c8bd;color:#6e2818}
+  .callout.info{background:var(--info-bg);border-color:#ced5e4;color:#303a52}
+  .callout.good{background:var(--accent-bg);border-color:#d8c8f5;color:var(--accent-deep)}
+
+  .q2{background:#f4f2f9;border:1px dashed var(--line);border-radius:10px;padding:11px 14px;margin-top:14px;font-size:13px}
+  .q2 .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:5px}
+
+  .stackbar{display:flex;height:38px;border-radius:9px;overflow:hidden;border:1px solid var(--line);margin:12px 0 6px}
+  .stackbar div{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--c)}
+
+  .chain{margin:14px 0}
+  .chain .node{background:#f4f2f9;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:13px}
+  .chain .node b{display:block;font-size:13.5px;color:var(--accent-deep)}
+  .chain .node .chk{font-family:var(--mono);font-size:10.5px;color:var(--info);margin-top:3px;display:block}
+  .chain .arrow{display:flex;justify-content:center;color:var(--accent);font-size:15px;padding:2px 0;font-weight:700}
+
+  .lev-row{margin:14px 0}
+  .lev-row .cap{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;gap:8px;flex-wrap:wrap}
+  .lev-row .cap b{font-family:var(--mono)}
+  .lev-bar{display:flex;height:30px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+  .lev-bar .cost{background:#cac4da;color:#443c58;display:flex;align-items:center;padding-left:10px;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar .profit{background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar.rev .cost{background:#e2beb2;color:#6e2818}
+  .lev-bar.rev .profit{background:var(--warn)}
+
+  .gauge{position:relative;height:76px;margin:18px 4px 6px}
+  .gauge .ruler{position:absolute;left:0;right:0;top:38px;height:10px;border-radius:5px;background:linear-gradient(90deg,#e9e6f2,#cdbdf0 55%,#7b3ff2)}
+  .gauge .tick{position:absolute;top:50px;font-family:var(--mono);font-size:10px;color:var(--muted);transform:translateX(-50%)}
+  .gauge .mk{position:absolute;top:8px;transform:translateX(-50%);text-align:center;font-family:var(--mono);font-size:10.5px;font-weight:700;white-space:nowrap}
+  .gauge .mk::after{content:"";display:block;width:2px;height:24px;margin:2px auto 0}
+  .gauge .mk.opm{color:var(--info)} .gauge .mk.opm::after{background:var(--info)}
+  .gauge .mk.inc{color:var(--accent-deep)} .gauge .mk.inc::after{background:var(--accent)}
+
+  .chart-box{border:1px solid var(--line);border-radius:12px;padding:12px 8px 6px;margin:12px 0;background:#faf9fd}
+  .chart-box svg{width:100%;height:auto;display:block}
+
+  .risk-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0}
+  @media(min-width:640px){.risk-grid{grid-template-columns:repeat(3,1fr)}}
+  .risk{border:1px solid #e5c8bd;background:var(--warn-bg);border-radius:12px;padding:13px 14px;font-size:12.5px}
+  .risk .rt{font-weight:800;color:#6e2818;font-size:13px;margin-bottom:5px}
+  .risk .row{margin-top:5px}
+  .risk .row b{font-family:var(--mono);font-size:10.5px;color:#8c4632;letter-spacing:.06em}
+  .risk .sig{margin-top:7px;padding-top:7px;border-top:1px dashed #dcc0b4;font-family:var(--mono);font-size:11px;color:#8c4632}
+
+  footer{background:#181228;color:#bcadd9;border-radius:16px;padding:22px 22px;font-size:12px;line-height:1.7}
+  footer h4{color:#e9e2f7;font-size:13px;margin-bottom:6px;margin-top:14px}
+  footer h4:first-child{margin-top:0}
+  footer .mono{color:#a488e0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= 표지 ================= -->
+<div class="cover">
+  <div class="eyebrow">EQUITY DEEP-DIVE // 전공정 소재·부품 // 기준일 2026-07-15</div>
+  <h1>하나머티리얼즈 <span class="code">KOSDAQ 166090</span></h1>
+  <div class="sub">식각 챔버 안에서 웨이퍼와 함께 깎여나가는 실리콘 일렉트로드·링의 과점 공급사 — 도쿄일렉트론을 통해 세계 팹의 가동률에 올라탄 소모품 비즈니스</div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">주가 (7/2 종가)</div><div class="v">56,200원</div><div class="d">전일 −16.1% (업종 −11.6%)</div></div>
+    <div class="kpi"><div class="l">시가총액 (7/2)</div><div class="v">1조 1,115억</div><div class="d">52주 23,450~70,700</div></div>
+    <div class="kpi"><div class="l">2025 매출 / OP</div><div class="v">2,735 / 501억</div><div class="d">+8.7% / +15.4% · OPM 18.3%</div></div>
+    <div class="kpi"><div class="l">강도 3 / 변수 2</div><div class="v">1Q26 OP +144%</div><div class="d">2026E OP 703~928억 컨센</div></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <div class="t">핵심 투자 명제</div>
+  <p>하나머티리얼즈는 <b>식각 공정에서 플라즈마에 함께 깎여나가는 실리콘 일렉트로드·링을 도쿄일렉트론(TEL) 등 장비사에 공급하는 과점 부품사</b>다. 소모품이라 매출은 CAPEX가 아니라 <b>세계 팹의 가동률(웨이퍼 투입량)에 연동되는 스톡형</b> — 시리즈 원리 "소재=stock"의 교과서다. 1Q26 매출 +59%·영업이익 +144%(분기 사상 최대)로 <b>슈퍼사이클 가동률 수혜가 실측</b>됐고, 2026년은 DRAM 선단 투자와 SiC 믹스로 OPM이 18%→24%로 리레이팅되는 해다. 주가는 목표가 컨센(70,800원) 아래에 있고 7/2 섹터 급락(−16%)까지 맞았다 — <b>이 종목의 질문은 "가격이 앞서갔는가"가 아니라 "7/2 급락이 노이즈인가 신호(피크아웃)인가"</b>다. 단, 모회사 하나마이크론 관련 연대보증 2,800억이라는 비영업 그림자가 있다.</p>
+</div>
+
+<nav class="nav">
+  <a href="#s1">01 사업</a><a href="#s2">02 수익구조</a><a href="#s3">03 트랙레코드</a><a href="#s4">04 전방·성장경로</a>
+  <a href="#s5">05 트래킹</a><a href="#s6">06 레버리지·CAPEX</a><a href="#s7">07 리스크·밸류</a><a href="#s8">08 종합</a>
+</nav>
+
+<!-- ================= 01 ================= -->
+<section id="s1">
+  <div class="sec-h"><span class="no">SEC 01</span><h2>사업의 이해 — 무엇을 만들어 누구에게 파는가</h2></div>
+
+  <p>2007년 설립(하나마이크론 자회사), 2017년 코스닥 상장. <b>식각(etch) 공정용 실리콘 부품 전문사</b>다. 식각 챔버 안에서 플라즈마가 웨이퍼를 깎을 때, 웨이퍼 위에서 가스를 분사하는 <b>일렉트로드(상부 전극)</b>와 웨이퍼를 둘러싸는 <b>포커스 링</b>도 함께 깎인다 — 즉 <b>일정 웨이퍼를 처리할 때마다 반드시 교체해야 하는 소모품</b>이다. 잉곳 성장부터 가공까지 수직 일관 생산하며, 차세대 소재인 <b>SiC(실리콘카바이드 — 내플라즈마성이 높아 교체 주기가 길고 단가가 높은 소재)</b> 부품과 파인 세라믹, 특수가스로 확장 중.</p>
+
+  <h3>제품·고객 구성</h3>
+  <div class="legend">
+    <span style="--c:#6D28D9">실리콘 부품 (일렉트로드·링)</span>
+    <span style="--c:#a78bdb">SiC·세라믹·기타</span>
+  </div>
+  <div class="stackbar">
+    <div style="width:88%;background:#6D28D9">실리콘 부품 ~2,417억 (88%)</div>
+    <div style="width:12%;background:#a78bdb">기타</div>
+  </div>
+  <p class="fn">2025년 실리콘 부품 매출 2,417억 (대신증권 추정, 2026.3.5 — 부문 공시 아닌 추정치). 총매출 2,735억 <span class="pill conf">확정</span> 대비 ~88%. 사실상 실리콘 부품 단일 사업으로 봐도 무방.</p>
+
+  <h3>판매 구조 — 직접 고객 vs 최종 수요 (다단계 — 이 종목의 핵심 구조)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>단계</th><th>주체</th><th>내용</th></tr>
+    <tr><td><b>직접 고객</b></td><td><b>도쿄일렉트론(TEL)</b> 중심 + Lam Research·AMAT·세메스 (대신증권 고객 구성 차트, 2026.5) + 국내 칩메이커 직납 일부</td><td>장비사가 자사 식각기의 순정 소모품으로 채택해 최종 팹에 공급하는 <b>장비사 경유(OEM) 구조</b>가 몸통. TEL 비중이 압도적으로 큰 것으로 알려짐 <span class="pill estm">시장 추정 — 수치 미공시</span></td></tr>
+    <tr><td><b>최종 수요</b></td><td>삼성·SK하이닉스·마이크론 등 세계 메모리 팹의 <b>가동률 × 식각 스텝 수</b></td><td>팹이 돌아가는 한 소모가 발생 — CAPEX 공백기에도 수요가 유지되는 스톡형. 미세화·3D 적층으로 식각 스텝이 늘수록 웨이퍼당 소모량 자체가 증가</td></tr>
+  </table></div>
+  <div class="callout info"><b>TEL 경유 구조의 양면:</b> (+) 장비사 순정 채택 = 팹별 영업 없이 세계 TEL 식각기 설치 베이스 전체에 올라탐, 신규 진입자는 TEL 인증을 뚫어야 해 해자가 됨. (−) 단일 고객 협상력 열위 + TEL의 이원화 정책 변경이 곧 최대 리스크. 퍼스텍의 "체계사 낙수"와 동형의 다단계 구조다.</div>
+
+  <h3>경쟁 구도 — 제품별 분리</h3>
+  <ul>
+    <li><b>실리콘 일렉트로드·링:</b> 국내외 과점 — 주요 경쟁: 월덱스(상장, 101160), 미쓰비시머티리얼·CoorsTek 등 일본·미국계, SK엔펄스 일부. 하나머티는 <b>TEL 순정 채널</b>이라는 지위가 차별점. 월덱스는 애프터마켓(비순정) 비중이 큰 것으로 알려져 <b>같은 제품군이어도 채널이 다름</b> <span class="pill estm">시장 통설</span>.</li>
+    <li><b>SiC 부품:</b> 티씨케이(CVD-SiC 링의 강자, 시리즈 기분석)·디에스테크노·케이엔제이 등과 경쟁 구도. 하나머티는 실리콘에서 SiC로 올라가는 도전자 포지션 — 침투율이 2026~27 관전점.</li>
+    <li><b>비상장 경쟁 간접 추적:</b> 일본계 경쟁사의 TEL 내 점유는 TEL 협력사 표창·일본 소재 전시회(세미콘재팬) 출품, 국내는 월덱스 실적·컨콜을 <b>거울 지표</b>로 활용(월덱스 성장률과의 격차 = 순정 채널 프리미엄의 계측).</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① TEL향 매출 비중의 정확한 수치와 계약 구조(연간 단가 협상 주기)는? — IR 확인 1순위<br>
+  ② SiC 부품의 현재 매출 규모와 티씨케이 대비 기술 격차(순도·수명)는 어느 정도인가?</div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="s2">
+  <div class="sec-h"><span class="no">SEC 02</span><h2>수익 구조 — 돈을 어떻게 버는가</h2></div>
+
+  <h3>손익 공식</h3>
+  <div class="callout info mono" style="font-size:13px">
+    매출 = 세계 팹 웨이퍼 투입량(가동률) × 웨이퍼당 식각 스텝 수 × 부품 교체계수 × ASP<br>
+    영업이익 = 매출 × GPM − 고정비(감가상각·인건비) → 잉곳~가공 일관공정의 가동률 레버리지형
+  </div>
+  <p>네 변수 중 <b>가동률(경기)</b>과 <b>스텝 수(구조 — 미세화·3D 적층로 계속 증가)</b>가 성장의 두 엔진. 교체계수·ASP는 SiC 믹스로 개선되는 변수다. CAPEX 사이클이 아니라 <b>생산량 사이클</b>에 올라탄다는 점에서 티에스이(프로브카드)와 같은 "출하 연동 소모품" 계열.</p>
+
+  <h3>가격 결정 구조 판정</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>항목</th><th>분류</th><th>원가 전가</th></tr>
+    <tr><td>부품 판가</td><td><b>연간(또는 반기) 협상 + 프로그램별 견적</b> — 스팟 아님, 수주 시 고정 빈티지도 아님 <span class="pill estm">추정</span></td><td>폴리실리콘 원재료 가격 변동의 전가는 협상 주기 내 지연 전가 가능. 원재료비 비중이 낮고(가공비 중심) 잉곳 내재화로 노출 자체가 작음 — <b>전가 가능성보다 가동률이 압도적 변수</b></td></tr>
+    <tr><td>협상력</td><td>TEL 순정 채택이 가격 방어벽. 단 대량 고객의 정기 단가 인하(CR) 압력 상존</td><td>SiC·대구경 믹스 상향이 실질 방어 수단</td></tr>
+  </table></div>
+
+  <h3>제품별 이익 기여</h3>
+  <p>부문 손익 미공시. 실리콘 부품이 매출 88%·이익 대부분으로 매출-이익 괴리 이슈는 작다. 다만 <b>SiC는 초기 수율·감가상각으로 당장은 마진 희석, 안착 시 실리콘보다 고마진</b>이 되는 J커브 품목 <span class="pill estm">추정</span> — 2026년 OPM 리레이팅(18→24%) 전망의 일부가 여기 걸려 있다.</p>
+
+  <h3>마진의 원천(+)과 훼손(−)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>원천 (+)</th><th>훼손 (−)</th></tr>
+    <tr><td>잉곳~가공 수직 일관 → 가동률 상승 시 고정비 희석</td><td>가동률 하강 시 같은 기울기의 역레버리지 (2023년 실증: 매출 −24%에 OP −56%)</td></tr>
+    <tr><td>TEL 순정 채널 — 인증 장벽·안정 물량</td><td>TEL 집중 — 단가 인하(CR)·이원화 압력</td></tr>
+    <tr><td>미세화·3D 적층 → 웨이퍼당 소모량 구조적 증가</td><td>SiC 초기 비용·신공장 감가상각 선행</td></tr>
+    <tr><td>SiC·대구경 믹스 → ASP·수명 프리미엄</td><td>NAND 고객 공정 전환 지연 시 관련 부품 수요 공백 (DB증권 1/2 지적)</td></tr>
+  </table></div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 연간 단가 협상에서 최근 CR(단가 인하) 폭은 몇 %였고, SiC는 별도 프리미엄 체계인가?<br>
+  ② 잉곳 자체 생산 비율과 외부 조달 비율 — 폴리실리콘 가격 급등 시 노출도는?</div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="s3">
+  <div class="sec-h"><span class="no">SEC 03</span><h2>실적 트랙레코드</h2></div>
+
+  <h3>연간 (연결, 억원)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>연도</th><th class="num">매출</th><th class="num">YoY</th><th class="num">영업이익</th><th class="num">OPM</th><th class="num">순이익</th><th>표기</th></tr>
+    <tr><td>2022</td><td class="num">3,073</td><td class="num">—</td><td class="num">937</td><td class="num">30.5%</td><td class="num">801</td><td><span class="pill calc">역산</span> 2023 증감률로부터 — 직전 사이클 고점</td></tr>
+    <tr><td>2023</td><td class="num">2,336</td><td class="num neg">−24.0%</td><td class="num">413</td><td class="num">17.7%</td><td class="num">342</td><td><span class="pill conf">확정</span> 감산 직격 — 가동률 급락</td></tr>
+    <tr><td>2024</td><td class="num">2,516</td><td class="num">+7.7%</td><td class="num">434</td><td class="num">17.3%</td><td class="num">318</td><td><span class="pill conf">확정</span> 완만 회복</td></tr>
+    <tr><td><b>2025</b></td><td class="num"><b>2,735</b></td><td class="num pos">+8.7%</td><td class="num"><b>501</b></td><td class="num"><b>18.3%</b></td><td class="num">~393</td><td><span class="pill conf">확정</span> 사업보고서 · NP는 배당성향 역산 <span class="pill calc">역산</span></td></tr>
+    <tr><td><b>1Q26</b></td><td class="num"><b>934</b></td><td class="num pos">+59%</td><td class="num"><b>213</b></td><td class="num"><b>22.8%</b></td><td class="num">미확인</td><td><span class="pill conf">확정</span> (5/14 공시) — 분기 사상 최대, 전분기比 매출 +15%</td></tr>
+    <tr><td>2026E</td><td class="num est">2,970~3,852</td><td class="num est">+9~41%</td><td class="num est">703~928</td><td class="num est">23.7~24.1%</td><td class="num">—</td><td><span class="pill estm">시장 추정</span> DB(1/2) 703 · 대신(5/15) 상단 — 편차 큼</td></tr>
+  </table></div>
+  <p class="tbl-note">2026E 컨센 편차가 큰 이유: DB(1월)는 NAND 부진을 보수 반영, 대신(5월 "이제 시작")은 1Q26 서프라이즈 후 상향. <b>1Q26 실측(934억)을 연환산하면 이미 3,700억대</b> — 대신 쪽 궤도에 가깝게 진행 중.</p>
+
+  <h3>분기 흐름</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>분기</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th>비고</th></tr>
+    <tr><td>2025 평균 분기</td><td class="num">~684</td><td class="num">~125</td><td class="num">18.3%</td><td><span class="pill calc">역산</span> (대신 4/28 인용)</td></tr>
+    <tr><td>1Q25</td><td class="num">~587</td><td class="num">~87</td><td class="num">~14.9%</td><td><span class="pill calc">역산</span> 1Q26 증감률로부터</td></tr>
+    <tr><td>4Q25</td><td class="num">~812</td><td class="num">미확인</td><td class="num">—</td><td><span class="pill calc">역산</span> "1Q26이 4Q25 대비 +15%"에서 — 당시 분기 최고</td></tr>
+    <tr><td><b>1Q26</b></td><td class="num"><b>934</b></td><td class="num"><b>213</b></td><td class="num"><b>22.8%</b></td><td>컨센(830/187) 대폭 상회 — 대신 프리뷰가 예고한 대로</td></tr>
+  </table></div>
+
+  <h3>증익·감익의 질 분해</h3>
+  <ul>
+    <li><b>구조적(몸통):</b> 2023 감익 = 메모리 감산(가동률), 2024~25 증익 = 가동률 회복 + 미세화·3D 적층으로 <b>공급량 자체 증가</b>(회사 공시 표현). 1Q26 급증 = 슈퍼사이클 풀가동 + DRAM 선단 부품 수요. 단가·믹스보다 <b>Q(물량)가 압도적</b> — 순수 사이클 실적.</li>
+    <li><b>일회성:</b> 특기할 대손·충당금·환 급변 미확인. 4분기 반복 패턴도 뚜렷하지 않음(2025 분기 흐름이 우상향 계단형) — <b>"3Q 누적" 보정이 필요 없는, 시리즈에서 드물게 깨끗한 손익</b>. 오히려 주의점은 2024년의 낮은 증분(아래 6절)에 섞인 신공장 감가상각 선행.</li>
+    <li><b>순이익-영업이익:</b> NP(393억) &lt; OP(501억)로 정상 방향(세금·소액 금융비용). 괴리 이슈 없음 — <b>밸류에이션은 영업이익·순이익 어느 쪽도 무방</b>하나 시리즈 일관성상 영업이익 기준 병기.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 4Q25 영업이익 절대치(사업보고서 분기 분해) — 4Q 비용 패턴이 정말 없는지 확정?<br>
+  ② 1Q26 서프라이즈에서 SiC·선단 DRAM 부품의 기여분은 분리 가능한가?</div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="s4">
+  <div class="sec-h"><span class="no">SEC 04</span><h2>전방산업과 성장 경로</h2></div>
+
+  <div class="callout good"><b>팩터 선언:</b> 이 종목의 팩터는 <b>"세계 메모리 팹 가동률 × 식각 스텝 수 증가"의 스톡형 소모품 팩터</b> — 티씨케이·원익QnC와 <b>동일 팩터</b>(챔버 소모품 삼형제)이고, 티에스이(프로브카드)와도 같은 "출하 연동" 계열이다. 원익IPS·주성(CAPEX 발주 연동)과는 <b>다른 팩터</b>. 시리즈 원리 <b>"소재=stock, 장비=flow"</b>의 stock 쪽 표본으로, 장비주 대비 골이 얕고 사이클 후반까지 이익이 유지되는 성질 — 분산 가치는 티씨케이·원익QnC와 겹치므로 낮고, <b>차별점은 TEL 순정 채널과 SiC 침투 속도</b>다.</div>
+
+  <h3>인과 사슬</h3>
+  <div class="chain">
+    <div class="node"><b>① AI·메모리 슈퍼사이클 → 팹 풀가동 + 증설 램프</b>DRAM 신규 캐파 투자 진행, 웨이퍼 투입량(wpm) 증가<span class="chk">선행지표: DRAM 가격·메모리사 가동률 / 시차: 0~1분기 (소모품 즉시 반영) / 방향: 상승</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>② 미세화·3D 적층 → 웨이퍼당 식각 스텝 수 증가</b>선단 DRAM(1c~)·NAND 고단화가 부품 소모 원단위를 구조적으로 상향<span class="chk">확인처: 메모리사 공정 전환 발표, SEMI 자료 / 시차: 전환 램프와 동행</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>③ TEL 등 장비사 부품 발주 → 하나머티 출하</b>장비사 신규 출하분(초도 장착) + 설치 베이스 교체분의 이중 수요<span class="chk">확인처: TEL 분기 실적·SPS(부품서비스) 매출 — 상장사 교차검증 / 시차: 1분기 내외</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>④ 매출·이익 — 1Q26 실측 완료</b>매출 +59%·OP +144%, 2026E OPM 24% 리레이팅 경로<span class="chk">확인: 분기 실적 + 2027 NAND V10 전환투자가 다음 층 (대신 3/5)</span></div>
+  </div>
+
+  <h3>전방 교차 검증 · 수주 특성</h3>
+  <ul>
+    <li><b>수주잔고 개념 없음:</b> 월 단위 반복 발주 소모품 — 잔고 대신 <b>TEL의 SPS(서비스·부품) 매출과 메모리사 가동률이 선행지표</b>. 수주→매출 시차 ~1분기로 짧아 "메아리"도 짧다: 2022 하반기 감산 → 2023 실적 직격(1년 내 반영), 2025 하반기 풀가동 → 1Q26 서프라이즈.</li>
+    <li><b>ASP 빈티지 맵 불요:</b> 연간 협상형이라 빈티지 왜곡 미미. 관전점은 SiC 믹스 비중의 분기별 상승 속도.</li>
+    <li><b>전방 가이던스 신뢰 한계:</b> 메모리사 가동률·투자 계획은 시황 급변 시 분기 단위 수정 전례(2022년 감산) — DB증권이 지적한 <b>NAND 공정 전환 지연</b>이 실제로 2025년 NAND향 수요를 눌렀던 것이 최근 사례. NAND V10 전환투자(2027 전망)는 <b>발주 확인 전까지 컨센이 아니라 옵션</b>으로 취급.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① TEL SPS 매출 성장률과 하나머티 매출 성장률의 역사적 상관 — 선행 지표로 정량화 가능한가?<br>
+  ② 중국 팹(로컬 장비사 포함)향 매출 존재 여부 — 있다면 규제 리스크, 없다면 미개척 시장?</div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="s5">
+  <div class="sec-h"><span class="no">SEC 05</span><h2>트래킹 지표</h2></div>
+
+  <div class="callout info"><b>리스크 관리 유형 판정: 지표 추세형.</b> 소모품·가동률 연동이라 개별 이벤트보다 <b>시황 지표의 추세</b>(가동률·DRAM 가격·TEL 실적)가 실적을 결정한다. 퍼스텍(이벤트형)·주성(혼합형)과 달리 <b>주간~월간 지표 감시가 리스크 관리의 본체</b> — 단 7/2 같은 섹터 급락일엔 "지표 훼손 여부"를 즉시 대조하는 이벤트 대응이 붙는다.</div>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>지표</th><th>선행성 이유</th><th>확인처</th><th>주기</th><th>무료</th><th>현재 수치·방향 (조회 시점)</th></tr>
+    <tr><td><b>DRAM 고정거래가</b></td><td>메모리사 가동률·투자 지속의 원천</td><td>뉴스(트렌드포스 인용)</td><td>월간</td><td>○</td><td>상승 사이클 지속, 단 6월 말~7월 초 "피크아웃 논란" 헤드라인 — 7/2 업종 −11.6% 급락의 배경 <span class="pill estm">추정</span></td></tr>
+    <tr><td><b>메모리사 가동률·캐파 계획</b></td><td>웨이퍼 투입량 = 매출의 직접 함수</td><td>삼성·SKH·마이크론 컨콜</td><td>분기</td><td>○</td><td>DRAM 신규 캐파 투자 진행 중 (DB 1/2) — NAND는 전환 지연 지속 감시</td></tr>
+    <tr><td><b>TEL 실적·SPS 매출</b></td><td>직접 고객의 부품 수요 — 1분기 선행</td><td>TEL IR (상장)</td><td>분기</td><td>○</td><td><span class="pill unkn">최신 분기 미확인 — 확인 필요</span></td></tr>
+    <tr><td><b>하나머티 분기 실적</b></td><td>가동률 사이클의 실측치</td><td>DART</td><td>분기</td><td>○</td><td>1Q26 매출 934억·OP 213억 사상 최대 (5/14)</td></tr>
+    <tr><td><b>월덱스 실적 (거울 지표)</b></td><td>동일 제품군 비순정 채널 — 격차 = 순정 프리미엄 계측</td><td>월덱스 공시</td><td>분기</td><td>○</td><td><span class="pill unkn">미확인</span></td></tr>
+    <tr><td><b>NAND V10 전환투자 뉴스</b></td><td>2027 성장 옵션의 점화 신호</td><td>업계 보도·컨콜</td><td>수시</td><td>○</td><td>2027 전망 단계 (대신 3/5) — 발주 미확인</td></tr>
+    <tr><td><b>모회사 하나마이크론 재무</b></td><td>연대보증 2,800억의 위험도 = 모회사 신용의 함수</td><td>하나마이크론 공시</td><td>분기</td><td>○</td><td><span class="pill unkn">최신 재무 미확인 — 7절 참조, 분기 점검 필수</span></td></tr>
+  </table></div>
+
+  <h3>실전 체크리스트 (무료)</h3>
+  <ul>
+    <li><b>주간:</b> ① 메모리 피크아웃 담론·DRAM 현물가 방향 ② DART 신규 공시(하나머티+하나마이크론 동시) ③ 이벤트 없는 ±10% 변동 시 업종 동반 여부 확인(7/2형 판별)</li>
+    <li><b>월간:</b> ① DRAM 고정가 확정치 ② NAND 전환투자 보도 스캔 ③ 컨센서스 2026E OP 방향(703→상향 여부)</li>
+    <li><b>분기:</b> ① 실적 — 매출·OPM + SiC 언급 ② TEL 실적·SPS ③ 삼성·SKH 컨콜 가동률·캐파 발언 ④ 하나마이크론 분기보고서(보증 잔액·차입 추이) ⑤ 월덱스 실적 대조</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① DRAM 현물가-고정가 스프레드가 가동률 조정의 몇 개월 선행지표로 쓸 수 있는가?<br>
+  ② 하나마이크론 보증 잔액의 분기별 증감을 공시 어디서 가장 빨리 확인할 수 있는가?</div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="s6">
+  <div class="sec-h"><span class="no">SEC 06</span><h2>영업 레버리지와 CAPEX</h2></div>
+
+  <h3>고정비/변동비 구조 <span class="tag">자체 추정</span></h3>
+  <p>잉곳 성장로·가공 설비의 <b>감가상각 + 인력(700명) 인건비가 고정비 몸통</b>인 장치형 소재업. 원재료(폴리실리콘)는 내재화·저비중으로 변동비 부담 작음. 2023년 매출 −24%에 OP −56%가 떨어진 것이 고정비 구조의 실증. 신공장·SiC 설비의 감가상각이 2024년 증분을 눌렀다가 가동률이 차오르며 레버리지가 복원되는 전형적 패턴 <span class="pill estm">추정</span>.</p>
+
+  <h3>증분이익률 실측 (Δ영업이익 ÷ Δ매출)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구간</th><th class="num">Δ매출 (억)</th><th class="num">ΔOP (억)</th><th class="num">증분이익률</th><th>비고</th></tr>
+    <tr><td>2022→2023</td><td class="num">−737</td><td class="num">−524</td><td class="num neg">역방향 71.1%</td><td>가동률 급락 — 고정비 그대로, 역레버리지 극대</td></tr>
+    <tr><td>2023→2024</td><td class="num">+180</td><td class="num">+21</td><td class="num">11.7%</td><td>회복 초입 + 신설비 감가상각 선행이 증분 잠식 <span class="pill estm">추정</span></td></tr>
+    <tr><td>2024→2025</td><td class="num">+219</td><td class="num">+67</td><td class="num">30.6%</td><td>가동률 정상화 국면</td></tr>
+    <tr><td>1Q25→1Q26</td><td class="num">+347</td><td class="num">+126</td><td class="num"><b>36.3%</b></td><td>풀가동 국면의 실측 — 최신 기울기</td></tr>
+  </table></div>
+  <p class="tbl-note"><b>비대칭성 검사(주성 리포트 원리 적용):</b> 하락 71% vs 상승 12→31→36%로 비대칭 — 상승 초기 구간(23→24)에 감가상각 선행이라는 구조 비용이 섞였다는 신호다. 가동률이 차오른 현재의 유효 공헌이익률은 <b>~36%(1Q26 실측)</b>를 채택하되, 하락 시엔 70%대 역레버리지가 나온다는 것을 하방 시나리오에 반드시 반영.</p>
+
+  <h3>시각화 ① — 증분 매출 100원의 여정</h3>
+  <div class="lev-row">
+    <div class="cap"><span>2022→2023 (감소 — 역방향)</span><b class="neg">매출 −100원당 이익 −71.1원</b></div>
+    <div class="lev-bar rev"><div class="cost" style="width:28.9%">잔존 28.9</div><div class="profit" style="width:71.1%">이익 소멸 71.1</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>2023→2024 (회복 초입)</span><b>증분 100원 중 이익 11.7원</b></div>
+    <div class="lev-bar"><div class="cost" style="width:88.3%">비용 88.3 (감가상각 선행 포함)</div><div class="profit" style="width:11.7%"></div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>2024→2025</span><b>증분 100원 중 이익 30.6원</b></div>
+    <div class="lev-bar"><div class="cost" style="width:69.4%">비용 69.4</div><div class="profit" style="width:30.6%">30.6</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>1Q25→1Q26 (풀가동)</span><b>증분 100원 중 이익 36.3원</b></div>
+    <div class="lev-bar"><div class="cost" style="width:63.7%">비용 63.7</div><div class="profit" style="width:36.3%">36.3</div></div>
+  </div>
+  <p class="fn">이익 증분이 100을 넘는 구간 없음. 상승 구간의 증분율이 12→31→36%로 <b>계단식 상승</b> — 감가상각 선행분이 소화되며 레버리지가 순차 복원되는 궤적 그 자체.</p>
+
+  <h3>시각화 ② — 배율 게이지</h3>
+  <div class="gauge">
+    <div class="ruler"></div>
+    <div class="mk opm" style="left:36.6%">2025 OPM 18.3%</div>
+    <div class="mk inc" style="left:72.6%">증분 공헌이익률 ~36.3%</div>
+    <div class="tick" style="left:0%">0%</div><div class="tick" style="left:20%">10%</div><div class="tick" style="left:40%">20%</div><div class="tick" style="left:60%">30%</div><div class="tick" style="left:80%">40%</div><div class="tick" style="left:100%">50%</div>
+  </div>
+  <div class="callout info"><b>배율 = 36.3 ÷ 18.3 ≈ 2.0배</b>: 매출 1% 변화가 이익 ~2% 움직이는 구간. 2026E OPM 24% 도달 시 배율은 <b>~1.5배로 자연 감소</b> — 주성(5.9배)·티에스이(3.6배)보다 낮은 것은 OPM이 이미 높기 때문이며, 그만큼 <b>이익의 안정성은 시리즈 장비·부품군 중 최상급</b>이다. 역으로 상방 폭발력도 그들보다 완만.</div>
+
+  <h3>시나리오 <span class="tag">2025 기준: 매출 2,735 / OP 501억 · 공헌이익률 36% 적용</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>시나리오</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th>비고</th></tr>
+    <tr><td>+10%</td><td class="num">3,009</td><td class="num">~600</td><td class="num">19.9%</td><td>OP +20% — 배율 2.0배 정합</td></tr>
+    <tr><td>+20%</td><td class="num">3,282</td><td class="num">~698</td><td class="num">21.3%</td><td>OP +39%</td></tr>
+    <tr><td>컨센 하단 +9% (DB)</td><td class="num">2,970</td><td class="num">703</td><td class="num">23.7%</td><td>물량 레버리지(36%)만으론 미달 — <b>믹스·단가 효과 +100억 내외를 추가 가정한 숫자</b>. 곱 구조(물량×SiC 믹스×CR 방어) 명시</td></tr>
+    <tr><td>컨센 상단 +41% (대신)</td><td class="num">3,852</td><td class="num">~928</td><td class="num">24.1%</td><td>1Q26 연환산(3,736억) 궤도와 정합 — 현재 진행 경로</td></tr>
+  </table></div>
+
+  <h3>CAPEX·증설 <span class="tag">공시 특정 미확인 — 프레임 추정</span></h3>
+  <p>아산 사업장 중심의 단계적 증설·SiC 라인 투자가 진행돼 온 것으로 파악되나 <b>최근 대형 신규시설투자 공시는 이번 검색에서 특정하지 못함</b> <span class="pill unkn">미확인</span>. 프레임: 소모품 캐파는 수요 가시성이 높아(설치 베이스 교체 수요) 증설 ROIC가 장비업보다 안정적 — 가동률 80%+ 가정 시 payback 3~4년, ROIC 10% 중후반 <span class="pill estm">자체 추정</span>. 1Q26 연환산 매출이 기존 최고(2022)를 20%+ 넘는 수준이므로 <b>2026년 중 증설 공시 가능성을 상수로 감시</b> — 공시가 나오면 "가동률 풀" 신호로 해석.</p>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 현재 캐파 기준 최대 분기 매출은 얼마인가 — 1Q26 934억은 캐파의 몇 %인가?<br>
+  ② SiC 라인의 누적 투자액과 현재 가동률 — J커브의 어느 지점인가?</div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="s7">
+  <div class="sec-h"><span class="no">SEC 07</span><h2>리스크와 밸류에이션</h2></div>
+
+  <h3>실적 리스크 — 훼손 시나리오 3개</h3>
+  <div class="risk-grid">
+    <div class="risk"><div class="rt">① 메모리 피크아웃 → 가동률 조정</div>
+      <div class="row"><b>원인</b> — DRAM 가격 하락 전환, 감산 재개</div>
+      <div class="row"><b>영향</b> — 역레버리지 70%대: 2023년형 OP 반토막 경로</div>
+      <div class="sig">⚠ 조기경보 — DRAM 현물가 하락 전환, 메모리사 가동률 조정 발언 · 확인처: 트렌드포스·컨콜 · 대응: 축소 (이 종목 최대 변수)</div></div>
+    <div class="risk"><div class="rt">② TEL 리스크 (CR·이원화)</div>
+      <div class="row"><b>원인</b> — 단가 인하 압력 심화 또는 경쟁사 이원화 채택</div>
+      <div class="row"><b>영향</b> — 물량 성장에도 OPM 리레이팅(24%) 무산</div>
+      <div class="sig">⚠ 조기경보 — 분기 GPM 하락, 월덱스 대비 성장률 역전 · 확인처: 분기보고서·월덱스 실적 · 대응: 경계→원인 확인</div></div>
+    <div class="risk"><div class="rt">③ NAND 전환 지연 지속</div>
+      <div class="row"><b>원인</b> — V10 전환투자 순연 (이미 2025년 실증된 리스크)</div>
+      <div class="row"><b>영향</b> — 2027 성장 층 상실, 컨센 상단(대신) 궤도 이탈</div>
+      <div class="sig">⚠ 조기경보 — NAND 고객 컨콜 전환 일정 발언, NAND향 부품 수요 코멘트 · 확인처: 컨콜·대신 후속 리포트 · 대응: 경계</div></div>
+  </div>
+
+  <h3>비영업 리스크</h3>
+  <ul>
+    <li><b>모회사 연대보증 — 최대 논점:</b> 2025 사업보고서 분석(보숲, 2026.4.20)에 따르면 <b>자기자본의 약 60%에 달하는 ~2,800억 규모의 연대보증</b>이 존재 — 모회사 <b>하나마이크론(067310, OSAT — 대규모 CAPEX·차입 구조)</b> 관련로 추정된다. 이는 하나머티 본업과 무관하게 <b>모회사 신용 이벤트 시 하나머티 재무가 전이 타격</b>을 받는 구조다. <span class="pill unkn">보증 상대·조건은 2차 자료 기반 — DART 사업보고서 주석 원문 확인 필수.</span> 시리즈 관점: 퍼스텍(후성그룹 계열 이동)·티에스이(수직계열)와 또 다른 유형의 "그룹 리스크 — 신용 전이형".</li>
+    <li><b>지배구조:</b> 최대주주 하나마이크론 계열 — 모회사의 자금 수요가 배당·보증·내부거래로 전이될 유인 상존. 자사주 2.5%, 배당성향 15.1%(2025).</li>
+    <li><b>CB·BW·증자:</b> 하나머티 본체 희석성 발행 <span class="pill unkn">미확인 — DART 재확인</span>.</li>
+    <li><b>소송·규제:</b> 특이사항 미발견 <span class="pill unkn">미확인</span>.</li>
+  </ul>
+
+  <h3>밸류에이션 <span class="tag">웹 확인, 시점 병기</span></h3>
+  <div class="chart-box">
+    <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,Menlo,monospace">
+      <line x1="60" y1="15" x2="685" y2="15" stroke="#eceaf3"/>
+      <line x1="60" y1="15" x2="60" y2="205" stroke="#d9d6e3"/>
+      <line x1="60" y1="205" x2="685" y2="205" stroke="#d9d6e3"/>
+      <g font-size="10" fill="#6f6a7e">
+        <text x="14" y="19">80k</text>
+        <text x="14" y="82">60k</text><line x1="60" y1="78" x2="685" y2="78" stroke="#eceaf3"/>
+        <text x="14" y="145">40k</text><line x1="60" y1="141.7" x2="685" y2="141.7" stroke="#eceaf3"/>
+        <text x="14" y="202">20k</text>
+      </g>
+      <!-- y = 205 - (price-20000)/60000*190 -->
+      <polyline fill="none" stroke="#6D28D9" stroke-width="2.5"
+        points="85,194.1 190,128.1 280,104 360,97.7 430,94.2 500,76.7 570,56.2 605,44.5 650,90.4"/>
+      <g font-size="10">
+        <circle cx="85" cy="194.1" r="3.5" fill="#6D28D9"/><text x="62" y="215" fill="#6f6a7e">25중 저점 23,450</text>
+        <circle cx="190" cy="128.1" r="3.5" fill="#6D28D9"/><text x="158" y="118" fill="#6f6a7e">11월 44,300</text>
+        <circle cx="360" cy="97.7" r="3.5" fill="#6D28D9"/><text x="330" y="87" fill="#6f6a7e">3/4 53,900</text>
+        <circle cx="500" cy="76.7" r="3.5" fill="#6D28D9"/><text x="468" y="66" fill="#6f6a7e">4/12 60,500</text>
+        <circle cx="605" cy="44.5" r="4.5" fill="#a03c2a"/><text x="540" y="34" fill="#a03c2a" font-weight="700">고점 70,700 (7/1경)</text>
+        <circle cx="650" cy="90.4" r="5" fill="#4c1d95"/><text x="580" y="112" fill="#4c1d95" font-weight="700">7/2 56,200 (−16%)</text>
+      </g>
+      <line x1="60" y1="44.2" x2="685" y2="44.2" stroke="#7a6a2a" stroke-dasharray="4 4"/>
+      <text x="64" y="40" font-size="10" fill="#7a6a2a">컨센 평균 목표가 70,800 (4/12) · 최고 85,000</text>
+      <text x="60" y="242" font-size="10" fill="#6f6a7e">경로는 확인된 점의 개략 연결(실측 아님). 7/2 이후 시세 미확인 — 열람 시 재확인 필수.</text>
+    </svg>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>항목</th><th>수치</th><th>확인 시점·비고</th></tr>
+    <tr><td>주가 / 시가총액</td><td class="num">56,200원 / 1조 1,115억</td><td>2026.7.2 종가 (네이버·중앙이코노미) — 당일 −16.1%, 업종 −11.6% 동반 급락. 7/2 이후 <span class="pill unkn">미확인 — 재확인 필수</span></td></tr>
+    <tr><td>52주 밴드</td><td class="num">23,450 ~ 70,700</td><td>저점 2025 중반 → 고점 7/1경. 現 위치: 밴드 상단 70% 지점, 고점比 −20%</td></tr>
+    <tr><td>12M 선행 지표</td><td class="num">시총/2026E OP ≈ 12.0~15.8배</td><td>컨센 OP 703~928억 기준 자체계산. 트레일링 PER 22.3배(7/2) — 대신 목표 산정 기준은 12M Fwd P/E 상단 23배</td></tr>
+    <tr><td>목표가 컨센서스</td><td class="num">평균 70,800 / 최고 85,000</td><td>4/12 기준(매수 5·매도 0). 7/2 주가 대비 <b>+26% 여력</b> — 목표가가 주가 위에 있는 정배열</td></tr>
+  </table></div>
+
+  <div class="callout good"><b>"가격이 증명을 앞서갔는가" 판정: 앞서가지 않았다 — 시리즈에서 드문 정배열.</b> 1Q26 서프라이즈(실측)가 먼저 있었고, 주가는 컨센 목표가(70,800) 아래·시총/OP 12~16배로 <b>증명이 가격을 이끄는 구도</b>다. 주성·티에스이(주가 &gt; 목표가 2배)와 정반대. 가격에 이미 있는 것: 2026 가동률 호조·DRAM 선단 수혜. 가격에 아직 없는 것: ① 대신 상단 궤도(OP 928억) 완전 반영 ② NAND V10 옵션 ③ SiC 침투 가속. <b>7/2 −16%는 업종 동반 급락(피크아웃 담론)</b> — 8절의 노이즈/신호 판별 조건으로 처리한다. 단 유일한 유보: 연대보증 2,800억은 멀티플 할인 요인으로 시장이 이미 일부 반영 중일 수 있음.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 역사적 12M Fwd P/E 밴드(대신 차트) 상 현재 위치 — 상단 23배 대비 지금 몇 배인가?<br>
+  ② 연대보증이 없다고 가정하면 피어(티씨케이·원익QnC) 대비 할인·할증은 얼마가 적정한가?</div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="s8">
+  <div class="sec-h"><span class="no">SEC 08</span><h2>종합 투자 판단</h2></div>
+
+  <h3>핵심 질문과 검증 순서</h3>
+  <p><b>Q1. 7/2 급락(피크아웃 담론)은 노이즈인가, 가동률 사이클 꺾임의 첫 신호인가?</b> — 단기 판단의 전부. <b>Q2. 연대보증 2,800억의 실체(상대·조건·해소 계획)는 무엇인가?</b> — 멀티플의 구조적 할인 여부를 결정.</p>
+  <p><b>검증 순서:</b> ① DART 사업보고서 주석에서 <b>보증 내역 원문 확인</b>(즉시 가능) → ② DRAM 가격·메모리사 가동률 지표의 추세 유지 여부(주간) → ③ 8/19 2Q26 실적 — 1Q 궤도(연환산 3,700억대) 유지 확인 → ④ TEL 분기 실적 교차검증.</p>
+
+  <h3>3질문 프레임 좌표 <span class="tag">시리즈 상대 위치</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>축</th><th>점수</th><th>판정·시리즈 비교</th></tr>
+    <tr><td>① 이익 업사이클 강도</td><td class="num"><b>3 / 3</b></td><td>1Q26 OP +144% 실측 + 컨센 +50~85% + OPM 18→24% 리레이팅. 티씨케이·원익QnC와 같은 스톡형이되 지금 기울기는 더 가파름</td></tr>
+    <tr><td>② 주가 반영도·잔여 룸</td><td class="num"><b>2 / 3</b></td><td>목표가 대비 +26% 여력·시총/OP 12~16배 — 주성·티에스이(1점, 역전)보다 확실히 여유. 3점이 아닌 이유: 저점比 +140% 상승 소화분 + 연대보증 할인의 불확실성</td></tr>
+    <tr><td>③ 경로 변수 수</td><td class="num"><b>2 / 3 (중간)</b></td><td>가동률(단일 지배변수) + TEL CR + NAND 지연 + 모회사 보증 — 퍼스텍·주성(5중 곱)보다 단순, 원익QnC(1변수)보다 복잡. 변수의 질이 "추적 가능한 지표형"이라 관리 용이</td></tr>
+  </table></div>
+
+  <h3>이탈 규율 3단계</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>단계</th><th>발동 조건</th><th>행동</th></tr>
+    <tr><td><b>경계</b></td><td>DRAM 현물가 하락 전환 or TEL SPS 매출 감소 전환 or 분기 GPM 하락</td><td>신규 진입 금지, 가동률 지표 주간 격상</td></tr>
+    <tr><td><b>축소</b></td><td>메모리사 가동률 조정·감산 발언 or 2026E 컨센 OP 하향 시작 or 모회사 신용 이벤트 징후(하나마이크론 차입 급증·등급 하향)</td><td>절반 축소 — 역레버리지 70%는 2023년에 실증됨</td></tr>
+    <tr><td><b>이탈</b></td><td>감산 사이클 진입 확정(가동률 사이클 꺾임) or 연대보증 현실화(대위변제 등)</td><td>전량 이탈</td></tr>
+    <tr><td style="color:var(--accent-deep)"><b>노이즈 판별 — 7/2 실전 적용</b></td><td>급락이 ① 업종 동반(7/2: 업종 −11.6% 확인됨 ✓)이고 ② DRAM 가격·가동률 지표 무손상 ③ 회사 고유 악재 공시 부재일 때 = 검토 기회. <b>7/2는 ①·③ 충족, ②(가격 지표)만 주간 확인하면 판별 완료</b>되는 상태</td><td>② 확인 후 분할 접근 가능</td></tr>
+  </table></div>
+
+  <h3>IR 핵심 질문 1개</h3>
+  <div class="callout good"><b>"연대보증 약 2,800억의 정확한 상대방·목적·만기와, 이를 축소·해소할 계획이 있습니까 — 그리고 이 보증이 하나머티리얼즈의 배당·투자 여력에 제약을 주고 있습니까?"</b><br>— "만기 도래 시 순차 해소 계획 확정"이면 멀티플 할인 요인이 걷히며 피어 수준 리레이팅 여지가 열리고, "모회사 투자 지속으로 유지·확대"면 본업이 아무리 좋아도 구조적 할인을 안고 가야 한다. 답 하나로 밸류 프레임이 갈린다.</div>
+
+  <h3>미확인 데이터 · 다음 갱신 트리거</h3>
+  <ul>
+    <li><b>미확인:</b> ① 연대보증 상세(상대·조건 — DART 주석) ② TEL향 매출 비중 수치 ③ 4Q25 분기 분해 ④ 2025 순이익 확정치 ⑤ SiC 매출 규모 ⑥ 캐파·증설 계획 ⑦ 본체 CB/BW ⑧ 7/2 이후 주가</li>
+    <li><b>갱신 트리거·일정:</b> ① <b>2026.8.19 2Q26 실적</b> (Investing.com 확인 — 최우선) ② DRAM 가격 방향 전환 시 수시 ③ NAND V10 전환투자 발주 보도 ④ 하나마이크론 분기 공시(보증·차입) ⑤ 증설 공시</li>
+  </ul>
+
+  <h3>이번 분석의 3대 발견 (재사용 가능한 일반 원리)</h3>
+  <ul>
+    <li><b>① 업종 동반 급락은 3조건 체크리스트로 즉시 판별한다:</b> 7/2(−16%, 업종 −11.6%)처럼 ①업종 동반 ②핵심 지표(가격·가동률) 무손상 ③회사 고유 공시 부재 — 세 조건을 당일 확인하면 "노이즈성 급락 = 검토 기회"를 감정이 아니라 절차로 판정할 수 있다. 지표 추세형 종목 전반에 재사용.</li>
+    <li><b>② 회복 초기의 낮은 증분이익률은 레버리지 훼손이 아니라 감가상각 선행이다:</b> 하나머티 23→24 증분 11.7%만 보면 레버리지가 죽은 듯 보이지만, 24→25(31%)→1Q26(36%)로 계단 상승 — 신설비 감가상각이 소화되며 복원되는 패턴이다. 증분율은 한 구간이 아니라 <b>연속 3구간의 궤적</b>으로 읽어야 한다. (주성 "대칭성 검사"의 후속 원리)</li>
+    <li><b>③ 그룹 리스크는 유형을 구분한다 — 자산 이동형 vs 신용 전이형:</b> 퍼스텍(유콘 지분 재편 = 성장 자산이 지주로 이동)과 하나머티(모회사 보증 = 모회사 부실이 자회사로 전이)는 같은 "계열 리스크"라도 작동 방향이 정반대다. 전자는 업사이드를 뺏기고, 후자는 다운사이드를 얹는다 — 점검 지표도 다르다(전자: 지분 공시, 후자: 모회사 재무). 지주·계열 종목 전반에 재사용.</li>
+  </ul>
+</section>
+
+<!-- ================= footer ================= -->
+<footer>
+  <h4>분석 기준일 · 확정/추정 구분</h4>
+  <p>· 작성: <span class="mono">2026-07-15</span> · 데이터: 2026-07-15 웹 검색 (DART 원문 미열람 — 보증 내역·분기 분해는 원문 확인 전 2차 자료 기반)<br>
+  · <span class="mono">[확정]</span> 2023~2025 연간(사업보고서·공시), 1Q26 실적(5/14 공시), 7/2 주가·시총, 52주 밴드.<br>
+  · <span class="mono">[역산]</span> 2022 연간, 1Q25·4Q25 분기, 2025 순이익(~393억, 배당성향 역산).<br>
+  · <span class="mono">[시장 추정]</span> 2026E 실적(DB 703억 1/2 · 대신 상단 5/15), 목표가 컨센(70,800, 4/12), 실리콘 부품 매출 2,417억(대신), TEL 비중·경쟁 구도.<br>
+  · <span class="mono">[자체 추정]</span> 공헌이익률 36%, BEP·캐파 프레임, SiC J커브, 증설 ROIC.<br>
+  · <span class="mono">[미확인]</span> 연대보증 상세, TEL 비중 수치, 4Q25 분해, SiC 매출, 증설 공시, CB/BW, 7/2 이후 주가.</p>
+  <h4>주요 출처</h4>
+  <p>1Q26 실적 공시(2026.5.14) · 2025 사업보고서 분석(보숲 2026.4.20 — 연대보증) · 대신증권(2026.3.5·4.28·5.15 "이제 시작") · DB증권(2026.1.2) · 신한투자증권(2026.1.14) · 중앙이코노미(2026.7.2 시세) · Investing.com/아이투자(컨센·밴드).</p>
+  <h4>자료 한계</h4>
+  <p>주가는 2026.7.2 종가(56,200원) 기준 — 급락 직후이므로 이후 시세는 열람 시점 재확인. 연대보증 2,800억은 2차 자료(블로그형 분석) 인용으로 <b>DART 사업보고서 주석 원문 대조가 선행돼야 함</b>. 고객 비중·경쟁 구도는 리포트·시장 통설 기반 추정 포함.</p>
+  <h4>자매 리포트 (시리즈)</h4>
+  <p><span class="mono">솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두 · 덕산 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 이오테크닉스 · 원익IPS · 브이엠 · 코오롱인더 · 퍼스텍 · 주성엔지니어링 · 티에스이</span> — 특히 티씨케이·원익QnC(챔버 소모품 동일 팩터)·티에스이(출하 연동 소모품)·주성(증분율 검사 원리)과 직접 연결.</p>
+  <p style="margin-top:14px;border-top:1px solid #2c2145;padding-top:12px;color:#9d8bc4">본 리포트는 정보 제공 목적이며 투자 판단과 그 결과는 투자자 본인 책임입니다. 액센트 컬러: 딥 바이올렛 <span class="mono">#6D28D9</span> (하나머티리얼즈 고유 — 기존 팔레트와 중복 없음).</p>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코미코 (183300) — 글로벌 팹을 따라간 대가</title>
+<script type="application/json" id="dashboard-meta">
+{
+  "code": "183300",
+  "name": "코미코",
+  "sector": "mat",
+  "intensity": 2,
+  "variables": 3,
+  "note": "매출 +16%에 OP -35%, 글로벌 거점 감가상각 선행이 이익 잠식",
+  "desc": "세정·코팅과 미코세라믹스를 쥔 알짜 중간층 — 글로벌 팹 선점 투자가 지금은 이익을 먹는 국면",
+  "tags": "세정코팅 미코세라믹스 세라믹히터 ESC TSMC JASM ESMC 감가상각 무상증자",
+  "catalysts": [{"date": "2026-08-21", "label": "액면분할 신주 상장 (7/29~8/20 거래정지)"}, {"date": "2026-08-14", "label": "2Q26 실적 — 감가상각 부담 판독 (추정)"}]
+}
+</script>
+<style>
+  :root{
+    --bg:#ecedf4;
+    --paper:#ffffff;
+    --ink:#1a1a2b;
+    --muted:#6b6b85;
+    --line:#d6d7e4;
+    --line-soft:#e5e6ef;
+    --accent:#3730A3;        /* 딥 인디고 — 코미코 고유 액센트 (기존 팔레트와 중복 없음) */
+    --accent-deep:#241d6e;
+    --accent-bg:#e8e7f8;
+    --warn:#a0472a;
+    --warn-bg:#f7ebe5;
+    --info:#3f5266;
+    --info-bg:#eaeff3;
+    --est:#7a6a2a;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.62;-webkit-font-smoothing:antialiased;padding:20px 12px 80px;display:flex;justify-content:center;font-size:14.5px}
+  .wrap{width:100%;max-width:860px}
+  .mono{font-family:var(--mono)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .est{color:var(--est);font-weight:600}
+  .pos{color:var(--accent-deep);font-weight:600}
+  .neg{color:var(--warn);font-weight:600}
+  .fn{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+  .cover{background:linear-gradient(155deg,#12122b 0%,#25207a 58%,#3730A3 100%);color:#eceafb;border-radius:18px;padding:30px 24px 26px;position:relative;overflow:hidden;margin-bottom:14px}
+  .cover::before{ /* 글로벌 거점 궤도 시그니처 */
+    content:"";position:absolute;right:-70px;top:-50px;width:250px;height:250px;border-radius:50%;
+    border:1px solid rgba(236,234,251,.16);
+    box-shadow:inset 0 0 0 34px rgba(236,234,251,.05),0 0 0 24px rgba(236,234,251,.04)}
+  .cover .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:#a9a3ee;margin-bottom:10px;position:relative;z-index:1}
+  .cover h1{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.25;position:relative;z-index:1}
+  .cover h1 .code{font-family:var(--mono);font-size:15px;font-weight:500;color:#a9a3ee;margin-left:8px}
+  .cover .sub{font-size:13.5px;color:#c8c4f0;margin-top:8px;max-width:610px;position:relative;z-index:1}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px;position:relative;z-index:1}
+  @media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:11px 12px}
+  .kpi .l{font-size:10.5px;letter-spacing:.06em;color:#a9a3ee;font-family:var(--mono)}
+  .kpi .v{font-size:16px;font-weight:800;font-family:var(--mono);margin-top:3px}
+  .kpi .d{font-size:10.5px;color:#c0bcea;margin-top:2px}
+
+  .thesis{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:18px 20px;margin-bottom:22px;box-shadow:0 1px 2px rgba(26,26,43,.04),0 8px 22px rgba(26,26,43,.05)}
+  .thesis .t{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700;margin-bottom:8px}
+  .thesis p{font-size:14.5px}
+  .thesis p b{color:var(--accent-deep)}
+
+  .nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+  .nav a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;border:1px solid var(--line);background:var(--paper);border-radius:99px;padding:5px 11px;transition:.15s}
+  .nav a:hover{color:var(--accent-deep);border-color:var(--accent)}
+
+  section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin-bottom:18px;position:relative;box-shadow:0 1px 2px rgba(26,26,43,.03),0 6px 18px rgba(26,26,43,.04)}
+  @media(min-width:640px){section{padding:26px 28px}}
+  section::before{content:"";position:absolute;top:10px;right:10px;width:14px;height:14px;border-top:2px solid var(--line);border-right:2px solid var(--line);border-radius:0 4px 0 0}
+  .sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .sec-h .no{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:#fff;background:var(--accent);border-radius:6px;padding:3px 8px}
+  .sec-h h2{font-size:19px;font-weight:800;letter-spacing:-.01em}
+  h3{font-size:15px;font-weight:700;margin:20px 0 8px;color:var(--accent-deep)}
+  h3 .tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--muted);margin-left:6px}
+  p{margin-bottom:10px}
+  ul{margin:0 0 10px 18px}
+  li{margin-bottom:5px}
+
+  .tbl-wrap{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;min-width:540px;font-size:12.5px}
+  th{background:#eeeef7;color:var(--accent-deep);font-weight:700;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:7px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl-note{font-size:11px;color:var(--muted);margin-top:6px}
+
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;vertical-align:1px}
+  .pill.conf{background:var(--accent-bg);color:var(--accent-deep)}
+  .pill.estm{background:#f2ecd7;color:var(--est)}
+  .pill.calc{background:var(--info-bg);color:var(--info)}
+  .pill.unkn{background:var(--warn-bg);color:var(--warn)}
+
+  .callout{border-radius:10px;padding:12px 14px;margin:10px 0;font-size:13.5px;border:1px solid}
+  .callout.warn{background:var(--warn-bg);border-color:#e5c9ba;color:#6e2d14}
+  .callout.info{background:var(--info-bg);border-color:#cdd7de;color:#2f414f}
+  .callout.good{background:var(--accent-bg);border-color:#c8c5ee;color:var(--accent-deep)}
+
+  .q2{background:#f4f4fa;border:1px dashed var(--line);border-radius:10px;padding:11px 14px;margin-top:14px;font-size:13px}
+  .q2 .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:5px}
+
+  .stackbar{display:flex;height:38px;border-radius:9px;overflow:hidden;border:1px solid var(--line);margin:12px 0 6px}
+  .stackbar div{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--c)}
+
+  .chain{margin:14px 0}
+  .chain .node{background:#f4f4fa;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:13px}
+  .chain .node b{display:block;font-size:13.5px;color:var(--accent-deep)}
+  .chain .node .chk{font-family:var(--mono);font-size:10.5px;color:var(--info);margin-top:3px;display:block}
+  .chain .arrow{display:flex;justify-content:center;color:var(--accent);font-size:15px;padding:2px 0;font-weight:700}
+
+  .lev-row{margin:14px 0}
+  .lev-row .cap{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;gap:8px;flex-wrap:wrap}
+  .lev-row .cap b{font-family:var(--mono)}
+  .lev-bar{display:flex;height:30px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+  .lev-bar .cost{background:#c8c8d8;color:#3f3f55;display:flex;align-items:center;padding-left:10px;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar .profit{background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar.hatch{background:repeating-linear-gradient(45deg,#a0472a,#a0472a 6px,#c26a44 6px,#c26a44 12px)}
+  .lev-bar.hatch div{width:100%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;color:#fff;font-weight:700;text-align:center;padding:0 6px}
+
+  .gauge{position:relative;height:76px;margin:18px 4px 6px}
+  .gauge .ruler{position:absolute;left:0;right:0;top:38px;height:10px;border-radius:5px;background:linear-gradient(90deg,#e9e9f2,#bcb9ea 55%,#4b41c4)}
+  .gauge .tick{position:absolute;top:50px;font-family:var(--mono);font-size:10px;color:var(--muted);transform:translateX(-50%)}
+  .gauge .mk{position:absolute;top:8px;transform:translateX(-50%);text-align:center;font-family:var(--mono);font-size:10.5px;font-weight:700;white-space:nowrap}
+  .gauge .mk::after{content:"";display:block;width:2px;height:24px;margin:2px auto 0}
+  .gauge .mk.opm{color:var(--info)} .gauge .mk.opm::after{background:var(--info)}
+  .gauge .mk.inc{color:var(--accent-deep)} .gauge .mk.inc::after{background:var(--accent)}
+
+  .chart-box{border:1px solid var(--line);border-radius:12px;padding:12px 8px 6px;margin:12px 0;background:#fafafd}
+  .chart-box svg{width:100%;height:auto;display:block}
+
+  .risk-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0}
+  @media(min-width:640px){.risk-grid{grid-template-columns:repeat(3,1fr)}}
+  .risk{border:1px solid #e5c9ba;background:var(--warn-bg);border-radius:12px;padding:13px 14px;font-size:12.5px}
+  .risk .rt{font-weight:800;color:#6e2d14;font-size:13px;margin-bottom:5px}
+  .risk .row{margin-top:5px}
+  .risk .row b{font-family:var(--mono);font-size:10.5px;color:#8c4d2d;letter-spacing:.06em}
+  .risk .sig{margin-top:7px;padding-top:7px;border-top:1px dashed #ddc4b2;font-family:var(--mono);font-size:11px;color:#8c4d2d}
+
+  footer{background:#151530;color:#a9a5cc;border-radius:16px;padding:22px 22px;font-size:12px;line-height:1.7}
+  footer h4{color:#e6e3f7;font-size:13px;margin-bottom:6px;margin-top:14px}
+  footer h4:first-child{margin-top:0}
+  footer .mono{color:#8b83d8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= 표지 ================= -->
+<div class="cover">
+  <div class="eyebrow">EQUITY DEEP-DIVE // 세정·코팅 + 세라믹 부품 // 기준일 2026-07-15</div>
+  <h1>코미코 <span class="code">KOSDAQ 183300</span></h1>
+  <div class="sub">고가 장비 부품을 씻고 코팅해 되살리는 재생 서비스 + 세라믹 히터·ESC(미코세라믹스 62.6%). 7개국 팹 옆에 공장을 지었고, 지금 그 감가상각이 이익을 먹고 있다</div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">주가 (6/12 확인치)</div><div class="v">124,900원</div><div class="d">무증 권리락(5/26) 기준가 90,200</div></div>
+    <div class="kpi"><div class="l">시가총액 (자체계산)</div><div class="v">≈2조 5,700억</div><div class="d">무증 후 2,054만주 기준</div></div>
+    <div class="kpi"><div class="l">2025 매출 / OP</div><div class="v">6,041 / 1,110억</div><div class="d">+19.1% / <b>−1.3%</b></div></div>
+    <div class="kpi"><div class="l">1Q26 영업이익</div><div class="v">205억 <span style="font-size:12px">−34.6%</span></div><div class="d">매출 +16.4%인데 이익은 급감</div></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <div class="t">핵심 투자 명제</div>
+  <p>코미코는 미코그룹 3층 구조의 <b>중간층</b>이자, 알짜 자산(미코세라믹스 62.6%)을 가장 가까이 쥔 회사다. 사업 자체는 훌륭하다 — 팹이 돌아가는 한 발생하는 <b>재생 서비스</b>에 <b>ALD 1위 ASM향 세라믹 히터</b>가 얹혔고, TSMC 구마모토·독일, SK하이닉스 대련까지 <b>7개국 팹 옆에 거점을 깔았다</b>. 문제는 그 대가다: 2025년 CAPEX 2,220억·종속회사 9개 신규 편입·차입금 81.5% 급증(5,085억)의 결과로 <b>매출은 +19% 늘었는데 영업이익은 −1.3%, 1Q26엔 −34.6%</b>. EBITDA 마진은 33.7%→28.4%로 깎였다. <b>이 종목은 "성장이 멈춘 회사"가 아니라 "선투자 구간에 들어간 회사"</b>이며, 질문은 하나다 — <b>건설중인자산 2,045억이 매출로 전환되는 속도가 감가상각이 늘어나는 속도를 언제 추월하는가.</b> 그런데 주가는 그 답을 기다리지 않고 이미 목표가 위로 올라섰다.</p>
+</div>
+
+<nav class="nav">
+  <a href="#s1">01 사업</a><a href="#s2">02 수익구조</a><a href="#s3">03 트랙레코드</a><a href="#s4">04 전방·성장경로</a>
+  <a href="#s5">05 트래킹</a><a href="#s6">06 레버리지·CAPEX</a><a href="#s7">07 리스크·밸류</a><a href="#s8">08 종합</a>
+</nav>
+
+<!-- ================= 01 ================= -->
+<section id="s1">
+  <div class="sec-h"><span class="no">SEC 01</span><h2>사업의 이해 — 무엇을 만들어 누구에게 파는가</h2></div>
+
+  <p>2013년 8월 <b>미코(구 코미코)의 세정·코팅 사업부문이 물적분할</b>되어 설립. 우리나라에서 반도체 공정 장비의 세정·코팅을 처음 사업화한 회사다. 두 개의 다리로 선다:</p>
+  <ul>
+    <li><b>세정·코팅 (재생 서비스):</b> 식각·증착 챔버에서 쓰인 고가 부품에 붙은 오염물(파티클·부착막)을 제거하고(<b>정밀세정</b>), 내플라즈마 특수막을 다시 입혀(<b>코팅</b>) 수명을 연장해 되돌려주는 <b>서비스업</b>. 부품을 새로 사는 것보다 싸므로 팹의 원가 절감 수단이자, <b>팹이 가동되는 한 반복 발생하는 수요</b>. 차세대 EGB(etch gas barrier) 코팅·3세대 완전 건식 세정을 세미콘코리아 2026에 전면 배치.</li>
+    <li><b>세라믹 소재 부품 (미코세라믹스 62.6%):</b> <b>세라믹 히터</b>(CVD·ALD 증착 장비에서 웨이퍼에 균일한 열을 가하는 부품, 미코세라믹스 매출의 70~80%)·<b>ESC 정전척</b>(식각 장비에서 웨이퍼를 정전력으로 고정)·세라믹 파츠 <b>제조업</b>. 2023년 7월 모회사 미코로부터 지분 47.84%를 1,325억에 영업양수, 이후 추가 취득으로 62.6%.</li>
+  </ul>
+  <div class="callout info"><b>이 회사를 한 문장으로:</b> <b>서비스업(세정·코팅)과 제조업(세라믹 부품)이 반반 섞인 하이브리드</b>다. 두 사업의 손익 성격이 달라(서비스=가동률 연동·저CAPEX, 제조=장비 발주 연동·고마진) 한 덩어리로 읽으면 오독한다 — 실제로 2025년 이익 정체의 원인도 이 둘을 나눠야 보인다.</div>
+
+  <h3>사업부문별 매출 구성 <span class="tag">2025년 연결</span></h3>
+  <div class="legend">
+    <span style="--c:#3730A3">부품(세라믹 소재)</span><span style="--c:#6d63d6">코팅</span><span style="--c:#a9a3ee">세정</span>
+  </div>
+  <div class="stackbar">
+    <div style="width:50.1%;background:#3730A3">부품 3,027억 (50.1%)</div>
+    <div style="width:29%;background:#6d63d6">코팅 ~29%</div>
+    <div style="width:20.9%;background:#a9a3ee">세정 ~21%</div>
+  </div>
+  <p class="fn">부품 비중 50.1%·금액 3,027억 <span class="pill conf">확정</span>(2025). 코팅·세정 비중은 2024 3Q 구성(코팅 30.8%·세정 20.8%)을 준용한 <span class="pill estm">추정</span>. <b>2023년 766억이던 부품이 2025년 3,027억으로 3.9배</b> — 미코세라믹스 편입이 회사의 성격 자체를 바꿨다. 이제 코미코는 "세정회사"가 아니라 "세라믹 부품회사 + 세정회사"다.</p>
+
+  <h3>고객 — 직접 고객 vs 최종 수요</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>사업</th><th>직접 고객</th><th>수요의 성격</th></tr>
+    <tr><td><b>세정·코팅</b></td><td><b>삼성전자·SK하이닉스·인텔</b> 등 팹 직납 <span class="pill conf">회사 공시</span> + TSMC 계열(JASM·ESMC) 대응 중</td><td>팹 <b>가동률 × 챔버 부품 교체 주기</b>에 연동되는 반복 서비스. CAPEX 공백기에도 수요 유지 — <b>스톡형</b></td></tr>
+    <tr><td><b>세라믹 히터·ESC</b></td><td><b>ASM인터내셔널(ALD 1위)향 독과점적 공급 지위</b> <span class="pill estm">SK증권 파악</span> + 국내외 ALD 장비사, 중화권 OEM</td><td>장비사 경유(OEM) — <b>장비 발주(CAPEX)에 연동</b>되는 플로우형. 세정과 정반대 성격</td></tr>
+  </table></div>
+
+  <h3>경쟁 구도 — 사업별 분리</h3>
+  <ul>
+    <li><b>세정·코팅:</b> 국내 1위권. 경쟁사는 <b>한솔아이원스</b>(시리즈 기분석)·아이원스·월덱스 계열 등. 해자는 <b>팹 인접 거점 + 고객 인증</b> — 부품을 멀리 보낼 수 없으므로 <b>물류 거리 자체가 진입장벽</b>이고, 이것이 코미코가 7개국에 공장을 짓는 이유다(6절과 직결).</li>
+    <li><b>세라믹 히터·ESC:</b> 일본계(교세라·NGK 등)가 전통 강자인 고난도 영역. 미코세라믹스가 국산화로 침투해 <b>ASM 내 독과점적 지위</b> 확보. 국내에선 <b>티씨케이</b>(CVD-SiC, 시리즈 기분석)와 제품군이 일부 겹치나 소재·공정이 달라 직접 충돌은 제한적.</li>
+    <li><b>비상장 경쟁 간접 추적:</b> 미코세라믹스는 비상장이나 코미코 부문 공시로 실체 파악 가능. 일본 경쟁사는 세미콘재팬 출품·팹 인증 뉴스, ASM 실적으로 간접 추적.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 세정·코팅과 부품의 <b>부문별 영업이익률</b>은 각각 몇 %인가? (2025년 이익 정체의 책임 소재)<br>
+  ② ASM 내 세라믹 히터 점유율과 계약 구조 — 독과점 지위의 지속성은?</div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="s2">
+  <div class="sec-h"><span class="no">SEC 02</span><h2>수익 구조 — 돈을 어떻게 버는가</h2></div>
+
+  <h3>손익 공식 — 두 사업을 나눠 쓴다</h3>
+  <div class="callout info mono" style="font-size:13px">
+    세정·코팅 매출 = Σ거점별 (인근 팹 가동률 × 부품 처리 물량 × 서비스 단가)<br>
+    부품 매출 = (ALD·식각 장비 출하 대수 × 대당 세라믹 부품 수 × ASP)<br>
+    영업이익 = 매출 × GPM − <b>감가상각(거점 투자)</b> − 인건비 → <b>지금은 이 감가상각 항이 지배 중</b>
+  </div>
+
+  <h3>가격 결정 구조 판정</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>사업</th><th>가격 방식</th><th>원가 전가</th></tr>
+    <tr><td><b>세정·코팅</b></td><td><b>팹별 연간 단가 계약 + 물량 연동</b> <span class="pill estm">추정</span></td><td>중간. 대형 고객의 단가 인하(CR) 압력 상존하나, <b>부품 신품 대비 원가 절감폭</b>이 협상의 근거라 방어력 있음. 전가보다 <b>물량(가동률)이 압도적 변수</b></td></tr>
+    <tr><td><b>세라믹 히터·ESC</b></td><td>장비사향 <b>커스텀 설계·연간 협상형</b> — 고난도 부품이라 판가 방어력 높음</td><td>전가력 <b>높음</b>. 원재료 세라믹 파우더는 <b>최상위 모회사 미코가 국산화 공급</b> — 그룹 수직계열화가 원가 방어 수단</td></tr>
+  </table></div>
+  <div class="callout good"><b>구조 판정:</b> 두 사업 모두 원가 전가 자체는 크게 문제되지 않는다. <b>이 회사의 마진을 결정하는 것은 판가가 아니라 "설비를 얼마나 채우는가"</b>다 — 세정은 거점 가동률, 부품은 장비 발주. 그래서 2025~26년 이익 훼손의 원인도 원가 상승이 아니라 <b>아직 채우지 못한 신규 거점의 감가상각</b>이다.</div>
+
+  <h3>부문별 이익 기여 — 매출 비중과 이익 비중의 괴리</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>주체</th><th class="num">2025 매출</th><th class="num">2025 영업이익</th><th class="num">OPM</th><th>비고</th></tr>
+    <tr><td><b>미코세라믹스</b> (자회사 62.6%)</td><td class="num">2,525억</td><td class="num"><b>743억</b></td><td class="num"><b>29.4%</b></td><td><span class="pill conf">확정</span> 매출의 42%로 <b>이익의 67%</b> 창출</td></tr>
+    <tr><td>코미코 본업 (세정·코팅 등)</td><td class="num calc">~3,516억</td><td class="num calc">~367억</td><td class="num calc">~10.4%</td><td><span class="pill calc">역산</span> 연결−미코세라믹스. 참고: SK증권은 본업 이익 체력을 300억+로 평가(2025.2)</td></tr>
+    <tr><td><b>연결 합계</b></td><td class="num"><b>6,041억</b></td><td class="num"><b>1,110억</b></td><td class="num"><b>18.4%</b></td><td><span class="pill conf">확정</span></td></tr>
+  </table></div>
+  <div class="callout warn"><b>매출 42% → 이익 67%.</b> 미코세라믹스가 코미코 이익의 3분의 2를 만든다. 즉 <b>코미코를 산다는 것은 실질적으로 미코세라믹스를 사는 것에 가깝고</b>, 본업(세정·코팅)은 OPM 10%대의 안정적 캐시카우 역할이다. 이 구조가 7절의 밸류에이션 논점(합병·중복상장)과 직결된다.</div>
+
+  <h3>마진의 원천(+)과 훼손(−)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>원천 (+)</th><th>훼손 (−)</th></tr>
+    <tr><td>미코세라믹스 OPM 29.4% — ASM향 독과점</td><td><b>감가상각 급증</b>: CAPEX 2,220억, 감가상각비 전년비 +90억, EBITDA 마진 33.7%→28.4%</td></tr>
+    <tr><td>세정·코팅의 가동률 연동 반복 수요 (팹 인접 해자)</td><td><b>차입금 2,802→5,085억(+81.5%)</b>, 부채비율 178.6%, 유동비율 95.3% → 금융비용</td></tr>
+    <tr><td>7개국 거점 = 글로벌 팹 신설 물량 선점</td><td>신규 거점(9개 종속회사)의 <b>램프업 손실</b> — 미국 Phoenix 법인 등</td></tr>
+    <tr><td>원재료(세라믹 파우더) 그룹 내 조달</td><td>파생상품 평가손 61억·무형자산 손상 21억 (2025) — 순이익 훼손</td></tr>
+  </table></div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 신규 9개 종속회사 각각의 가동률과 손익 — 어느 거점이 적자인가?<br>
+  ② 건설중인자산 2,045억이 본계정 대체되면 연간 감가상각은 얼마나 더 늘어나는가?</div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="s3">
+  <div class="sec-h"><span class="no">SEC 03</span><h2>실적 트랙레코드</h2></div>
+
+  <h3>연간 (연결, 억원)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>연도</th><th class="num">매출</th><th class="num">YoY</th><th class="num">영업이익</th><th class="num">OPM</th><th class="num">순이익</th><th>표기</th></tr>
+    <tr><td>2022</td><td class="num">2,880</td><td class="num">+12%</td><td class="num">550</td><td class="num">19.1%</td><td class="num">420</td><td><span class="pill conf">확정</span> SK증권 재무표</td></tr>
+    <tr><td>2023</td><td class="num">3,070</td><td class="num">+6.6%</td><td class="num">330</td><td class="num">10.7%</td><td class="num">320</td><td><span class="pill conf">확정</span> 다운사이클 + 미코세라믹스 편입(7월)</td></tr>
+    <tr><td>2024</td><td class="num">5,071</td><td class="num pos">+65.0%</td><td class="num">1,125</td><td class="num"><b>22.2%</b></td><td class="num">878</td><td><span class="pill conf">확정</span> 편입 효과 온기 + 업황 회복 — 이익 폭발</td></tr>
+    <tr><td><b>2025</b></td><td class="num"><b>6,041</b></td><td class="num pos">+19.1%</td><td class="num"><b>1,110</b></td><td class="num neg"><b>18.4%</b></td><td class="num neg">772 <span style="font-size:11px">(−12.1%)</span></td><td><span class="pill conf">확정</span> <b>매출 최고치인데 이익은 −1.3%</b></td></tr>
+    <tr><td>2026E</td><td class="num est">미확인</td><td class="num">—</td><td class="num est">미확인</td><td class="num">—</td><td class="num">—</td><td><span class="pill unkn">최신 컨센 미확인 — 재확인 필수</span></td></tr>
+  </table></div>
+  <p class="tbl-note">⚠ <b>컨센서스 신뢰도 참고:</b> SK증권은 2025.4 시점에 2025년 <b>매출 6,560억·영업이익 1,581억</b>을 전망했으나 실제는 <b>6,041억·1,110억</b> — 매출 −8%, <b>영업이익 −30% 미달</b>했다. 이 회사에 대한 시장의 이익 추정은 <b>감가상각·램프업 비용을 과소평가하는 경향</b>이 있었다는 뜻이며, 향후 컨센서스도 같은 할인율로 볼 필요가 있다.</p>
+
+  <h3>분기 (연결, 억원)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>분기</th><th class="num">매출</th><th class="num">영업이익</th><th class="num">OPM</th><th>비고</th></tr>
+    <tr><td>1Q24</td><td class="num">1,180</td><td class="num">278</td><td class="num">23.6%</td><td>+87.0% / +309.7% YoY — 편입 효과 폭발</td></tr>
+    <tr><td>2Q24</td><td class="num">1,336</td><td class="num">369</td><td class="num"><b>27.6%</b></td><td>미코세라믹스 OPM 40% — <b>사이클 내 최고점</b></td></tr>
+    <tr><td>1Q25</td><td class="num calc">~1,350</td><td class="num calc">~313</td><td class="num calc">23.2%</td><td><span class="pill calc">역산</span> (1Q26 증감률 기반)</td></tr>
+    <tr><td>2025 상반기</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td>매출 +11.7% / <b>OP −5.0%</b> / NP +15.1% — 이익 역성장 시작</td></tr>
+    <tr><td><b>1Q26</b></td><td class="num"><b>1,570.6</b></td><td class="num"><b>204.5</b></td><td class="num neg"><b>13.0%</b></td><td><span class="pill conf">확정</span> 매출 <span class="pos">+16.4%</span> / OP <span class="neg">−34.6%</span> / NP <span class="neg">−17.1%</span></td></tr>
+  </table></div>
+
+  <h3>증익·감익의 질 분해</h3>
+  <ul>
+    <li><b>구조적(+):</b> 매출은 <b>5개 분기 연속 성장</b>. 미코세라믹스의 ALD 부품 수요와 세정·코팅 물량 모두 견조 — <b>수요 측 훼손 신호는 없다</b>.</li>
+    <li><b>구조적(−) — 이익 감소의 정체:</b> ① <b>감가상각비 +90억</b>(CAPEX 2,220억의 대가) ② <b>신규 9개 종속회사의 램프업 손실</b>(일본·중국 5개·미국 Phoenix 등) ③ 인건비·초기 운영비. <b>이것은 일회성이 아니라 "선행 비용"</b>이다 — 소멸하는 것이 아니라 <b>매출이 따라붙어야 해소</b>된다. 하나머티리얼즈에서 확인한 "회복 초기 낮은 증분율 = 감가상각 선행" 패턴의 대형 버전.</li>
+    <li><b>일회성:</b> 파생상품 평가손 61억, 무형자산 손상 21억(2025) — 순이익만 훼손, 영업이익과 무관.</li>
+    <li><b>4분기 패턴:</b> 뚜렷한 4Q 비용 집중 징후는 확인되지 않음 <span class="pill unkn">분기 분해 일부 미확인</span>. 오히려 이 종목의 판독 함정은 4Q가 아니라 <b>"매출 성장률만 보면 멀쩡해 보인다"</b>는 점이다.</li>
+    <li><b>순이익-영업이익 괴리:</b> 2025 OP −1.3% vs <b>NP −12.1%</b>. 차이는 금융비용(차입 +81.5%)·파생손·손상. <b>밸류에이션은 영업이익 또는 EBITDA 기준</b>이 안전하며, 특히 이 회사는 <b>EBITDA 마진 추이(33.7%→28.4%)가 가장 정직한 지표</b>다.</li>
+  </ul>
+
+  <div class="callout warn"><b>판독 기준:</b> 코미코는 <b>"매출 성장률 − EBITDA 마진" 쌍</b>으로 봐야 한다. 매출만 보면 +19%의 성장주이고, 영업이익만 보면 −1.3%의 정체주이며, EBITDA 마진을 봐야 <b>"성장은 진짜인데 그 성장을 사기 위해 마진을 5.3%p 지불했다"</b>는 실체가 드러난다.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 2Q26·3Q26 EBITDA 마진이 반등하는가 — 28.4%가 바닥인가 더 내려가는가?<br>
+  ② 1Q26 OP −34.6%에서 감가상각 증가분과 램프업 손실의 비중은 각각 얼마인가?</div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="s4">
+  <div class="sec-h"><span class="no">SEC 04</span><h2>전방산업과 성장 경로</h2></div>
+
+  <div class="callout good"><b>팩터 선언:</b> 코미코는 <b>"글로벌 팹 신설·가동률(세정·코팅) × ALD 장비 출하(세라믹 부품)"의 이중 팩터</b>다. 앞은 하나머티리얼즈·티에스이와 같은 <b>스톡형(출하 연동)</b>, 뒤는 주성엔지니어링과 같은 <b>플로우형(CAPEX 연동)</b> — 미코와 동일한 이중 구조이되, <b>미코와 달리 에너지 사업이 섞이지 않은 순수 노출</b>이다. 결정적 차별점은 <b>지리적 분산</b>: 삼성·SK하이닉스뿐 아니라 <b>TSMC(일본 JASM·독일 ESMC)·인텔·YMTC</b>까지 붙어 있어, <b>한국 메모리 사이클에 대한 의존도가 시리즈 종목 중 가장 낮다</b>. 분산 가치 관점에서 이 점이 코미코의 고유 가치다.</div>
+
+  <h3>인과 사슬</h3>
+  <div class="chain">
+    <div class="node"><b>① AI 인프라 → 글로벌 팹 신설 러시</b>TSMC 구마모토(JASM)·독일(ESMC), 삼성 테일러, SK하이닉스 대련, 인텔 애리조나<span class="chk">선행지표: 팹 착공·양산 개시 일정 / 시차: 착공→매출 2~3년(거점 건설 포함) / 방향: 확대</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>② 코미코, 팹 옆에 현지 거점 신설 (선투자)</b>2025년 9개 종속회사 편입 — 일본 TaMiCo, 중국 5개, 체코 TaMiCo Zatec(2026)<span class="chk">확인처: 종속회사 편입 공시·건설중인자산 / <b>여기서 감가상각이 먼저 발생</b></span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>③ 팹 가동 → 부품 교체 → 세정·코팅 물량 발생</b>거점 가동률 상승이 매출·마진을 동시에 끌어올리는 구간<span class="chk">확인처: 분기 매출 성장률 + <b>EBITDA 마진 반등 여부</b> / 시차: 팹 양산 후 1~2분기</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>④ 병행 트랙: ALD 장비 출하 → 미코세라믹스</b>ASM 등 장비사 출하가 세라믹 히터 매출을 직접 견인 (이익의 67%)<span class="chk">확인처: ASM인터내셔널 실적·수주 (상장사 교차검증)</span></div>
+  </div>
+
+  <h3>수주·시차 체크</h3>
+  <ul>
+    <li><b>수주잔고 개념 없음:</b> 세정은 반복 서비스, 부품은 장비사 반복 발주. 대신 <b>"팹 건설 파이프라인"이 사실상의 잔고</b> — TSMC 독일 ESMC(2027 양산 예정 <span class="pill estm">추정</span>), 삼성 테일러 등의 가동 일정이 향후 3년 매출을 예고한다.</li>
+    <li><b>과거 공백의 메아리:</b> 2023년 파운드리 증설 지연으로 미국 법인이 부진했던 전례 — <b>팹 일정 지연이 곧바로 거점 적자로 이어지는 구조</b>. 2025~26년 신규 거점도 같은 리스크에 노출.</li>
+    <li><b>ASP 빈티지:</b> 연간 협상형이라 빈티지 왜곡 미미. 관전점은 세라믹 히터의 대당 ASP보다 <b>ALD 장비 출하 대수</b>.</li>
+    <li><b>전방 교차 검증:</b> <b>ASM인터내셔널</b>(ALD 1위, 상장)이 미코세라믹스의 선행 지표. 팹 측은 TSMC·삼성·SK하이닉스 컨콜. 단 <b>팹 양산 일정은 지연 전례가 많으므로</b>(삼성 테일러 사례) 공표 일정보다 <b>실제 장비 반입·가동 뉴스</b>를 신뢰할 것.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 체코 ESMC 대응 법인의 매출 개시 시점과 규모 — 유럽 진출의 첫 숫자는 언제 나오는가?<br>
+  ② 중국 5개 법인(SK하이닉스 대련·YMTC)은 미·중 규제 리스크에 어느 정도 노출되어 있는가?</div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="s5">
+  <div class="sec-h"><span class="no">SEC 05</span><h2>트래킹 지표</h2></div>
+
+  <div class="callout info"><b>리스크 관리 유형 판정: 혼합형.</b> 사업은 지표 추세형(팹 가동률·ALD 출하)이지만, 2026년의 주가는 <b>이벤트</b>가 지배한다 — ①무상증자·액면분할 수급 ②미코세라믹스 합병 결정 ③<b>7/29~8/20 거래정지</b>. 특히 거래정지는 <b>확정된 캘린더 이벤트</b>이므로 반드시 일정에 등록해야 한다.</div>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>지표</th><th>선행성 이유</th><th>확인처</th><th>주기</th><th>무료</th><th>현재 수치·방향 (조회 시점)</th></tr>
+    <tr><td><b>EBITDA 마진</b></td><td><b>이 종목의 핵심 지표</b> — 감가상각 부담 소화 여부를 직접 계측</td><td>DART 분기보고서</td><td>분기</td><td>○</td><td>33.7%(2024) → <b>28.4%(2025)</b>, −5.3%p — 반등 여부가 관건</td></tr>
+    <tr><td><b>ASM인터내셔널 실적·수주</b></td><td>미코세라믹스(이익의 67%) 수요의 원천</td><td>ASM IR (상장)</td><td>분기</td><td>○</td><td><span class="pill unkn">최신 미확인 — 확인 필요</span></td></tr>
+    <tr><td><b>글로벌 팹 양산 일정</b></td><td>신규 거점 가동률 = 감가상각 회수 속도</td><td>TSMC·삼성·SKH 컨콜, 업계 보도</td><td>분기</td><td>○</td><td>JASM 가동, ESMC 2027 양산 예정 <span class="pill estm">추정</span>, 삼성 테일러 진행</td></tr>
+    <tr><td><b>건설중인자산·CAPEX</b></td><td>향후 추가될 감가상각의 예고</td><td>DART 재무제표 주석</td><td>분기</td><td>○</td><td>건설중인자산 2,045억, 유형자산 증가 2,511억 (2025)</td></tr>
+    <tr><td><b>차입금·유동비율</b></td><td>금융비용이 순이익을 잠식, 유동성 부담</td><td>DART</td><td>분기</td><td>○</td><td>차입 5,085억(+81.5%), 부채비율 178.6%, <b>유동비율 95.3%</b></td></tr>
+    <tr><td><b>미코세라믹스 합병 뉴스</b></td><td>지배구조 단순화 = 밸류 재산정 이벤트</td><td>더벨·공시</td><td>수시</td><td>△</td><td>IPO 무산 후 <b>코미코와 합병 가능성 거론</b> (더벨 2026.7.2)</td></tr>
+    <tr><td><b>코퍼레이트 액션 일정</b></td><td>수급 급변 — <b>확정 일정</b></td><td>KRX·공시</td><td>수시</td><td>○</td><td>무증 권리락 5/26(기준가 90,200)·신주상장 6/15 완료 / <b>액면분할 거래정지 7/29~8/20, 신주상장 8/21</b></td></tr>
+  </table></div>
+
+  <h3>실전 체크리스트 (무료)</h3>
+  <ul>
+    <li><b>주간:</b> ① DART 코미코+미코 동시 공시(합병·조달·종속회사) ② 반도체 소부장 업종 동반 변동 여부 ③ <b>거래정지 D-day 카운트</b>(7/29 임박 시 포지션 정리 여부 판단)</li>
+    <li><b>월간:</b> ① 글로벌 팹 양산·지연 뉴스 ② ASM·장비사 수주 동향 ③ 목표주가 개정(무증 후 기준으로 환산 확인)</li>
+    <li><b>분기:</b> ① <b>EBITDA 마진 + 매출 성장률 쌍</b>으로 판독 ② 부문별(세정·코팅 vs 부품) 손익 ③ 감가상각비·건설중인자산 추이 ④ 차입·유동비율 ⑤ 모회사 미코 실적과 대조</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 액면분할 거래정지(7/29~8/20) 기간 중 2Q26 실적이 발표되면, 재개장일에 갭이 발생하는가?<br>
+  ② 무증 후 유통주식수 증가가 실제로 거래대금·변동성을 얼마나 바꿨는가?</div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="s6">
+  <div class="sec-h"><span class="no">SEC 06</span><h2>영업 레버리지와 CAPEX</h2></div>
+
+  <h3>고정비/변동비 구조 <span class="tag">근거 제시</span></h3>
+  <p>세정·코팅은 <b>설비 + 인력의 고정비형 서비스</b>(직원 758명), 세라믹 부품은 <b>소성로·정밀가공 설비의 감가상각형 제조</b>. 두 사업 모두 변동비 비중이 낮고 <b>가동률이 마진을 결정</b>한다. 2025년 재무가 이를 정확히 보여준다 — <b>CAPEX 2,220억, 유형자산 +2,511억, 건설중인자산 2,045억</b>이 집행되며 감가상각비가 전년비 +90억 늘었고, 그 결과 매출이 +19% 늘었는데도 <b>EBITDA 마진이 33.7%→28.4%로 5.3%p 하락</b>했다. <b>고정비가 매출보다 빨리 늘어난 해</b>였다는 뜻이다.</p>
+
+  <h3>증분이익률 실측 (Δ영업이익 ÷ Δ매출)</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구간</th><th class="num">Δ매출 (억)</th><th class="num">ΔOP (억)</th><th class="num">증분이익률</th><th>비고</th></tr>
+    <tr><td>2022→2023</td><td class="num">+190</td><td class="num">−220</td><td class="num neg">역방향</td><td>다운사이클 — 가동률 급락</td></tr>
+    <tr><td>2023→2024</td><td class="num">+2,001</td><td class="num">+795</td><td class="num pos"><b>39.7%</b></td><td>미코세라믹스 편입 + 업황 회복 — <b>정상 국면의 기울기</b></td></tr>
+    <tr><td>2024→2025</td><td class="num">+970</td><td class="num">−15</td><td class="num neg"><b>−1.5%</b></td><td><b>증분 매출이 이익을 전혀 남기지 못함</b> — 감가상각·램프업이 전량 흡수</td></tr>
+    <tr><td>1Q25→1Q26</td><td class="num">+221</td><td class="num">−108</td><td class="num neg"><b>역방향</b></td><td><span class="pill calc">역산</span> 매출 +16.4%에 OP −34.6% — 악화 가속</td></tr>
+  </table></div>
+  <p class="tbl-note"><b>대칭성 검사(주성 리포트 원리):</b> 상승 국면 39.7% vs 현재 −1.5%로 완전 비대칭 → <b>물량 외 변수(고정비 계단)가 지배</b>한다는 진단. 따라서 <b>39.7%가 이 사업의 잠재 공헌이익률</b>이고, 현재는 그것이 신규 감가상각에 가려진 상태로 해석하는 것이 합리적이다 <span class="pill estm">자체 추정</span>. 이 해석이 맞다면 거점 가동률 상승 시 이익 회복 탄력은 크다 — 다만 <b>"맞다면"</b>이 검증 대상.</p>
+
+  <h3>시각화 ① — 증분 매출 100원의 여정</h3>
+  <div class="lev-row">
+    <div class="cap"><span>2023→2024 (정상 국면)</span><b>증분 100원 중 이익 39.7원</b></div>
+    <div class="lev-bar"><div class="cost" style="width:60.3%">비용 60.3</div><div class="profit" style="width:39.7%">이익 39.7</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>2024→2025 (선투자 구간)</span><b class="neg">증분 100원 중 이익 −1.5원 (빗금)</b></div>
+    <div class="lev-bar hatch"><div>이익 증분 음(−) · 원인: CAPEX 2,220억發 감가상각 +90억 + 신규 9개 거점 램프업 손실 — 수요 훼손 아님</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>1Q25→1Q26 (악화 가속)</span><b class="neg">매출 +221억인데 이익 −108억</b></div>
+    <div class="lev-bar hatch"><div>역방향 심화 · EBITDA 마진 28.4%의 추가 하락 여부가 2Q26 판독점</div></div>
+  </div>
+  <p class="fn">이익 증분이 100을 넘는 구간은 없고, 대신 <b>음(−)의 증분 구간이 2개 연속</b>이다. 시리즈에서 하나머티리얼즈의 "회복 초기 11.7%"보다 심한 형태 — <b>규모가 큰 선투자일수록 골이 깊고 길다</b>.</p>
+
+  <h3>시각화 ② — 배율 게이지</h3>
+  <div class="gauge">
+    <div class="ruler"></div>
+    <div class="mk opm" style="left:26%">1Q26 OPM 13.0%</div>
+    <div class="mk inc" style="left:79.4%">잠재 공헌이익률 ~39.7%</div>
+    <div class="tick" style="left:0%">0%</div><div class="tick" style="left:20%">10%</div><div class="tick" style="left:40%">20%</div><div class="tick" style="left:60%">30%</div><div class="tick" style="left:80%">40%</div><div class="tick" style="left:100%">50%</div>
+  </div>
+  <div class="callout info"><b>배율 = 39.7 ÷ 13.0 ≈ 3.1배</b>(1Q26 OPM 기준). 2025 OPM 18.4% 기준으로는 2.2배. <b>해석 주의</b>: 이 배율은 "매출이 늘면 이익이 3배로 는다"가 아니라, <b>"고정비 계단을 다 올라간 뒤에야 작동할 잠재 배율"</b>이다. 지금은 계단을 오르는 중이라 배율이 음수로 나타난다. OPM이 회복될수록 배율은 자연 감소하며, <b>OPM 22%(2024 수준) 복원 시 배율은 1.8배로 낮아진다</b> — 즉 회복의 초반이 가장 가파르다.</div>
+
+  <h3>시나리오 — 매출이 아니라 마진 회복 기준으로</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>시나리오</th><th>내용</th><th class="num">2026E OPM</th><th class="num">함의</th></tr>
+    <tr><td><b>A. 가동률 추격 (강세)</b></td><td>신규 거점 가동률 상승, EBITDA 마진 30%대 복귀</td><td class="num pos">17~20%</td><td class="num">매출 7,000억 가정 시 OP 1,200~1,400억</td></tr>
+    <tr><td><b>B. 계단 지속 (기준)</b></td><td>추가 거점 완공으로 감가상각 계속 증가, 매출도 성장</td><td class="num">13~15%</td><td class="num">OP 900~1,050억 — <b>2년째 이익 정체</b></td></tr>
+    <tr><td><b>C. 팹 지연 (약세)</b></td><td>글로벌 팹 양산 지연 + 메모리 가동률 조정</td><td class="num neg">10% 미만</td><td class="num">빈 공장의 감가상각 — 2023년형 역레버리지 재현</td></tr>
+  </table></div>
+  <p>레버리지는 <b>거점 가동률 × ALD 장비 출하 × 감가상각 계단 × 금융비용</b>의 4중 곱. 단순 매출 ±10/20% 시나리오가 무의미한 이유는, 같은 매출 증가라도 <b>어느 거점에서 나오느냐</b>에 따라 이익이 정반대이기 때문이다(가동 중 거점 = 고마진, 신규 거점 = 손실 축소).</p>
+
+  <h3>CAPEX·회수 <span class="tag">확인 + 프레임 추정</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>항목</th><th class="num">금액 (2025)</th><th>해석</th></tr>
+    <tr><td>CAPEX</td><td class="num">2,220억</td><td><span class="pill conf">확정</span> 연매출의 37% — 공격적</td></tr>
+    <tr><td>유형자산 증가</td><td class="num">+2,511억</td><td><span class="pill conf">확정</span></td></tr>
+    <tr><td>건설중인자산</td><td class="num">2,045억</td><td><span class="pill conf">확정</span> <b>아직 감가상각이 시작되지 않은 자산</b> — 향후 부담 예고</td></tr>
+    <tr><td>신규 종속회사</td><td class="num">9개</td><td>일본(JASM 대응)·중국 5개(SKH 대련·YMTC)·체코(ESMC) 등</td></tr>
+    <tr><td>추정 ROIC·회수</td><td class="num est">payback 5~7년</td><td><span class="pill estm">자체 추정</span> 정상 가동 시 거점당 OPM 15~20% 가정. 세정·코팅은 <b>팹 인접 독점성</b>이 있어 가동만 되면 회수 가시성 높음 — 리스크는 수익성이 아니라 <b>가동 시점</b></td></tr>
+  </table></div>
+  <div class="callout warn"><b>건설중인자산 2,045억의 의미:</b> 이 자산이 완공돼 본계정으로 대체되면 <b>감가상각이 추가로 붙는다</b>(내용연수 10년 가정 시 연 200억 내외 <span class="pill estm">자체 추정</span>). 즉 <b>2026~27년에도 감가상각 계단이 한 번 더 올라갈 수 있다</b>. B 시나리오(계단 지속)를 기준으로 삼은 이유이며, 강세론이 성립하려면 <b>매출 증가 속도가 이 계단보다 빨라야</b> 한다.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 2026년 CAPEX 계획은 얼마인가 — 투자 사이클의 정점은 지났는가?<br>
+  ② 거점별 손익분기 가동률과 현재 가동률은?</div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="s7">
+  <div class="sec-h"><span class="no">SEC 07</span><h2>리스크와 밸류에이션</h2></div>
+
+  <h3>실적 리스크 — 훼손 시나리오 3개</h3>
+  <div class="risk-grid">
+    <div class="risk"><div class="rt">① 감가상각 계단의 추가 상승</div>
+      <div class="row"><b>원인</b> — 건설중인자산 2,045억 본계정 대체 + 2026년 추가 CAPEX</div>
+      <div class="row"><b>영향</b> — 매출이 늘어도 OPM 13% 이하 고착, 이익 정체 3년차</div>
+      <div class="sig">⚠ 조기경보 — EBITDA 마진 28% 하회, 감가상각비 분기 증가 · 확인처: 분기보고서 주석 · 대응: 경계→축소</div></div>
+    <div class="risk"><div class="rt">② 글로벌 팹 양산 지연</div>
+      <div class="row"><b>원인</b> — ESMC·테일러 등 일정 순연 (과거 파운드리 증설 지연 전례 있음)</div>
+      <div class="row"><b>영향</b> — 빈 거점의 감가상각만 발생, C 시나리오(OPM 10% 미만)</div>
+      <div class="sig">⚠ 조기경보 — 팹 양산 일정 연기 보도, 해당 법인 매출 미발생 · 확인처: TSMC·삼성 컨콜 · 대응: 축소</div></div>
+    <div class="risk"><div class="rt">③ 재무 부담 확대</div>
+      <div class="row"><b>원인</b> — 차입 5,085억·유동비율 95.3%(100% 미만)·금리·환</div>
+      <div class="row"><b>영향</b> — OP 유지에도 순이익 감소 지속(2025 실증), 배당·투자 여력 제약</div>
+      <div class="sig">⚠ 조기경보 — 유동비율 90% 하회, 이자비용·파생손 증가, 신규 조달 공시 · 확인처: 분기보고서 · 대응: 경계</div></div>
+  </div>
+
+  <h3>비영업 리스크</h3>
+  <ul>
+    <li><b>미코세라믹스 중복상장·합병 — 최대 논점:</b> 미코세라믹스는 물적분할 5년룰 만료로 IPO를 준비했으나 <b>밸류업·상법개정 국면의 중복상장 우려로 무산</b>됐고, 현재 <b>코미코와의 합병 가능성</b>이 거론된다(더벨 2026.7.2). <b>코미코 주주 관점 판정</b>: 미코 주주와 달리 <b>코미코 주주에게는 대체로 우호적</b>이다 — 이미 62.6%를 보유한 알짜를 100%로 끌어올리면 소수주주 몫이 사라지고 지배구조가 단순해진다. 단 <b>합병가 산정이 쟁점</b>이며 삼성전자 등 미코세라믹스 기존 주주의 동의가 변수. 합병 대가를 신주로 지급하면 <b>코미코 주주 지분 희석</b>이 발생하므로, <b>"합병 자체"가 아니라 "합병 비율"이 관건</b>이다.</li>
+    <li><b>지배구조:</b> 최대주주 <b>미코 41.10%</b>, 자사주(신탁) 2.00% <span class="pill conf">2025.2 기준</span> — 최신 지분율 <span class="pill unkn">미확인</span>. 모회사 미코가 에너지 사업 투자로 자금 수요가 큰 상황이라, <b>지분 매각·배당 압력</b> 가능성을 상수로 감시(코미코 배당성향은 2023년 12.4%→2025년 28.3%로 상승 — 모회사 현금 수요와 무관하지 않을 수 있음 <span class="pill estm">추정</span>).</li>
+    <li><b>코퍼레이트 액션 — 확정 일정:</b> 100% 무상증자(권리락 5/26, 기준가 90,200원, 신주상장 6/15) 완료. <b>액면분할(500→200원) 매매거래정지 2026.7.29~8.20, 신주상장 8.21</b> <span class="pill conf">확정</span>. 거래정지 기간 중 자금이 묶이며, 분할 후 유통주식수 증가로 <b>수급 변동성 확대</b> 가능.</li>
+    <li><b>CB·BW·증자:</b> 최근 희석성 발행 <span class="pill unkn">미확인 — DART 재확인</span>. 다만 차입 급증 국면이라 <b>추가 조달 가능성은 열려 있음</b>.</li>
+  </ul>
+
+  <h3>밸류에이션 <span class="tag">무증 후 기준 — 환산 주의</span></h3>
+  <div class="chart-box">
+    <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,Menlo,monospace">
+      <line x1="66" y1="15" x2="690" y2="15" stroke="#eeeef6"/>
+      <line x1="66" y1="15" x2="66" y2="205" stroke="#d6d7e4"/>
+      <line x1="66" y1="205" x2="690" y2="205" stroke="#d6d7e4"/>
+      <g font-size="10" fill="#6b6b85">
+        <text x="10" y="19">200k</text>
+        <text x="10" y="63">150k</text><line x1="66" y1="59.5" x2="690" y2="59.5" stroke="#eeeef6"/>
+        <text x="10" y="111">100k</text><line x1="66" y1="107.5" x2="690" y2="107.5" stroke="#eeeef6"/>
+        <text x="16" y="159">50k</text><line x1="66" y1="155.5" x2="690" y2="155.5" stroke="#eeeef6"/>
+      </g>
+      <!-- y = 205 - price/200000*190 ; 무증 전 구간(실선) -->
+      <polyline fill="none" stroke="#3730A3" stroke-width="2.5"
+        points="90,170 180,120 260,119 330,52 380,24.9"/>
+      <!-- 권리락 갭 (점선) -->
+      <line x1="380" y1="24.9" x2="410" y2="119.3" stroke="#a0472a" stroke-width="2" stroke-dasharray="5 4"/>
+      <!-- 무증 후 구간 -->
+      <polyline fill="none" stroke="#3730A3" stroke-width="2.5"
+        points="410,119.3 480,110 560,90 640,86.4"/>
+      <g font-size="10">
+        <circle cx="90" cy="170" r="3.5" fill="#3730A3"/><text x="68" y="188" fill="#6b6b85">25.2 36,800</text>
+        <circle cx="180" cy="120" r="3.5" fill="#3730A3"/><text x="150" y="138" fill="#6b6b85">25.12 89,600</text>
+        <circle cx="330" cy="52" r="3.5" fill="#3730A3"/><text x="296" y="42" fill="#6b6b85">5/13 165,900</text>
+        <circle cx="380" cy="24.9" r="4.5" fill="#a0472a"/><text x="330" y="16" fill="#a0472a" font-weight="700">52주 고점 191,600</text>
+        <circle cx="410" cy="119.3" r="4" fill="#a0472a"/><text x="392" y="138" fill="#a0472a" font-weight="700">5/26 권리락 90,200</text>
+        <circle cx="640" cy="86.4" r="5" fill="#241d6e"/><text x="576" y="79" fill="#241d6e" font-weight="700">6/12 124,900</text>
+      </g>
+      <!-- target line (무증 환산) -->
+      <line x1="66" y1="133.8" x2="690" y2="133.8" stroke="#7a6a2a" stroke-dasharray="4 4"/>
+      <text x="70" y="130" font-size="10" fill="#7a6a2a">최고 목표가 150,000 → 무증 환산 75,000 (現 주가가 1.67배 상회)</text>
+      <text x="66" y="230" font-size="10" fill="#6b6b85">붉은 점선 = 5/26 무상증자 권리락(이론상 절반). 좌측은 무증 전 주가, 우측은 무증 후 주가로 축이 다름에 유의.</text>
+      <text x="66" y="246" font-size="10" fill="#6b6b85">경로는 확인된 점의 개략 연결(실측 아님). 6/12 이후·7월 시세 미확인 — 열람 시 재확인 필수.</text>
+    </svg>
+  </div>
+  <div class="tbl-wrap"><table>
+    <tr><th>항목</th><th>수치</th><th>확인 시점·비고</th></tr>
+    <tr><td>주가 / 시가총액</td><td class="num">124,900원 / ≈2조 5,700억</td><td>2026.6.12 (+10.27%, 투자주의 지정 상태). 시총은 무증 후 발행주식 ~2,054만주(1,046만+1,008만) 자체계산. <b>6/12 이후 미확인 — 재확인 필수</b></td></tr>
+    <tr><td>52주 밴드</td><td class="num">31,550 ~ 191,600 <span style="font-size:11px">(무증 전 기준)</span></td><td>무증 환산 시 15,775~95,800. <b>현재 124,900원은 환산 고점(95,800)을 크게 상회</b> — 실질 신고가권</td></tr>
+    <tr><td>이익 기준 지표</td><td class="num">시총/2025 OP ≈ <b>23.2배</b><br>시총/2025 NP ≈ 33.3배</td><td>자체계산. 참고: SK증권은 2025.2 시점 "2025년 PER 3.8배"로 평가했으나 <b>주가 3.4배 상승 + 이익 미달로 완전히 다른 국면</b></td></tr>
+    <tr><td>목표가 컨센서스</td><td class="num">평균 120,750 / 최고 150,000<br><b>→ 무증 환산 60,375 / 75,000</b></td><td>2025.12 기준(4명 매수). 5/12 개별 목표가 15만(무증 전)도 확인. <b>6/12 주가는 환산 최고 목표가의 1.67배</b> — 무증 이후 상향 개정 <span class="pill unkn">미확인, 재확인 필수</span></td></tr>
+  </table></div>
+
+  <div class="callout warn"><b>"가격이 증명을 앞서갔는가" 판정: 앞서갔다 — 그것도 이익이 줄어드는 중에.</b> 주가는 2025.2 36,800원에서 무증 환산 기준 약 3.4배 올랐는데, 같은 기간 <b>영업이익은 2024년 1,125억 → 2025년 1,110억 → 1Q26 −34.6%로 오히려 감소</b>했다. 즉 <b>주가는 실적이 아니라 "글로벌 팹 확장의 미래"와 무증·분할 수급을 산 것</b>이다. 이미 가격에 있는 것: ①7개국 거점의 미래 매출 ②미코세라믹스 합병·지배구조 단순화 기대 ③유동성 확대 수급. 가격에 없는 것: ①건설중인자산 2,045억發 추가 감가상각 ②팹 지연 리스크 ③합병 시 희석. <b>주성엔지니어링·티에스이에서 본 "컨센-주가 역전"이 여기서도 재현</b>됐다(주가 &gt; 최고 목표가 환산치 1.67배).</div>
+
+  <div class="callout good"><b>모회사 미코와의 상대 밸류 — 시리즈 교차 계산:</b> 미코 시총 5,664억(7/2) vs 미코가 보유한 코미코 지분 41.1%의 시가 = 2조 5,700억 × 41.1% ≈ <b>1조 560억</b>. 즉 <b>미코는 코미코 지분가치의 약 54%에 거래</b> 중이며 <b>NAV 할인율은 약 46%</b>다(시점 차이 — 미코 7/2, 코미코 6/12 — 감안 필요 <span class="pill calc">자체계산</span>). 미코 리포트에서 미확인으로 남겼던 질문의 답이다. <b>해석</b>: 코미코는 알짜에 가깝지만 비싸고, 미코는 46% 싸지만 에너지 손실과 지주 비용을 떠안는다 — <b>같은 그룹에서 "어느 층을 사는가"는 할인율과 리스크의 교환</b>이다.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 무증·분할 이후 증권사 목표주가 상향 개정 현황 — 컨센이 주가를 따라잡았는가?<br>
+  ② 미코세라믹스 합병 시 예상 교환비율과 코미코 주주 희석률은?</div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="s8">
+  <div class="sec-h"><span class="no">SEC 08</span><h2>종합 투자 판단</h2></div>
+
+  <h3>핵심 질문과 검증 순서</h3>
+  <p><b>Q1. EBITDA 마진 28.4%는 바닥인가, 계단의 중간인가?</b> — 건설중인자산 2,045억이 남아 있어 감가상각이 한 번 더 오를 수 있다. 이익 회복 시점의 전부가 여기 걸려 있다. <b>Q2. 시총 2조 5,700억(2025 OP의 23배)은 이익이 줄어드는 회사에 정당한가?</b> — 미래 가동률을 얼마나 선불했는지의 문제.</p>
+  <p><b>검증 순서:</b> ① DART 분기보고서에서 <b>감가상각비·건설중인자산·거점별 손익</b> 확인(즉시) → ② <b>2Q26 실적의 EBITDA 마진</b> — 28.4% 반등 여부가 A/B 시나리오를 가른다 → ③ ASM 실적으로 미코세라믹스 수요 확인 → ④ 미코세라믹스 합병 구조·비율 발표 → ⑤ <b>7/29 거래정지 전 포지션 판단</b>.</p>
+
+  <h3>3질문 프레임 좌표 <span class="tag">시리즈 상대 위치</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>축</th><th>점수</th><th>판정·시리즈 비교</th></tr>
+    <tr><td>① 이익 업사이클 강도</td><td class="num"><b>2 / 3</b></td><td>매출은 5분기 연속 성장이나 <b>영업이익은 2년째 역성장</b>(2025 −1.3%, 1Q26 −34.6%). 하나머티(3점, OP +144% 실측)·티에스이(3점)와 명확히 대비. 단 잠재 공헌이익률 39.7%가 살아 있어 1점은 아님 — <b>"연기된 강도"</b></td></tr>
+    <tr><td>② 주가 반영도·잔여 룸</td><td class="num"><b>1 / 3</b></td><td>주가가 최고 목표가 환산치의 1.67배, 실질 신고가권, 시총/OP 23배. <b>이익이 줄어드는 중에 주가만 3.4배</b> — 주성(1점)과 같은 컨센-주가 역전. 시리즈에서 가장 불리한 축</td></tr>
+    <tr><td>③ 경로 변수 수</td><td class="num"><b>3 / 3 (많음)</b></td><td>글로벌 팹 일정 × 감가상각 계단 × ALD 출하 × 합병 비율 × 차입·금융비용 × 무증·분할 수급 — 미코(3점)와 동급. 단 <b>미코와 달리 에너지 변수는 없어</b> 변수의 질은 더 낫다</td></tr>
+  </table></div>
+
+  <h3>이탈 규율 3단계</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>단계</th><th>발동 조건</th><th>행동</th></tr>
+    <tr><td><b>경계</b></td><td>2Q26 EBITDA 마진 28% 하회 or 감가상각비 추가 증가 or 유동비율 90% 하회</td><td>신규 진입 유보, 거점별 가동률 확인</td></tr>
+    <tr><td><b>축소</b></td><td>글로벌 팹 양산 일정 연기 공표 or 3분기 연속 OP 역성장 or 합병 비율이 코미코 주주에 불리하게 확정 or 대규모 희석성 조달</td><td>절반 축소</td></tr>
+    <tr><td><b>이탈</b></td><td>메모리·파운드리 동시 가동률 조정(C 시나리오) — 빈 거점의 감가상각만 남는 구조 확정</td><td>전량 이탈. 2023년형 역레버리지(OP −40%)가 선례</td></tr>
+    <tr><td style="color:var(--accent-deep)"><b>노이즈 판별</b></td><td>급락이 ① 업종 동반(7/2형) ② 팹 가동률·ASM 수주 무손상 ③ 고유 악재 공시 부재일 때 검토 기회. <b>단 이 종목은 밸류 부담(주가 &gt; 목표가 1.67배)이 명확하므로</b>, 급락을 곧바로 기회로 읽지 말고 <b>EBITDA 마진 반등 확인을 선행 조건</b>으로 둘 것</td><td>2Q26 확인 후</td></tr>
+  </table></div>
+
+  <h3>IR 핵심 질문 1개</h3>
+  <div class="callout good"><b>"건설중인자산 2,045억이 본계정으로 대체되면 연간 감가상각비는 얼마나 늘어나며, 신규 9개 거점이 손익분기에 도달하는 시점은 언제입니까?"</b><br>— "감가상각 증가는 제한적이고 거점 대부분이 2026년 내 BEP 도달"이면 A 시나리오로 이익이 V자 회복하며 현 밸류가 정당화되고, "2027년까지 감가상각이 계속 늘고 일부 거점은 팹 양산 후에나 BEP"면 <b>이익 정체가 최소 2년 더 이어지는 B~C 시나리오</b>다. 답 하나로 현재 23배 멀티플의 정당성이 갈린다.</div>
+
+  <h3>미확인 데이터 · 다음 갱신 트리거</h3>
+  <ul>
+    <li><b>미확인:</b> ① 부문별(세정·코팅 vs 부품) 영업이익률 ② 거점별 가동률·손익 ③ 2026 CAPEX 계획 ④ <b>무증 후 목표주가 개정치</b> ⑤ 미코세라믹스 합병 비율 ⑥ 최신 지분율·CB/BW ⑦ 2026E 컨센서스 ⑧ 6/12 이후 주가</li>
+    <li><b>갱신 트리거·일정:</b> ① <b>2Q26 실적 (2026.8 중순 추정)</b> — EBITDA 마진 판독, 최우선 ② <b>액면분할 거래정지 2026.7.29~8.20, 신주상장 8.21</b> <span class="pill conf">확정</span> ③ 미코세라믹스 합병 발표 ④ ASM 실적 ⑤ 글로벌 팹 양산 일정 뉴스</li>
+  </ul>
+
+  <h3>이번 분석의 3대 발견 (재사용 가능한 일반 원리)</h3>
+  <ul>
+    <li><b>① 선투자 기업은 "매출 성장률 − EBITDA 마진" 쌍으로 읽는다:</b> 코미코 2025년은 매출만 보면 +19% 성장주, 영업이익만 보면 −1.3% 정체주다. <b>EBITDA 마진(33.7%→28.4%)을 함께 봐야</b> "성장을 사기 위해 마진 5.3%p를 지불했다"는 실체가 드러난다. 여기에 <b>건설중인자산</b>을 확인하면 앞으로 계단이 몇 개 더 남았는지까지 보인다 — 대규모 CAPEX 국면의 모든 기업에 재사용.</li>
+    <li><b>② 컨센서스는 감가상각·램프업 비용을 과소평가한다:</b> SK증권 2025년 전망 OP 1,581억 vs 실제 1,110억(−30%). 매출은 −8%만 빗나갔는데 이익은 −30% 빗나간 것은 <b>증권사 모델이 물량은 잘 맞히되 신규 거점 비용은 잘 못 맞힌다</b>는 뜻이다. 확장 국면 기업의 컨센서스 이익은 <b>일정 할인율을 적용해 읽을 것</b>.</li>
+    <li><b>③ "어느 층을 사는가"는 할인율과 리스크의 교환이다:</b> 미코(NAV 할인 46%, 단 에너지 손실 부담) vs 코미코(알짜에 근접, 단 목표가 대비 1.67배·감가상각 계단). 3층 구조에서 <b>아래층일수록 자산은 깨끗하고 밸류는 비싸며, 위층일수록 싸지만 이질 사업과 지주 비용을 떠안는다</b>. 하나마이크론↔하나머티 쌍에서 시작해 미코 3층에서 완성된 원리 — 그룹 종목은 반드시 <b>층별 상대 밸류를 계산한 뒤</b> 진입 지점을 고를 것.</li>
+  </ul>
+</section>
+
+<!-- ================= footer ================= -->
+<footer>
+  <h4>분석 기준일 · 확정/추정 구분</h4>
+  <p>· 작성: <span class="mono">2026-07-15</span> · 데이터: 2026-07-15 웹 검색 (DART 원문 미열람 — 부문별 손익·거점별 실적은 원문 확인 전 2차 자료 기반)<br>
+  · <span class="mono">[확정]</span> 2022~2025 연간(매출 6,041억·OP 1,110억·NP 772억), 1Q26(매출 1,570.6억·OP 204.5억·NP 171.6억), 1Q24·2Q24 분기, 부품 비중 50.1%·3,027억, 미코세라믹스 2025(2,525억/743억), CAPEX 2,220억·건설중인자산 2,045억·EBITDA 마진 33.7→28.4%, 차입 5,085억·부채비율 178.6%·유동비율 95.3%, 무증(권리락 5/26 기준가 90,200·신주상장 6/15)·액면분할(거래정지 7/29~8/20·상장 8/21), 미코 지분 41.10%(2025.2).<br>
+  · <span class="mono">[역산]</span> 1Q25 분기, 본업(연결−미코세라믹스) 손익, 증분이익률, 시가총액, NAV 할인율.<br>
+  · <span class="mono">[시장 추정]</span> ASM향 독과점 지위(SK증권), 미코세라믹스 합병 가능성(더벨 2026.7.2), 목표주가(2025.12 평균 120,750·최고 150,000, 무증 전 기준).<br>
+  · <span class="mono">[자체 추정]</span> 잠재 공헌이익률 39.7%, A/B/C 시나리오, 추가 감가상각 연 200억, payback 5~7년, 코팅·세정 비중.<br>
+  · <span class="mono">[미확인]</span> 부문별 OPM, 거점별 가동률, 2026 CAPEX·컨센서스, 무증 후 목표가 개정, 합병 비율, CB/BW, 6/12 이후 주가.</p>
+  <h4>주요 출처</h4>
+  <p>씽크풀 실적 집계(1Q26·연간 확정치) · 보숲 DART 기반 2025 연간 분석(CAPEX·EBITDA·차입) · SK증권 코미코 리포트(2025.2.5·4.21·4.22) · 대신증권(2024.8 목표가 상향) · Investing.com·데이터투자(무상증자 공시 2026.5.12) · 이데일리(권리락 2026.5.22) · 한국거래소·선물사 공지(액면분할 시장조치) · 더벨(2026.7.2 합병가 쟁점) · 증권플러스·investing(시세·목표가).</p>
+  <h4>자료 한계</h4>
+  <p><b>주가 시계열에 두 번의 조정이 필요</b>하다 — 100% 무상증자(권리락 5/26)로 주가·목표가 기준이 절반이 되었고, 액면분할(8/21 상장)로 다시 2.5분의 1이 된다. 본문의 52주 밴드·목표가는 무증 전 기준이므로 환산 병기했으며, 열람 시점에는 분할까지 반영된 주가와 대조해야 한다. 시가총액·NAV 할인율은 자체계산이며 미코(7/2)와 코미코(6/12)의 <b>기준일이 달라</b> 정밀도에 한계가 있다.</p>
+  <h4>자매 리포트 (시리즈)</h4>
+  <p><span class="mono">솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두 · 덕산하이메탈 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 이오테크닉스 · 원익IPS · 브이엠 · 코오롱인더 · 퍼스텍 · 주성엔지니어링 · 티에스이 · 하나머티리얼즈 · 하나마이크론 · 미코</span> — 특히 <b>미코(059090)와 모·자 쌍 리포트</b>(NAV 할인 46% 교차계산)·<b>한솔아이원스</b>(세정·코팅 경쟁사)·<b>티씨케이</b>(세라믹 부품)·<b>하나머티리얼즈</b>(감가상각 선행 원리)와 직접 연결.</p>
+  <p style="margin-top:14px;border-top:1px solid #2c2c52;padding-top:12px;color:#8f8ab8">본 리포트는 정보 제공 목적이며 투자 판단과 그 결과는 투자자 본인 책임입니다. 액센트 컬러: 딥 인디고 <span class="mono">#3730A3</span> (코미코 고유 — 기존 팔레트와 중복 없음).</p>
+</footer>
+
+</div>
+</body>
+</html>
