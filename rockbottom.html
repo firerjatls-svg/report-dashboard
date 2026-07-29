@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>락바텀 FWD — 기업분석 리포트 시리즈</title>
+<style>
+:root{
+  --ink:#14202B; --muted:#66707A; --faint:#9AA3AB;
+  --paper:#FAFAF8; --card:#FFFFFF; --line:#E4E7E2; --soft:#F1F3EF;
+  --up:#C0392B; --down:#1D5FA0; --warn:#B45309; --warnbg:#FEF3E2;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px}
+body{
+  font-family:'Pretendard Variable',Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  background:var(--paper); color:var(--ink); line-height:1.55; padding:34px 20px 70px;
+}
+.wrap{max-width:1180px;margin:0 auto}
+.figures{font-variant-numeric:tabular-nums}
+a{color:inherit}
+
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:8px}
+.toprow{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.eyebrow{font-size:.72rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.back{margin-left:auto;font-size:.78rem;color:var(--muted);text-decoration:none;border:1px solid var(--line);
+      border-radius:4px;padding:5px 11px;background:var(--card)}
+.back:hover{border-color:var(--ink);color:var(--ink)}
+h1{font-size:1.9rem;font-weight:800;letter-spacing:-.02em}
+h1 small{font-size:.95rem;font-weight:500;color:var(--muted);margin-left:10px}
+.basis{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.badge{font-size:.72rem;padding:3px 9px;border:1px solid var(--line);border-radius:3px;background:var(--card);color:var(--muted)}
+.badge b{color:var(--ink);font-weight:600}
+.badge.warn{background:var(--warnbg);border-color:#F3D9AE;color:var(--warn)}
+
+.controls{position:sticky;top:0;z-index:10;background:var(--paper);padding:14px 0 12px;
+          border-bottom:1px solid var(--line);margin:22px 0 24px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.viewtabs{display:flex;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden;width:fit-content}
+.viewtabs button{font:inherit;font-size:.85rem;font-weight:600;padding:7px 16px;border:none;
+                 background:var(--card);color:var(--muted);cursor:pointer}
+.viewtabs button.on{background:var(--ink);color:#fff}
+.reload{font:inherit;font-size:.82rem;font-weight:600;padding:7px 14px;border:1.5px solid var(--line);
+        border-radius:6px;background:var(--card);color:var(--ink);cursor:pointer}
+.reload:hover{border-color:var(--ink)}
+.reload[disabled]{opacity:.5;cursor:default}
+.stamp{font-size:.78rem;color:var(--muted);margin-left:auto;white-space:nowrap}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:940px}
+th,td{padding:9px 11px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:.72rem;font-weight:650;color:var(--muted);text-align:right;background:var(--soft);
+   position:sticky;top:0;letter-spacing:.02em}
+th:first-child,td:first-child{text-align:left}
+th.mid,td.mid{text-align:center}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--soft)}
+.nm{font-weight:650}
+.cd{color:var(--faint);font-size:.7rem;margin-left:5px}
+.gr{display:inline-block;width:17px;height:17px;line-height:17px;border-radius:3px;font-size:.68rem;
+    font-weight:700;text-align:center;color:#fff}
+.grA{background:#2F6B4F} .grB{background:#7A6A3A} .grC{background:#96501E}
+.gap{font-weight:700}
+.near{color:var(--up)} .far{color:var(--down)}
+.dim{color:var(--faint)}
+.src{font-size:.72rem;color:var(--muted);text-align:left;max-width:180px;white-space:normal}
+
+/* 신호 게이지 — 0%(바닥 도달)에서 -80%까지, 막대가 짧을수록 바닥에 가깝다 */
+.gauge{width:150px;height:20px;position:relative}
+.gauge .track{position:absolute;inset:7px 0 auto 0;height:5px;background:var(--soft);border-radius:3px}
+.gauge .fill{position:absolute;top:7px;left:0;height:5px;border-radius:3px;background:var(--down);opacity:.28}
+.gauge .pin{position:absolute;top:3px;width:2px;height:13px;background:var(--down)}
+.gauge .pin.a{opacity:.45}
+.gauge .pin.b{background:var(--ink)}
+.gauge.warn .fill{background:var(--up);opacity:.3}
+.gauge.warn .pin{background:var(--up)}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:.76rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.note{margin-top:18px;font-size:.79rem;color:var(--muted);line-height:1.7;
+      border-left:2px solid var(--line);padding-left:14px}
+.note b{color:var(--ink)}
+.msg{padding:40px 0;text-align:center;color:var(--muted);font-size:.9rem}
+.msg.err{color:var(--warn)}
+@media (max-width:640px){
+  body{padding:22px 14px 60px} h1{font-size:1.5rem} .stamp{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="toprow">
+    <span class="eyebrow">Rock Bottom · FWD 12M PER</span>
+    <a class="back" href="./index.html">← 대시보드</a>
+  </div>
+  <h1>락바텀 FWD<small id="sub">불러오는 중…</small></h1>
+  <div class="basis" id="basis"></div>
+</header>
+
+<div class="controls">
+  <div class="row">
+    <div class="viewtabs" id="tabs">
+      <button data-v="both" class="on">A·B 나란히</button>
+      <button data-v="a">A 자체분모</button>
+      <button data-v="b">B 컨센분모</button>
+    </div>
+    <button class="reload" id="reload">↻ 최신화</button>
+    <span class="stamp" id="stamp"></span>
+  </div>
+</div>
+
+<div id="out"><div class="msg">데이터를 불러오는 중입니다…</div></div>
+
+<div class="legend" id="legend" hidden>
+  <span><i style="background:#2F6B4F"></i>A등급 — 앵커 실측 + 분모 담보</span>
+  <span><i style="background:#7A6A3A"></i>B등급 — 앵커 보정·트로프 미검증</span>
+  <span><i style="background:#96501E"></i>C등급 — 분모 자체가 취약</span>
+  <span><i style="background:var(--ink)"></i>게이지 진한 핀 = B(컨센), 옅은 핀 = A(자체)</span>
+</div>
+
+<div class="note" id="note" hidden>
+  <b>계산식</b> — 락바텀가 = 락바텀 FWD PER × F12M 순이익 ÷ 주식수. F12M은 5/12×'26E + 7/12×'27E(잔여월 가중).
+  <b>A</b>는 리포트 경로에서 도출한 자체 분모, <b>B</b>는 증권사 컨센 분모('27E 컨센이 없으면 '26E flat 처리 → 보수적으로 나옴).
+  락바텀 FWD PER은 A·B 공통이므로 <b>두 값의 차이는 오직 분모 차이</b>입니다.
+  여유 = 락바텀 FWD PER ÷ 현 F12M PER − 1.
+  <br>
+  <b>읽는 법</b> — 여유가 얇다는 것은 가격이 바닥 밸류에 닿았다는 뜻일 뿐, 분모(컨센 이익)가 유효한지는 별개 판단입니다.
+  A·B 격차가 큰 종목은 그 격차 자체가 분모 리스크의 크기입니다.
+</div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => n == null ? '—' : Number(n).toLocaleString('ko-KR');
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pct = v => (v > 0 ? '+' : '') + v.toFixed(0) + '%';
+
+let DATA = null, view = 'both';
+
+function gauge(a, b){
+  const SCALE = 80; // 축: 0% ~ -80%
+  const w = g => Math.max(2, Math.min(100, Math.abs(g) / SCALE * 100));
+  const lead = b || a;                       // 기준은 B(있으면), 없으면 A
+  const warn = Math.abs(lead.gap_pct) < 12;  // 바닥 근접
+  let pins = `<div class="pin a" style="left:calc(${w(a)}% - 1px)"></div>`;
+  if (b) pins += `<div class="pin b" style="left:calc(${w(b)}% - 1px)"></div>`;
+  return `<div class="gauge ${warn ? 'warn' : ''}">
+    <div class="track"></div><div class="fill" style="width:${w(lead)}%"></div>${pins}</div>`;
+}
+
+function cell(o){
+  if (!o) return `<td class="dim">—</td><td class="dim">—</td><td class="dim">—</td>`;
+  const near = Math.abs(o.gap_pct) < 12;
+  return `<td class="figures">${o.per_now.toFixed(1)}배</td>
+          <td class="figures">${fmt(o.floor)}</td>
+          <td class="figures gap ${near ? 'near' : 'far'}">${pct(o.gap_pct)}</td>`;
+}
+
+function render(){
+  if (!DATA) return;
+  const rows = [...DATA.rows].sort((x, y) => {
+    const gx = (view === 'a' ? x.a : (x.b || x.a)).gap_pct;
+    const gy = (view === 'a' ? y.a : (y.b || y.a)).gap_pct;
+    return gy - gx; // 여유 얇은 순
+  });
+
+  const showA = view === 'both' || view === 'a';
+  const showB = view === 'both' || view === 'b';
+  const head = `<tr>
+    <th>종목</th><th>현재가</th><th class="mid">락바텀<br>FWD PER</th>
+    ${showA ? '<th>A 현 PER</th><th>A 락바텀</th><th>A 여유</th>' : ''}
+    ${showB ? '<th>B 현 PER</th><th>B 락바텀</th><th>B 여유</th>' : ''}
+    <th class="mid">바닥까지</th><th class="mid">등급</th><th style="text-align:left">B 분모 출처</th></tr>`;
+
+  const body = rows.map(r => `<tr>
+    <td><span class="nm">${esc(r.name)}</span><span class="cd figures">${esc(r.code)}</span></td>
+    <td class="figures">${fmt(r.close)}</td>
+    <td class="mid figures"><b>${r.floor_per}배</b></td>
+    ${showA ? cell(r.a) : ''}
+    ${showB ? cell(r.b) : ''}
+    <td class="mid">${gauge(r.a, r.b)}</td>
+    <td class="mid"><span class="gr gr${r.grade}">${r.grade}</span></td>
+    <td class="src">${esc(r.b_src)}</td></tr>`).join('');
+
+  $('out').innerHTML = `<div class="tablewrap"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
+  $('legend').hidden = false;
+  $('note').hidden = false;
+}
+
+async function load(){
+  const btn = $('reload');
+  btn.disabled = true; btn.textContent = '↻ 불러오는 중';
+  try{
+    const res = await fetch('./data/rockbottom.json?t=' + Date.now(), {cache:'no-store'});
+    if (!res.ok) throw new Error('not found');
+    DATA = await res.json();
+    const nB = DATA.rows.filter(r => r.b).length;
+    $('sub').textContent = `${DATA.rows.length}개 종목 · 시세 ${DATA.asof}`;
+    $('basis').innerHTML =
+      `<span class="badge">시세 기준일 <b>${esc(DATA.asof)}</b></span>` +
+      `<span class="badge">분모·배수 판단 <b>${esc(DATA.params_asof)}</b></span>` +
+      `<span class="badge">컨센 분모 확보 <b>${nB} / ${DATA.rows.length}</b></span>` +
+      `<span class="badge warn">시세는 아카이브 특성상 <b>T+1</b> 지연 — 실행 전 현재가 재확인</span>`;
+    $('stamp').textContent = '화면 갱신 ' + new Date().toLocaleTimeString('ko-KR');
+    render();
+  }catch(e){
+    $('out').innerHTML = `<div class="msg err">data/rockbottom.json을 불러오지 못했습니다.
+      GitHub Actions의 update-quotes 워크플로우가 정상 실행됐는지 확인하세요.</div>`;
+    $('sub').textContent = '';
+  }finally{
+    btn.disabled = false; btn.textContent = '↻ 최신화';
+  }
+}
+
+$('tabs').querySelectorAll('button').forEach(b => {
+  b.onclick = () => {
+    view = b.dataset.v;
+    $('tabs').querySelectorAll('button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    render();
+  };
+});
+$('reload').onclick = load;
+load();
+</script>
+</body>
+</html>
