@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오킨스전자 (080580) — 스택 수에 붙은 소모품</title>
+<script type="application/json" id="dashboard-meta">
+{
+  "code": "080580",
+  "name": "오킨스전자",
+  "sector": "pkg",
+  "intensity": 4,
+  "variables": 3,
+  "note": "HBM 스택 수 연동 소모품, 증분OPM 37% 실증 — 단 지배지분 16%·차입 284억",
+  "desc": "번인소켓·마그네틱콜렛·커넥터 — 웨이퍼가 아니라 완성 HBM 개수에 붙은 국내 유일 소모품 조합",
+  "tags": "번인소켓 테스트소켓 마그네틱콜렛 커넥터 MEMS프로브핀 HBM4 CLT 삼성전자 후공정테스트",
+  "catalysts": [{"date": "2026-08-14", "label": "2Q26 실적 발표 (추정)"}, {"date": "2026-11-14", "label": "3Q26 — HBM4E 물량 첫 관측 분기 (추정)"}]
+}
+</script>
+<style>
+  :root{
+    --bg:#efece6;
+    --paper:#ffffff;
+    --ink:#221e19;
+    --muted:#7a7268;
+    --line:#ddd7cc;
+    --line-soft:#eae5db;
+    --accent:#701A75;        /* 딥 플럼 — 오킨스전자 고유 액센트 (기존 팔레트와 중복 없음) */
+    --accent-deep:#4a0f4e;
+    --accent-bg:#f5e9f6;
+    --warn:#9a3d20;
+    --warn-bg:#f6e9e2;
+    --info:#3f5560;
+    --info-bg:#e9eef1;
+    --est:#7a6a2a;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.62;-webkit-font-smoothing:antialiased;padding:20px 12px 80px;display:flex;justify-content:center;font-size:14.5px}
+  .wrap{width:100%;max-width:860px}
+  .mono{font-family:var(--mono)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .est{color:var(--est);font-weight:600}
+  .pos{color:var(--accent-deep);font-weight:600}
+  .neg{color:var(--warn);font-weight:600}
+  .fn{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+  .cover{background:linear-gradient(155deg,#1e0a20 0%,#4a0f4e 58%,#7e2384 100%);color:#f7ecf7;border-radius:18px;padding:30px 24px 26px;position:relative;overflow:hidden;margin-bottom:14px}
+  .cover::before{content:"";position:absolute;right:-40px;top:-30px;width:240px;height:240px;
+    background:radial-gradient(circle,rgba(247,236,247,.10) 1.5px,transparent 1.6px);background-size:16px 16px;transform:rotate(8deg)}
+  .cover .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:#d9a3dc;margin-bottom:10px;position:relative;z-index:1}
+  .cover h1{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.25;position:relative;z-index:1}
+  .cover h1 .code{font-family:var(--mono);font-size:15px;font-weight:500;color:#d9a3dc;margin-left:8px}
+  .cover .sub{font-size:13.5px;color:#e6c4e8;margin-top:8px;max-width:610px;position:relative;z-index:1}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px;position:relative;z-index:1}
+  @media(min-width:640px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:11px 12px}
+  .kpi .l{font-size:10.5px;letter-spacing:.06em;color:#d9a3dc;font-family:var(--mono)}
+  .kpi .v{font-size:16px;font-weight:800;font-family:var(--mono);margin-top:3px}
+  .kpi .d{font-size:10.5px;color:#dbb0dd;margin-top:2px}
+
+  .thesis{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:18px 20px;margin-bottom:22px;box-shadow:0 1px 2px rgba(34,30,25,.04),0 8px 22px rgba(34,30,25,.05)}
+  .thesis .t{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700;margin-bottom:8px}
+  .thesis p{font-size:14.5px}
+  .thesis p b{color:var(--accent-deep)}
+
+  .nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+  .nav a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;border:1px solid var(--line);background:var(--paper);border-radius:99px;padding:5px 11px;transition:.15s}
+  .nav a:hover{color:var(--accent-deep);border-color:var(--accent)}
+
+  section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin-bottom:18px;position:relative;box-shadow:0 1px 2px rgba(34,30,25,.03),0 6px 18px rgba(34,30,25,.04)}
+  @media(min-width:640px){section{padding:26px 28px}}
+  section::before{content:"";position:absolute;top:10px;right:10px;width:14px;height:14px;border-top:2px solid var(--line);border-right:2px solid var(--line);border-radius:0 4px 0 0}
+  .sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .sec-h .no{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:#fff;background:var(--accent);border-radius:6px;padding:3px 8px}
+  .sec-h h2{font-size:19px;font-weight:800;letter-spacing:-.01em}
+  h3{font-size:15px;font-weight:700;margin:20px 0 8px;color:var(--accent-deep)}
+  h3 .tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--muted);margin-left:6px}
+  p{margin-bottom:10px}
+  ul{margin:0 0 10px 18px}
+  li{margin-bottom:5px}
+
+  .tbl-wrap{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;min-width:540px;font-size:12.5px}
+  th{background:#f3eaf4;color:var(--accent-deep);font-weight:700;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:7px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:#faf3fb}
+  .tbl-note{font-size:11px;color:var(--muted);margin-top:6px}
+
+  .pill{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;vertical-align:1px}
+  .pill.conf{background:var(--accent-bg);color:var(--accent-deep)}
+  .pill.estm{background:#f2ecd7;color:var(--est)}
+  .pill.calc{background:var(--info-bg);color:var(--info)}
+  .pill.unkn{background:var(--warn-bg);color:var(--warn)}
+
+  .callout{border-radius:10px;padding:12px 14px;margin:10px 0;font-size:13.5px;border:1px solid}
+  .callout.warn{background:var(--warn-bg);border-color:#e3c6b6;color:#682712}
+  .callout.info{background:var(--info-bg);border-color:#cdd8dd;color:#2c414b}
+  .callout.good{background:var(--accent-bg);border-color:#e0c0e3;color:var(--accent-deep)}
+
+  .q2{background:#f7f2f7;border:1px dashed var(--line);border-radius:10px;padding:11px 14px;margin-top:14px;font-size:13px}
+  .q2 .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:5px}
+
+  .stackbar{display:flex;height:38px;border-radius:9px;overflow:hidden;border:1px solid var(--line);margin:12px 0 6px}
+  .stackbar div{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--c)}
+
+  .chain{margin:14px 0}
+  .chain .node{background:#f7f2f7;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:13px}
+  .chain .node b{display:block;font-size:13.5px;color:var(--accent-deep)}
+  .chain .node .chk{font-family:var(--mono);font-size:10.5px;color:var(--info);margin-top:3px;display:block}
+  .chain .arrow{display:flex;justify-content:center;color:var(--accent);font-size:15px;padding:2px 0;font-weight:700}
+
+  .lev-row{margin:14px 0}
+  .lev-row .cap{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;gap:8px;flex-wrap:wrap}
+  .lev-row .cap b{font-family:var(--mono)}
+  .lev-bar{display:flex;height:30px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+  .lev-bar .cost{background:#cfc6b6;color:#4b4335;display:flex;align-items:center;padding-left:10px;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar .profit{background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700}
+  .lev-bar.rev .cost{background:#e0bfab;color:#682712}
+  .lev-bar.rev .profit{background:var(--warn)}
+
+  .gauge{position:relative;height:76px;margin:18px 4px 6px}
+  .gauge .ruler{position:absolute;left:0;right:0;top:38px;height:10px;border-radius:5px;background:linear-gradient(90deg,#ece6db,#d3aad6 55%,#8b2c90)}
+  .gauge .tick{position:absolute;top:50px;font-family:var(--mono);font-size:10px;color:var(--muted);transform:translateX(-50%)}
+  .gauge .mk{position:absolute;top:8px;transform:translateX(-50%);text-align:center;font-family:var(--mono);font-size:10.5px;font-weight:700;white-space:nowrap}
+  .gauge .mk::after{content:"";display:block;width:2px;height:24px;margin:2px auto 0}
+  .gauge .mk.opm{color:var(--info)} .gauge .mk.opm::after{background:var(--info)}
+  .gauge .mk.inc{color:var(--accent-deep)} .gauge .mk.inc::after{background:var(--accent)}
+
+  .chart-box{border:1px solid var(--line);border-radius:12px;padding:12px 8px 6px;margin:12px 0;background:#fbf7fb}
+  .chart-box svg{width:100%;height:auto;display:block}
+
+  .risk-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0}
+  @media(min-width:640px){.risk-grid{grid-template-columns:repeat(3,1fr)}}
+  .risk{border:1px solid #e3c6b6;background:var(--warn-bg);border-radius:12px;padding:13px 14px;font-size:12.5px}
+  .risk .rt{font-weight:800;color:#682712;font-size:13px;margin-bottom:5px}
+  .risk .row{margin-top:5px}
+  .risk .row b{font-family:var(--mono);font-size:10.5px;color:#8a4a2a;letter-spacing:.06em}
+  .risk .sig{margin-top:7px;padding-top:7px;border-top:1px dashed #dbbda9;font-family:var(--mono);font-size:11px;color:#8a4a2a}
+
+  footer{background:#1e0a20;color:#c8a3cb;border-radius:16px;padding:22px 22px;font-size:12px;line-height:1.7}
+  footer h4{color:#f2d9f4;font-size:13px;margin-bottom:6px;margin-top:14px}
+  footer h4:first-child{margin-top:0}
+  footer .mono{color:#b877bd}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= 표지 ================= -->
+<div class="cover">
+  <div class="eyebrow">EQUITY DEEP-DIVE // 후공정 테스트 부품 // 기준일 2026-08-11</div>
+  <h1>오킨스전자 <span class="code">KOSDAQ 080580</span></h1>
+  <div class="sub">번인소켓·마그네틱콜렛·커넥터 — 웨이퍼 투입이 아니라 <b>완성된 HBM 개수</b>에 붙은 소모품. HBM4 저단수화가 만든 배율 괴리의 정면</div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">주가 (8/7 종가)</div><div class="v">12,840원</div><div class="d">52주 8,610~26,900 · 밴드 23%</div></div>
+    <div class="kpi"><div class="l">시가총액</div><div class="v">2,710억</div><div class="d">2,111만주 · 3M −52.3%</div></div>
+    <div class="kpi"><div class="l">2025 확정 매출 / OP</div><div class="v">944 / 121억</div><div class="d">+41.5% / +536.3%</div></div>
+    <div class="kpi"><div class="l">강도 4 / 변수 3</div><div class="v">증분 OPM 37%</div><div class="d">2024→2025 실측</div></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <div class="t">핵심 투자 명제</div>
+  <p>HBM 소부장 대부분은 <b>웨이퍼 투입량</b>에 묶여 있다. 2027년 D램 부족으로 HBM에 돌릴 웨이퍼가 제약되고, 그 제약 때문에 엔비디아가 적층 단수를 16단에서 8·12단으로 낮추는 국면에서, 이들의 증분은 거의 0이다. <b>오킨스전자는 유일하게 다른 단위에 붙어 있다 — 스택 수</b>. 같은 웨이퍼로 완성 HBM이 1.5배 나오면 번인소켓·마그네틱콜렛 소모도 1.5배다. 여기에 <b>고객사 CLT 테스터 전환</b>과 <b>HBM 콜렛 메모리 3사 전량 공급</b>이라는 두 개의 점유율 승수가 얹힌다. 그리고 이 회사는 2024→2025년에 <b>증분 영업이익률 36.8%를 이미 실적으로 증명했다</b>(같은 기간 원익머트리얼즈 약 8%). 남은 질문은 논리가 아니라 재무다 — <b>지배지분 16.35%, 차입금 284억, 교환사채 오버행</b>이 그 레버리지를 주주에게 온전히 남겨주느냐.</p>
+</div>
+
+<nav class="nav">
+  <a href="#s1">01 사업</a><a href="#s2">02 수익구조</a><a href="#s3">03 트랙레코드</a><a href="#s4">04 전방·성장경로</a>
+  <a href="#s5">05 트래킹</a><a href="#s6">06 레버리지·CAPEX</a><a href="#s7">07 리스크·밸류</a><a href="#s8">08 종합</a>
+</nav>
+
+<!-- ================= 01 ================= -->
+<section id="s1">
+  <div class="sec-h"><span class="no">SEC 01</span><h2>사업의 이해 — 무엇을 만들어 누구에게 파는가</h2></div>
+
+  <p>1998년 <b>번인소켓 국산화</b>에 성공하며 설립, 2014년 12월 코스닥 상장. 본사는 경기 의왕 오전동의 13층 아파트형 공장에서 주력 제품의 가공·조립을 수행하고, <b>화성 송산 사업장</b>이 내부 1차 제조(마그네틱 콜렛·커넥터·사출·프레스·대형 가공)를 맡는 이원 구조다. 2024년 <b>ATS센터</b>를 설립했다. <span class="pill conf">확정</span></p>
+
+  <h3>제품 6종 — 붙는 공정과 세는 단위가 전부 다르다</h3>
+  <p>이 회사를 읽는 열쇠는 제품 목록이 아니라 <b>각 제품이 어느 단위에 비례하는가</b>다. 같은 "후공정 부품"이라도 웨이퍼에 붙는 것, 다이에 붙는 것, 완성 칩 개수에 붙는 것, 장비 대수에 붙는 것이 섞여 있다.</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>제품</th><th>하는 일</th><th class="num">비례 단위</th><th>성격</th></tr>
+    <tr class="hl"><td><b>번인소켓</b><br>(Burn-In Socket)</td><td>고온·고전압 극한 스트레스 환경에서 칩을 물려 초기 불량을 걸러내는 소켓. 국내 최초 개발 제품</td><td class="num"><b>완성 칩(스택) 개수</b></td><td>소모품. 라인 셋업 후 <b>제품별로 반복 발주</b></td></tr>
+    <tr class="hl"><td><b>테스트소켓</b></td><td>패키지 테스트에서 칩을 고정해 신호를 주고받음</td><td class="num"><b>완성 칩 개수</b></td><td>소모품. 다이 레벨 테스트 개화가 신규 축</td></tr>
+    <tr><td><b>마그네틱 콜렛</b><br>(Magnetic Collet)</td><td>패키징·본딩 공정에서 다이를 집어 올리는(Pick &amp; Place) 픽업 툴. 일정 횟수 쓰고 폐기</td><td class="num"><b>다이 픽업 횟수</b></td><td>소모품. <b>핸들러 장비에 탑재</b></td></tr>
+    <tr><td><b>MEMS 프로브핀</b><br>(포고핀)</td><td>프로브카드에 들어가는 미세 접촉핀. 티에스이 등 카드 제조사에 공급되는 층</td><td class="num">카드 수 × 핀 수</td><td>소모품. HBM은 D램 대비 핀 3배</td></tr>
+    <tr><td><b>커넥터</b></td><td>테스트 장비 내부 배선. 전기차용 배터리 커넥터도 병행</td><td class="num"><b>장비 제작 대수</b></td><td><b>장비 제작 단계에 선행 공급</b> — 소모품이 아니라 선행지표</td></tr>
+    <tr><td><b>테스트 용역</b></td><td>웨이퍼·패키지·LED 테스트 수탁</td><td class="num">고객 물량</td><td>단일 고객 약 70% 의존 <span class="pill unkn">집중 리스크</span></td></tr>
+  </table>
+  <div class="tbl-note">비례 단위는 각 제품의 물리적 소모 구조에서 도출한 <b>자체 분류</b>다 <span class="pill calc">자체 정리</span>. 2025년 3분기 누적 기준 <b>소켓 관련 매출이 전체의 89.5%</b>를 차지해 사실상 소켓 회사로 봐야 한다 <span class="pill conf">확정</span>.</div></div>
+
+  <div class="callout good"><b>왜 이 조합이 지금 중요한가.</b> 엔비디아가 D램 공급난 때문에 루빈 울트라 사양을 16단에서 <b>8단·12단</b>으로 낮추면, 같은 웨이퍼에서 <b>완성 HBM 개수가 1.33~1.5배</b>로 늘어난다. 웨이퍼·다이에 붙은 소재사(특수가스·쿼츠·파츠·PR)는 증분이 0인데, <b>번인소켓과 테스트소켓만 그대로 1.33~1.5배</b>를 받는다. 이 회사가 "HBM 수혜주" 목록에서 거의 유일하게 살아남는 구조적 이유다.</div>
+
+  <h3>사업부 구성 <span class="tag">2025년</span></h3>
+  <div class="legend">
+    <span style="--c:#701A75">BiTS(소켓)</span><span style="--c:#a34aa8">신사업(콜렛·핀·커넥터)</span><span style="--c:#3f5560">테스트 용역</span>
+  </div>
+  <div class="stackbar">
+    <div style="width:89%;background:#701A75">BiTS 839억 (약 89%)</div>
+    <div style="width:11%;background:#3f5560">기타</div>
+  </div>
+  <p class="fn">BiTS 사업부 2025년 839억(+40.9% YoY) <span class="pill estm">시장 추정</span>. 신한(2026-08-11)은 2026년 이후 <b>프로브핀·커넥터·마그네틱콜렛 합산 비중이 45%(26F) → 52%(28F)</b>로 오른다고 본다 — 믹스가 소켓 단일에서 다변화되는 구간.</p>
+
+  <h3>고객과 경쟁</h3>
+  <ul>
+    <li><b>직접 고객:</b> 삼성전자(2025년 초 소켓 공급계약 공시가 상반기 실적 견인) <span class="pill conf">공시</span>, SK하이닉스, 마이크론 — <b>HBM 마그네틱 콜렛은 2025년 12월 글로벌 메모리 3사 전량 공급</b> 달성 <span class="pill conf">회사 확인</span>. 테스트 용역은 중국 전기차 업체 등.</li>
+    <li><b>번인소켓 경쟁:</b> 오킨스전자, 마이크로컨텍솔, Yamaichi(일), BOYD(미), ISC. 즉 국내 상장 순수 플레이는 사실상 오킨스와 마이크로컨텍솔뿐이고, <b>ISC·리노공업은 러버/포고 테스트소켓이 주력이라 번인 영역에서는 정면 경쟁이 아니다</b>.</li>
+    <li><b>구조적 기회:</b> HBM4부터 삼성전자·SK하이닉스가 <b>테스터 공급선 다변화</b>를 본격화하며 국내 업체 의존도를 높일 것으로 관측된다 <span class="pill estm">시장 추정</span>. Advantest는 2026년 메모리 테스트 시장 규모를 22~27억달러(중간값 YoY +20%)로 제시했다.</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 번인소켓 매출에서 <b>메모리 vs 비메모리, DRAM vs HBM</b> 분해는? 스택 수 논리가 실제로 몇 %에 적용되는지가 이 리포트 전체의 계수다<br>
+  ② 마그네틱 콜렛은 <b>다이 픽업 횟수</b>에 비례하므로 8단화 시 오히려 감소한다 — 소켓의 +50%와 콜렛의 −33%가 상쇄되는 비율은?</div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="s2">
+  <div class="sec-h"><span class="no">SEC 02</span><h2>수익 구조 — 돈을 어떻게 버는가</h2></div>
+
+  <h3>판매 구조: 셋업 1회 + 소모 반복의 이중 매출</h3>
+  <p>소켓은 <b>고객사 라인 셋업 시 제품 타입별로 한 번 깔리고, 이후 마모에 따라 반복 교체</b>된다. 교체 주기가 짧아 수요 안정성이 높다는 것이 이 업의 방어력이다. 반대로 커넥터는 <b>장비 제작 단계에 선행 공급</b>되므로 소모가 아니라 발주에 붙는다.</p>
+
+  <div class="callout info"><b>순서가 곧 트래킹 순서다.</b> ① 테스터 장비 발주 → 커넥터 공급(선행) → ② 고객사 라인 셋업 → 번인소켓 초도 공급 → ③ 양산 가동 → 소켓 반복 교체 + 콜렛 소모. 즉 <b>커넥터 매출이 먼저 뛰고 소켓이 따라오는 구조</b>라, 커넥터 성장률이 소켓의 선행지표 역할을 한다. 신한 추정 커넥터 비중 <b>15%(26F) → 20%(27F) → 23%(28F), 26~28년 CAGR 약 94%</b>는 뒤에 올 소켓 물량을 예고하는 숫자로 읽어야 한다 <span class="pill estm">시장 추정</span>.</div>
+
+  <h3>가격 결정: P와 Q가 동시에 오르는 구간</h3>
+  <p>유안타증권(2026-01-23)은 <b>"소켓 부문의 가격(P)과 물량(Q)이 동시에 개선될 수 있는 환경"</b>이라고 평가했다(투자의견·목표주가 미제시) <span class="pill estm">시장 추정</span>. P가 오르는 경로는 둘이다 — HBM4는 HBM3E 대비 I/O와 핀 속도가 높아 소켓 난이도·단가가 오르고, 고온·고전류 대응 요구가 커지며 고부가 제품 믹스가 상승한다. Q는 위의 스택 수 논리다.</p>
+
+  <h3>원가와 마진 구조</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>지표</th><th class="num">2024</th><th class="num">2025</th><th class="num">2026F</th><th class="num">2028F</th><th>해석</th></tr>
+    <tr><td>매출총이익률(GPM)</td><td class="num">—</td><td class="num">25.5%</td><td class="num">29.4%</td><td class="num">—</td><td>고부가 믹스 상승</td></tr>
+    <tr class="hl"><td>영업이익률(OPM)</td><td class="num">2.9%</td><td class="num">12.8%</td><td class="num">11.8→18.5%</td><td class="num">18.5%</td><td><b>고정비 회수 이후의 레버리지</b></td></tr>
+    <tr><td>고부가 비중<br>(핀·커넥터·콜렛)</td><td class="num">—</td><td class="num">—</td><td class="num">45%</td><td class="num">52%</td><td>믹스 개선이 마진의 엔진</td></tr>
+  </table>
+  <div class="tbl-note">2024 OPM은 매출 667억·OP 19.04억에서 <b>자체 계산</b> <span class="pill calc">자체 계산</span>. 2025 OPM은 944억·121억 기준. GPM·고부가 비중·2028F는 신한(2026-08-11) 추정 <span class="pill estm">시장 추정</span>. OPM 2026F가 두 값인 이유는 출처가 갈리기 때문 — 한국IR협의회(2/19) 1,405억·207억(14.7%) vs 신한(8/11) 1,486억·275억(18.5%).</div></div>
+
+  <p>손익 공식을 한 줄로 쓰면 이렇다.</p>
+  <div class="callout good"><b>매출 = (고객사 완성 칩 개수 × 소켓 소모율 × 단가) + (테스터 발주 대수 × 커넥터 단가) + 용역</b><br>
+  <b>영업이익 = 매출 − 재료·가공비(변동) − 고정비(의왕·송산 설비, 감가상각, 인건비)</b><br>
+  변수 셋 중 <b>완성 칩 개수</b>가 압도적이고, 그것이 8단화로 웨이퍼와 분리되었다는 것이 이 리포트의 전부다.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 소켓 <b>교체 주기</b>는 몇 개월이며 최근 HBM4 라인에서 짧아졌는가? (반복 매출 강도의 실체)<br>
+  ② 화성 송산 사업장 내부거래 비중 — 수직계열화가 원가에 실제로 얼마를 기여하는가?</div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="s3">
+  <div class="sec-h"><span class="no">SEC 03</span><h2>실적 트랙레코드 — 무엇이 증명됐나</h2></div>
+
+  <h3>연간 <span class="tag">억원, 연결</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구분</th><th class="num">2022</th><th class="num">2023</th><th class="num">2024</th><th class="num">2025</th><th class="num">2026F<br>(IR협)</th><th class="num">2026F<br>(신한)</th><th class="num">2027F<br>(신한)</th></tr>
+    <tr><td>매출액</td><td class="num">642</td><td class="num">569</td><td class="num">667</td><td class="num"><b>944</b></td><td class="num">1,405</td><td class="num">1,486</td><td class="num">2,430</td></tr>
+    <tr><td>YoY</td><td class="num">+8%</td><td class="num neg">−11%</td><td class="num">+17.3%</td><td class="num pos">+41.5%</td><td class="num">+48.9%</td><td class="num">+57.5%</td><td class="num pos">+63.5%</td></tr>
+    <tr class="hl"><td>영업이익</td><td class="num">—</td><td class="num neg">−26.1</td><td class="num">19.0</td><td class="num pos"><b>121.2</b></td><td class="num">207</td><td class="num">275</td><td class="num pos">545</td></tr>
+    <tr><td>OPM</td><td class="num">—</td><td class="num neg">적자</td><td class="num">2.9%</td><td class="num">12.8%</td><td class="num">14.7%</td><td class="num">18.5%</td><td class="num">22.4%</td></tr>
+    <tr><td>순이익</td><td class="num">—</td><td class="num neg">−10.0</td><td class="num neg">−54.1</td><td class="num pos">80.5</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+  </table>
+  <div class="tbl-note">2022~2025 <span class="pill conf">확정</span>(2025는 30% 변동 공시 기준, 2026-02-09 발표). 2026F 두 값은 출처가 다름 <span class="pill estm">시장 추정</span>. OPM·YoY 일부는 <span class="pill calc">자체 계산</span>. 신한 2027F OPM 22.4%는 자체 산출값이며 신한 본문의 18.5%(2028F 기준)와 층위가 다르니 인용 시 주의.</div></div>
+
+  <h3>증분이익률 대칭성 검사 <span class="tag">이 시리즈의 표준 검사</span></h3>
+  <p>매출이 늘 때 이익이 그 비율대로 따라오는지를 보는 검사다. 같은 검사를 8월에 원익머트리얼즈에 적용했더니 <b>증분 OPM 약 8%</b>(전사 OPM 17%의 절반)가 나와 "팔수록 마진이 희석되는 구조"로 판정됐다. 오킨스는 정반대다.</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>구간</th><th class="num">매출 증분</th><th class="num">OP 증분</th><th class="num">증분 OPM</th><th class="num">해당 기간 전사 OPM</th><th>판정</th></tr>
+    <tr class="hl"><td><b>2024 → 2025 (실측)</b></td><td class="num">+277억</td><td class="num">+102억</td><td class="num pos"><b>36.8%</b></td><td class="num">12.8%</td><td><b>전사의 2.9배 — 강한 양의 레버리지</b></td></tr>
+    <tr><td>2025 → 2026F (신한)</td><td class="num">+542억</td><td class="num">+154억</td><td class="num">28.4%</td><td class="num">18.5%</td><td>실측보다 보수적</td></tr>
+    <tr><td>2026F → 2027F (신한)</td><td class="num">+944억</td><td class="num">+270억</td><td class="num">28.6%</td><td class="num">22.4%</td><td>일관 — 계수 안정</td></tr>
+    <tr><td>[대조] 원익머트리얼즈 1Q26</td><td class="num">+약 102억</td><td class="num">+약 8억</td><td class="num neg">약 8%</td><td class="num">약 16%</td><td>역레버리지</td></tr>
+  </table>
+  <div class="tbl-note">전부 <span class="pill calc">자체 계산</span>. 원익머트리얼즈 대조군은 1Q26 매출 +13.1%·OP +6.4%(연결)에서 역산한 근사치이므로 오차 있음 <span class="pill estm">근사</span>.</div></div>
+
+  <div class="chart-box">
+    <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="증분이익률 비교">
+      <text x="10" y="18" font-family="monospace" font-size="12" fill="#7a7268">증분 OPM vs 전사 OPM — 레버리지 방향</text>
+      <line x1="60" y1="200" x2="680" y2="200" stroke="#ddd7cc" stroke-width="1.5"/>
+      <line x1="60" y1="40" x2="60" y2="200" stroke="#ddd7cc" stroke-width="1.5"/>
+      <text x="52" y="205" font-family="monospace" font-size="10" fill="#7a7268" text-anchor="end">0%</text>
+      <text x="52" y="125" font-family="monospace" font-size="10" fill="#7a7268" text-anchor="end">20%</text>
+      <text x="52" y="48" font-family="monospace" font-size="10" fill="#7a7268" text-anchor="end">40%</text>
+      <!-- 오킨스 24-25 -->
+      <rect x="95" y="53" width="52" height="147" fill="#701A75"/>
+      <rect x="152" y="149" width="52" height="51" fill="#cfc6b6"/>
+      <text x="150" y="222" font-family="monospace" font-size="10" fill="#221e19" text-anchor="middle">오킨스 24→25</text>
+      <text x="121" y="47" font-family="monospace" font-size="11" font-weight="700" fill="#4a0f4e" text-anchor="middle">36.8%</text>
+      <text x="178" y="143" font-family="monospace" font-size="10" fill="#7a7268" text-anchor="middle">12.8%</text>
+      <!-- 오킨스 26-27F -->
+      <rect x="275" y="86" width="52" height="114" fill="#a34aa8"/>
+      <rect x="332" y="111" width="52" height="89" fill="#cfc6b6"/>
+      <text x="330" y="222" font-family="monospace" font-size="10" fill="#221e19" text-anchor="middle">오킨스 26→27F</text>
+      <text x="301" y="80" font-family="monospace" font-size="11" font-weight="700" fill="#4a0f4e" text-anchor="middle">28.6%</text>
+      <text x="358" y="105" font-family="monospace" font-size="10" fill="#7a7268" text-anchor="middle">22.4%</text>
+      <!-- 원익머트리얼즈 -->
+      <rect x="455" y="169" width="52" height="31" fill="#9a3d20"/>
+      <rect x="512" y="137" width="52" height="63" fill="#cfc6b6"/>
+      <text x="510" y="222" font-family="monospace" font-size="10" fill="#221e19" text-anchor="middle">원익머트 1Q26</text>
+      <text x="481" y="163" font-family="monospace" font-size="11" font-weight="700" fill="#9a3d20" text-anchor="middle">8%</text>
+      <text x="538" y="131" font-family="monospace" font-size="10" fill="#7a7268" text-anchor="middle">16%</text>
+      <rect x="600" y="60" width="12" height="12" fill="#701A75"/><text x="618" y="70" font-family="monospace" font-size="10" fill="#7a7268">증분 OPM</text>
+      <rect x="600" y="80" width="12" height="12" fill="#cfc6b6"/><text x="618" y="90" font-family="monospace" font-size="10" fill="#7a7268">전사 OPM</text>
+      <text x="618" y="112" font-family="monospace" font-size="9.5" fill="#7a7268">증분&gt;전사 = 레버리지</text>
+    </svg>
+  </div>
+
+  <h3>분기 흐름 <span class="tag">2025, 억원</span></h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>구분</th><th class="num">1Q25</th><th class="num">2Q25</th><th class="num">3Q25</th><th class="num">4Q25</th></tr>
+    <tr><td>매출</td><td class="num">189</td><td class="num">271</td><td class="num">233</td><td class="num">251</td></tr>
+    <tr><td>QoQ</td><td class="num">+5%</td><td class="num pos">+43%</td><td class="num neg">−14%</td><td class="num">+8%</td></tr>
+    <tr class="hl"><td>영업이익</td><td class="num" colspan="2">1Q+2Q 합산 48</td><td class="num">37</td><td class="num">36</td></tr>
+  </table>
+  <div class="tbl-note">1Q~2Q25 매출은 하나증권 탐방노트(2025-09-01) 분기표 <span class="pill conf">확정</span>. 3Q25는 분기보고서 연결 233억·OP 37억 <span class="pill conf">확정</span>. 4Q25는 연간 확정치에서 <span class="pill calc">역산</span>. 1Q+2Q OP 48억도 3분기 누적 85억에서 역산.</div></div>
+
+  <div class="callout warn"><b>순이익 라인은 신뢰하지 말 것.</b> 2024년은 <b>영업이익 +19억인데 순이익 −54억</b>이었다. 차입금 284억(단기 186 + 장기 98)에 연간 이자비용 13.5억, 여기에 파생·평가손익이 얹히는 구조라 <b>영업이익과 순이익의 방향이 갈리는 해가 잦다</b>. 밸류에이션은 반드시 <b>영업이익 기준</b>으로 하고, PER을 쓸 때는 순이익의 구성을 먼저 뜯어봐야 한다. 이는 우리 락바텀 프레임에서 "분모 검증" 원칙이 걸리는 전형적 사례다.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 2024년 −54억 순손실의 <b>항목별 분해</b>(이자 / 파생평가 / 손상)는? 2026~27년 반복 가능성이 있는가<br>
+  ② 3Q25 매출이 QoQ −14%였던 이유 — 계절성인가 특정 고객 발주 공백인가</div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="s4">
+  <div class="sec-h"><span class="no">SEC 04</span><h2>전방 연결고리 — 무엇이 실적을 결정하는가</h2></div>
+
+  <h3>사슬 A · 8단화 → 스택 수 급증 <span class="tag">이 리포트의 핵심</span></h3>
+  <div class="chain">
+    <div class="node"><b>① 2027년 D램 부족으로 HBM에 돌릴 웨이퍼가 제약</b>엔비디아가 루빈 울트라 사양을 12단 HBM4E에서 <b>8단 HBM4E·12단 HBM4·8단 HBM4</b>까지 넓혀 검토 중(최종 미확정)<span class="chk">확인처: 트렌드포스 / 엔비디아 최종 사양 확정 시점 · 시차: 즉시 · 방향: 상승</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>② 웨이퍼 고정 상태에서 단수만 낮아짐</b>다이 수·bit은 고정, <b>스택 수 = 다이 수 ÷ 단수 → 12→8단이면 +50%</b>, 16→8단이면 +100%<span class="chk">자체 산식. 웨이퍼가 binding constraint라는 전제에 의존</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>③ 완성 HBM 개수에 붙은 소모품만 증분을 받는다</b>번인소켓·테스트소켓 <b>+50%</b> / 웨이퍼·다이에 붙은 소재(가스·쿼츠·PR·파츠) <b>+0%</b><span class="chk">확인처: 소켓 매출 YoY vs 소재사 매출 YoY 격차 · 시차: 1~2분기(소모품)</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>④ 삼성 HBM 출하 급증이 여기에 곱해진다</b>2027년 삼성 HBM 출하 bit <b>+109%</b>(키움), HBM Capa 150K(25)→180K/월(26F)→2027년 확대<span class="chk">확인처: 삼성 분기 컨콜 HBM 코멘트, 평택 P4 HBM 라인 가동</span></div>
+  </div>
+
+  <div class="callout good"><b>이 사슬의 미학은 분모가 아니라 분자에 있다.</b> 8단화는 보통 "메모리 수요 하향"이라는 악재로 읽힌다. bit 기준으로는 맞다. 그런데 <b>완성 칩 개수 기준으로는 정확히 반대 방향</b>이다. 시장이 8단 뉴스에 소부장을 일괄로 던지는 구간이 있다면, 스택 단위 종목에는 그것이 진입 자리가 된다.</div>
+
+  <h3>사슬 B · CLT 테스터 전환 <span class="tag">점유율 승수</span></h3>
+  <div class="chain">
+    <div class="node"><b>주요 고객사의 CLT(Chambered Low-frequency memory Tester) 장비 전환</b>테스터가 바뀌면 <b>소켓 규격이 통째로 바뀐다</b> → 기존 재고가 아니라 신규 물량<span class="chk">교차검증: 엑시콘 CLT 본체 수주(삼성 DRAM 저주파 테스트 512→11,520 병렬), 네오셈 CIB·CLT 155억 · 시차: 장비 반입 후 1~2분기</span></div>
+    <div class="arrow">▼</div>
+    <div class="node"><b>→ 오킨스 메모리 소켓 매출 증가</b>한국IR협의회가 2026년 매출 1,405억 전망의 <b>핵심 동력</b>으로 지목한 항목<span class="chk">확인처: 분기 소켓 매출 증가율이 전사 증가율을 상회하는지</span></div>
+  </div>
+  <p class="fn">이 사슬이 중요한 이유는 <b>스택 수 논리와 독립</b>이라는 점이다. 8단이 뒤집혀 12단으로 확정돼도 CLT 전환은 그대로 진행된다. 두 개의 독립 성장 축을 가진 셈이라 시나리오 분산이 작다.</p>
+
+  <h3>사슬 C · HBM 마그네틱 콜렛 3사 전량 <span class="tag">2025.12 달성</span></h3>
+  <p>마그네틱 콜렛은 <b>다이를 집어 적층하는 본딩 공정의 소모성 픽업 툴</b>이다. 2025년 초 북미 신규 고객 확보에 이어 기존 고객 내에서도 일반 D램에서 HBM 라인까지 공급이 확대됐고, <b>2025년 12월 글로벌 메모리 3사 전량 납품</b>을 달성했다.</p>
+  <div class="callout warn"><b>단, 이 축은 8단화의 <u>피해자</u>다.</b> 콜렛은 <b>다이 픽업 횟수</b>에 비례하므로 스택당 12번 집던 것이 8번으로 줄면 소모가 −33%다. 소켓의 +50%와 콜렛의 −33%가 회사 전체에서 어떻게 상쇄되는지가 이 종목의 <b>가장 큰 미해결 변수</b>이며, SEC 01의 IR 질문 ②가 정확히 이 지점이다. 다만 3사 전량 공급으로 <b>점유율이 확대된 것</b>이 물량 감소를 상쇄하는 구조라 방향은 아직 열려 있다.</div>
+
+  <h3>수혜 시점 지도</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>이벤트</th><th>시점</th><th>오킨스 반영</th></tr>
+    <tr><td>고객사 CLT 장비 전환</td><td>2026년 진행 중</td><td class="num"><b>2026F 매출 1,405~1,486억의 주동력</b></td></tr>
+    <tr class="hl"><td>엔비디아 루빈 울트라 최종 사양 확정</td><td>미정 (3Q26 검토 중)</td><td class="num"><b>8단 확정 시 소켓 물량 계수 상향</b></td></tr>
+    <tr><td>삼성 HBM4E 본격 출하</td><td>2027년</td><td class="num">2027F 매출 2,430억 시나리오의 전제</td></tr>
+    <tr><td>다이 레벨 테스트 시장 개화</td><td>2026~27</td><td class="num">테스트소켓 신규 매출 축</td></tr>
+    <tr><td>전력반도체 신규 고객 테스트 용역</td><td>2026년부터 본격</td><td class="num">단일고객 70% 의존 완화</td></tr>
+    <tr><td>교환사채 자금 집행<br>(자동 삽입기·스프링핀 장비 58억)</td><td>2026 1Q~4Q</td><td class="num">캐파 증설 — 2027 물량 대응</td></tr>
+  </table></div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① CLT 전환이 <b>몇 개 라인·몇 년에 걸쳐</b> 진행되는가 — 2026년 일회성인지 2027~28년까지 이어지는지<br>
+  ② 번인소켓 단가가 HBM3E → HBM4에서 <b>실제 몇 % 올랐는가</b>(P 상승의 실체)</div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="s5">
+  <div class="sec-h"><span class="no">SEC 05</span><h2>트래킹 지표</h2></div>
+
+  <div class="callout info"><b>리스크 관리 유형 판정: 지표 추세형 + 단일 이벤트.</b> 본업은 소모품이라 <b>고객 출하량 추세</b>에 연동되는 추세형이지만, 2026~27년 이익 기울기를 실제로 결정하는 것은 <b>엔비디아 사양 확정</b>이라는 외생 이벤트다. 두 축을 따로 봐야 한다.</div>
+
+  <h3>1순위 — 이 논지의 생사를 가르는 셋</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>지표</th><th>어디서 보나</th><th class="num">주기</th><th>해석 기준</th></tr>
+    <tr class="hl"><td><b>엔비디아 루빈 울트라 최종 사양</b></td><td>엔비디아 발표·트렌드포스</td><td class="num">수시</td><td><b>8단 확정 = 소켓 계수 상향 / 16단 회귀 = 이 논지 폐기</b></td></tr>
+    <tr class="hl"><td><b>분기 소켓 매출 증가율 vs 전사</b></td><td>분기보고서 부문별</td><td class="num">분기</td><td>소켓이 전사를 상회해야 스택 논리 성립</td></tr>
+    <tr class="hl"><td><b>증분 OPM 유지 여부</b></td><td>분기 매출·OP에서 자체 계산</td><td class="num">분기</td><td><b>28% 밑으로 떨어지면 레버리지 훼손</b></td></tr>
+  </table></div>
+
+  <h3>2순위 — 방향 확인용</h3>
+  <ul>
+    <li><b>커넥터 매출 성장률</b> — 장비 제작에 선행 공급되므로 <b>소켓의 선행지표</b>. 신한 가정 CAGR 94%가 유지되는지</li>
+    <li><b>삼성전자 명의의 HBM 후공정 장비·소켓 공급계약 공시</b> — 2025년 초 삼성향 소켓 공시가 상반기 실적을 견인한 전례가 있다. 재현 여부</li>
+    <li><b>엑시콘·네오셈 CLT 관련 수주 공시</b> — 오킨스 소켓 물량의 교차검증. 테스터가 들어가야 소켓이 깔린다</li>
+    <li><b>Advantest 분기 가이던스</b> — 메모리 테스트 시장 규모(2026년 22~27억달러 제시)의 갱신</li>
+    <li><b>삼성 HBM Capa 및 P4 HBM 라인 가동</b> — 물량의 상단</li>
+  </ul>
+
+  <h3>3순위 — 재무 안전판</h3>
+  <ul>
+    <li><b>차입금 284억 / 이자비용 13.5억</b>의 분기 추이 — 증설 자금이 추가 차입으로 조달되는지</li>
+    <li><b>교환사채 교환청구</b>(교환가 12,180원, 청구 2026-01-26~2030-12-19, 47.65만주 = 2.32%) — 현재가가 교환가 부근이라 <b>주가가 오르면 곧바로 물량화</b></li>
+    <li><b>순이익과 영업이익의 괴리</b> — 2024년 −54억 사례의 재발 여부</li>
+  </ul>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 분기보고서에서 <b>번인소켓 / 테스트소켓 / 콜렛 / 커넥터</b>가 별도 공시되는가? 안 되면 이 종목은 원단위 추적이 불가능하다<br>
+  ② 소켓 매출의 <b>고객사별 집중도</b> — 삼성 비중이 얼마인가</div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="s6">
+  <div class="sec-h"><span class="no">SEC 06</span><h2>영업 레버리지와 CAPEX</h2></div>
+
+  <h3>레버리지의 크기 — 2024→2025가 이미 보여줬다</h3>
+  <div class="lev-row">
+    <div class="cap"><span>2024 · 매출 667억</span><b>OP 19억 (2.9%)</b></div>
+    <div class="lev-bar"><div class="cost" style="width:97.1%">비용 648억</div><div class="profit" style="width:2.9%"></div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>2025 · 매출 944억 <span class="pos">(+41.5%)</span></span><b>OP 121억 (12.8%) <span class="pos">+536%</span></b></div>
+    <div class="lev-bar"><div class="cost" style="width:87.2%">비용 823억</div><div class="profit" style="width:12.8%">121</div></div>
+  </div>
+  <div class="lev-row">
+    <div class="cap"><span>2027F · 매출 2,430억 <span class="est">(신한)</span></span><b>OP 545억 (22.4%)</b></div>
+    <div class="lev-bar"><div class="cost" style="width:77.6%">비용 1,885억</div><div class="profit" style="width:22.4%">545</div></div>
+  </div>
+  <p class="fn"><b>매출이 41.5% 늘 때 영업이익이 536% 늘었다.</b> 비용은 648억 → 823억으로 27% 증가에 그쳤다. 즉 매출 증가분 277억 중 175억만 비용으로 나가고 <b>102억이 이익으로 남았다(증분 OPM 36.8%)</b>. 이것이 고정비가 두꺼운 제조업이 BEP를 넘긴 직후에 나타나는 전형적 패턴이다.</p>
+
+  <div class="gauge">
+    <div class="ruler"></div>
+    <div class="tick" style="left:0%">0%</div>
+    <div class="tick" style="left:25%">10%</div>
+    <div class="tick" style="left:50%">20%</div>
+    <div class="tick" style="left:75%">30%</div>
+    <div class="tick" style="left:100%">40%</div>
+    <div class="mk opm" style="left:32%">전사 OPM 12.8%<br>(2025)</div>
+    <div class="mk inc" style="left:92%">증분 OPM 36.8%</div>
+  </div>
+  <p class="fn">증분이 전사의 2.9배 위에 있다는 것 = 다음 매출 100원이 기존 평균보다 <b>세 배 가까이 이익에 기여</b>한다는 뜻. 신한 추정(28%대)은 이보다 보수적이라, 추정치 자체에 안전마진이 있다.</p>
+
+  <h3>BEP 임계 구조</h3>
+  <p>2023년 매출 569억에서 <b>영업손실 −26억</b>, 2024년 667억에서 <b>+19억</b>. 두 점을 잇는 직선의 기울기를 공헌이익률로 보면 약 <b>46%</b>이고, 손익분기 매출은 <b>약 610억</b> 수준으로 <span class="pill calc">자체 계산</span> 추정된다. 2025년 실적 944억은 BEP를 <b>55% 상회</b>한 자리이고, 2027F 2,430억은 BEP의 <b>4배</b>다.</p>
+  <div class="callout good">이 구조가 우리 시리즈의 <b>BEP 임계 레버리지 아키타입</b>(주성엔지니어링·파두 계보)과 같은 유형이다. 다만 결정적 차이가 있다 — <b>주성·파두는 임계 돌파가 미확인 상태에서 프리미엄이 붙었지만, 오킨스는 2025년에 이미 돌파를 실적으로 증명했다</b>. 우리 분류로는 <b>프리미엄계정이 아니라 실적계정</b>이다.</div>
+
+  <h3>CAPEX</h3>
+  <ul>
+    <li><b>2026년 시설투자 58.04억</b> — 소켓 제조 장비(자동 삽입기·스프링핀 제작 장비 등), 집행기간 2026 1Q~4Q. 재원은 2026-01-19 납입 <b>교환사채 58억</b> <span class="pill conf">공시</span></li>
+    <li>2024년 <b>ATS센터</b> 설립으로 테스트 용역 캐파 확보</li>
+    <li>화성 송산 사업장이 마그네틱 콜렛·커넥터·사출·프레스·대형 가공의 내부 1차 제조를 담당 — <b>외주 없이 내재화된 원가 구조</b></li>
+  </ul>
+  <div class="callout warn"><b>다만 자금 조달 방식이 문제다.</b> 58억 증설을 자기자금이 아니라 <b>교환사채로 조달</b>했다. 2024년말 기준 자본 276억·부채 595억(부채비율 <b>216%</b>)에 차입금 284억이 이미 얹혀 있는 상태다. 2027년 2,430억 매출을 소화하려면 지금의 58억으로는 부족할 가능성이 높고, <b>추가 증설 = 추가 조달 = 추가 희석</b>이라는 경로가 열려 있다. 레버리지가 큰 만큼 자본구조도 취약하다는 것이 이 종목의 양날이다.</div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① 2027F 매출 2,430억을 만들려면 <b>필요 CAPEX 총액</b>은 얼마이고 58억으로 충분한가<br>
+  ② 부채비율 216%에서 영업현금흐름으로 차입을 갚아나갈 수 있는 속도는</div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="s7">
+  <div class="sec-h"><span class="no">SEC 07</span><h2>리스크와 밸류에이션</h2></div>
+
+  <h3>5필드 리스크 시나리오</h3>
+  <div class="risk-grid">
+    <div class="risk">
+      <div class="rt">① 사양 회귀 — 16단으로 되돌아감</div>
+      <div class="row"><b>트리거</b> 12단 HBM4E 수율이 빠르게 개선돼 엔비디아가 고적층으로 확정</div>
+      <div class="row"><b>경로</b> 스택 수 증가율이 bit 증가율로 수렴 → 소켓 물량 계수 −33%</div>
+      <div class="row"><b>확률</b> 중 (현재 8단·12단·16단 모두 검토 중, 미확정)</div>
+      <div class="row"><b>영향</b> 2027F OP 545억 → 400억대 <span class="pill calc">자체</span></div>
+      <div class="sig">조기신호: 12단 HBM4E 검증 통과 발표 / 제덱 HBM5 두께 한도 하향 확정</div>
+    </div>
+    <div class="risk">
+      <div class="rt">② 콜렛 역풍이 소켓 순풍을 먹음</div>
+      <div class="row"><b>트리거</b> 8단화로 다이 픽업 횟수 −33%, 콜렛 매출 감소</div>
+      <div class="row"><b>경로</b> 소켓 +50% / 콜렛 −33%의 사내 상쇄 — 순효과 미확인</div>
+      <div class="row"><b>확률</b> 높음 (구조적으로 반드시 발생)</div>
+      <div class="row"><b>영향</b> 콜렛 비중에 비례. 비중 미공시라 정량 불가 <span class="pill unkn">미확인</span></div>
+      <div class="sig">조기신호: 분기 신사업(콜렛) 매출의 소켓 대비 증가율 역전</div>
+    </div>
+    <div class="risk">
+      <div class="rt">③ 자본구조 — 희석과 이자</div>
+      <div class="row"><b>트리거</b> 교환사채 교환청구(교환가 12,180원, 현재가 12,840원)</div>
+      <div class="row"><b>경로</b> 47.65만주(2.32%) 물량화 + 추가 증설 시 재조달</div>
+      <div class="row"><b>확률</b> 높음 (이미 교환가 상회)</div>
+      <div class="row"><b>영향</b> 희석 2.3%는 경미하나 <b>추가 조달 경로가 상시 열려 있음</b></div>
+      <div class="sig">조기신호: 신규 CB·EB·유상증자 공시 / 차입금 284억 증가</div>
+    </div>
+    <div class="risk">
+      <div class="rt">④ 지배지분 16.35%</div>
+      <div class="row"><b>트리거</b> 최대주주·특수관계인 지분이 교환 시 16.74%→16.35%</div>
+      <div class="row"><b>경로</b> 경영권 방어 취약 / 주주환원 유인 약함 / 무배당 지속</div>
+      <div class="row"><b>확률</b> 상시</div>
+      <div class="row"><b>영향</b> 밸류에이션 디스카운트 요인. 2025년 모건스탠리 5% 신규보고 이력</div>
+      <div class="sig">조기신호: 5% 대량보유 보고 변동 / 자기주식 추가 처분</div>
+    </div>
+    <div class="risk">
+      <div class="rt">⑤ 커버리지 부재 — Not Rated</div>
+      <div class="row"><b>트리거</b> 신한 12개 추천종목 중 등급·목표주가가 붙은 건 예스티 하나뿐</div>
+      <div class="row"><b>경로</b> 컨센서스 부재 → 실적 서프라이즈 판정 불가, 밸류 앵커 없음</div>
+      <div class="row"><b>확률</b> 확정 (현 상태)</div>
+      <div class="row"><b>영향</b> <b>락바텀 분모를 구할 수 없음</b> — 하방 계산 불가</div>
+      <div class="sig">조기신호: 증권사 정식 커버리지 개시 / 목표주가 첫 제시</div>
+    </div>
+    <div class="risk">
+      <div class="rt">⑥ 고객 집중</div>
+      <div class="row"><b>트리거</b> 테스트 용역 단일 고객 약 70% 의존</div>
+      <div class="row"><b>경로</b> 해당 고객 발주 공백 시 용역 부문 직격</div>
+      <div class="row"><b>확률</b> 중 (전력반도체 신규 고객으로 완화 중)</div>
+      <div class="row"><b>영향</b> 용역은 전사의 10% 내외라 제한적</div>
+      <div class="sig">조기신호: 신규 전력반도체 고객 매출 인식 시점</div>
+    </div>
+  </div>
+
+  <h3>밸류에이션</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>기준</th><th class="num">2026F</th><th class="num">2027F</th><th>산출</th></tr>
+    <tr><td>시가총액</td><td class="num" colspan="2">2,710억 (12,840원 × 2,111만주, 8/7)</td><td><span class="pill conf">marcap</span></td></tr>
+    <tr><td>영업이익</td><td class="num">207~275억</td><td class="num">545억</td><td>IR협·신한</td></tr>
+    <tr><td>시총 / OP</td><td class="num">9.9~13.1배</td><td class="num pos"><b>5.0배</b></td><td><span class="pill calc">자체 계산</span></td></tr>
+    <tr class="hl"><td>추정 지배순이익</td><td class="num">145~196억</td><td class="num">398억</td><td>OP − 이자 13.5억, 세율 25% 가정 <span class="pill calc">자체</span></td></tr>
+    <tr class="hl"><td><b>PER</b></td><td class="num">13.8~18.7배</td><td class="num pos"><b>6.8배</b></td><td>신한 섹터표 27F 7.0배와 정합</td></tr>
+    <tr><td>[참고] 피어 27F PER</td><td class="num" colspan="2">엑시콘 5.3 · 오킨스 7.0 · 싸이맥스 10.0 · 예스티 9.6 · 네오셈 12.7 · 인텍플러스 12.1 · 기가비스 19.6</td><td>신한 12픽 원장</td></tr>
+  </table>
+  <div class="tbl-note">신한 섹터 Top Picks 표(7.0배)와 개별 피어표(6.4배)가 다르다 — 순이익/지배순이익 기준 차이로 보이니 인용 시 출처 명시. <b>전 종목 Not Rated(목표주가 없음)</b>.</div></div>
+
+  <div class="callout warn"><b>락바텀 산출 불가 — 이 종목의 가장 큰 실무적 제약.</b> 우리 프레임의 락바텀은 <b>트로프 FWD PER × FWD 12M 컨센 순이익 ÷ 주식수</b>인데, 오킨스는 두 항목이 모두 막혀 있다. ① <b>컨센서스가 없다</b>(Not Rated) ② <b>2023년 영업적자·2024년 순손실</b>로 트로프 PER 자체가 정의되지 않는다. 따라서 이 종목은 <b>floors.json에 넣을 수 없고</b>, 하방은 PBR이나 52주 밴드 같은 대체 앵커로 관리해야 한다. 참고로 8/7 종가는 52주 밴드의 <b>23% 위치</b>, 3개월 −52.3%다.</div>
+
+  <h3>세 조건 좌표</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>조건</th><th class="num">평가</th><th>근거</th></tr>
+    <tr><td>① 사이클 강도</td><td class="num pos">4 / 5</td><td>HBM 스택 수 + CLT 전환 + 콜렛 3사 — <b>독립 성장축 3개</b></td></tr>
+    <tr><td>② 밸류 여유</td><td class="num pos">4 / 5</td><td>27F PER 6.8배, 밴드 23% 위치. 단 <b>하방 계산 불가</b></td></tr>
+    <tr><td>③ 경로 변수</td><td class="num neg">3 / 5</td><td>사양 미확정 + 콜렛 상쇄 미측정 + 자본구조 취약</td></tr>
+  </table></div>
+
+  <div class="q2"><div class="t">더 파볼 질문</div>
+  ① Not Rated 상태에서 <b>대체 하방 앵커</b>는 무엇으로 잡을 것인가 — PBR 밴드? EV/Sales?<br>
+  ② 27F OP 545억 추정의 <b>커넥터·소켓 분해</b>는? 어느 쪽이 틀리면 얼마가 깎이는가</div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="s8">
+  <div class="sec-h"><span class="no">SEC 08</span><h2>종합 투자 판단</h2></div>
+
+  <h3>이 종목을 한 문장으로</h3>
+  <p><b>"HBM 소부장 중에서 웨이퍼가 아니라 완성 칩 개수에 붙어 있는, 사실상 유일한 국내 상장 소모품 회사."</b></p>
+
+  <p>2026년 8월 현재 삼성전자 HBM 테마의 구조적 문제는 이것이다 — <b>삼성은 HBM 후공정을 내재화한다</b>. TSV·적층·본딩·패키징을 세메스와 자체 설비로 돌리기 때문에, SK하이닉스가 한미반도체·한화세미텍·ASMPT에 나눠주는 것과 달리 외부 낙수가 구조적으로 적다. 여기에 <b>웨이퍼 제약</b>이 겹쳐 전공정 소재사(특수가스·쿼츠·PR·파츠)의 증분이 막히고, <b>8단 후퇴</b>가 고적층 전제에 걸린 종목(하이브리드 본딩 계측·SiCN)을 마이너스로 돌려세웠다. 그래서 "삼성 HBM 수혜주" 목록은 짧아질 수밖에 없고, 그 짧은 목록에 오킨스가 들어가는 이유는 <b>삼성이 내재화하지 않는 영역 = 소모품</b>에 있기 때문이다.</p>
+
+  <h3>강점 · 약점</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th class="num">강점</th><th class="num">약점</th></tr>
+    <tr>
+      <td>
+        · <b>증분 OPM 36.8% 실측</b> — 논리가 아니라 실적으로 증명된 레버리지<br>
+        · <b>8단화의 순수혜</b> — 스택 수 단위, 웨이퍼 제약과 무관<br>
+        · <b>독립 성장축 3개</b>(스택 수 / CLT 전환 / 콜렛 3사) — 하나 틀려도 둘 남음<br>
+        · 소모품이라 <b>CAPEX 공백기에도 수요가 돔</b><br>
+        · 27F PER 6.8배, 52주 밴드 23% 위치<br>
+        · 대형주 상관계수 0.19 — <b>자체 수주 뉴스가 트리거</b>
+      </td>
+      <td>
+        · <b>Not Rated</b> — 컨센 없음, 락바텀 산출 불가<br>
+        · <b>지배지분 16.35%</b>, 무배당, 자기주식 EB 처분<br>
+        · <b>부채비율 216%·차입금 284억</b>, 증설 재원을 EB로 조달<br>
+        · <b>순이익 신뢰도 낮음</b>(2024 OP +19억 vs 순손실 −54억)<br>
+        · <b>콜렛은 8단화의 피해자</b> — 상쇄 규모 미측정<br>
+        · 제품별 매출 미공시로 <b>원단위 추적 불가</b><br>
+        · 시총 2,710억 — 유동성·변동성 큼
+      </td>
+    </tr>
+  </table></div>
+
+  <h3>포지셔닝 — 우리 프레임 안에서</h3>
+  <ul>
+    <li><b>실적계정</b>으로 분류한다. 주성엔지니어링·브이엠 같은 프리미엄계정과 달리 <b>BEP 돌파와 증분 레버리지를 2025년 실적으로 이미 확인</b>했다.</li>
+    <li>다만 <b>락바텀 관리 대상에서 제외</b>한다. 컨센 부재 + 적자 이력으로 분모·분자 모두 정의 불가. 이 시리즈에서 <b>floors.json에 못 들어가는 첫 사례</b>로 기록한다.</li>
+    <li><b>티에스이와 짝으로 본다.</b> 둘 다 스택 단위지만 티에스이는 프로브카드(밴드 66%·시총 2.29조), 오킨스는 소켓·콜렛(밴드 23%·시총 2,710억)이다. <b>같은 논리에 가격이 정반대</b>라 위험대비보상이 다르다. 우리 모·자 쌍 원리를 종목 간 페어로 확장한 형태.</li>
+    <li>사이징은 작게. 근거는 논리의 약함이 아니라 <b>자본구조와 유동성</b>이다.</li>
+  </ul>
+
+  <h3>판정</h3>
+  <div class="callout good"><b>논리는 이 테마에서 가장 깨끗하고, 가격은 이미 절반이 빠져 있으며, 레버리지는 실적으로 증명됐다. 반면 하방을 계산할 도구가 없고 자본구조가 얇다.</b><br><br>
+  결론: <b>스택 수 논리에 베팅하되 사이징으로 리스크를 관리하는 종목</b>이다. 전체 논지가 걸린 단일 변수는 엔비디아 사양 확정이고, 그것과 무관하게 진행되는 CLT 전환이 하방을 일부 받쳐준다. <b>3Q26이 HBM4E發 물량이 실적에 처음 잡히는 분기</b>이므로, 그 전에 포지션을 잡고 3Q 실적의 증분 OPM으로 논지를 판정하는 것이 순서다.</div>
+
+  <h3>IR 질문 <span class="tag">이 리포트가 회사에 물을 단 하나</span></h3>
+  <div class="callout info"><b>"엔비디아·메모리 3사가 HBM 적층 단수를 16단에서 8·12단으로 낮출 경우, 귀사 매출에서 <u>번인·테스트소켓(완성 스택 개수 비례)</u>과 <u>마그네틱 콜렛(다이 픽업 횟수 비례)</u>의 방향이 반대로 갈립니다. 두 제품군의 현재 매출 비중과, 저단수화 시 순효과를 어떻게 보고 계십니까?"</b><br><br>
+  <span style="font-size:12.5px">이 질문 하나가 SEC 04 사슬 A의 +50%와 사슬 C의 −33%를 정량화한다. 회사가 비중만 답해줘도 이 리포트의 가장 큰 미확인 항목이 닫힌다.</span></div>
+</section>
+
+<footer>
+  <h4>분석 기준일 · 확정/추정 구분</h4>
+  <p>· 작성: <span class="mono">2026-08-11</span> · 주가·시총: <span class="mono">2026-08-07</span> marcap(KRX 아카이브) 확정치<br>
+  · <span class="mono">[확정]</span> 2022~2025 연간 실적(2025는 30% 변동 공시), 3Q25 분기보고서, 2026-01-08 교환사채 발행결정 공시(58억·교환가 12,180원·47.65만주), 2024년말 재무상태(자산 871·부채 595·자본 276억), 2025-12-30 차입금 284억·이자 13.5억, 최대주주 지분 16.74%→16.35%, HBM 콜렛 3사 공급(2025-12), 삼성향 소켓 공급계약 공시(2025 초), 소켓 매출 비중 89.5%(3Q25 누적).<br>
+  · <span class="mono">[역산]</span> 4Q25 매출 251억·OP 36억, 1Q+2Q25 OP 48억, 2024 OPM 2.9%.<br>
+  · <span class="mono">[시장 추정]</span> 2026F 1,405억·207억(한국IR협의회 2026-02-19), 2026F 1,486억·275억 / 2027F 2,430억·545억 / GPM·OPM·커넥터 비중(신한투자증권 2026-08-11), 삼성 2027 HBM 출하 bit +109%(키움 2026-08-11), 엔비디아 사양 검토(트렌드포스), Advantest 메모리 테스트 시장 22~27억달러.<br>
+  · <span class="mono">[자체 계산]</span> 증분 OPM 전 구간, 공헌이익률 46%·BEP 약 610억, 추정 지배순이익·PER, 시총/OP 배수, 제품별 비례 단위 분류, 8단화 스택 수 +50% 산식.<br>
+  · <span class="mono">[미확인]</span> 제품별 매출 분해(번인/테스트소켓/콜렛/커넥터), 콜렛 매출 비중, 소켓 고객사별 집중도, 1Q26·2Q26 실적, 2024년 순손실 항목 분해, 소켓 교체 주기, HBM4 소켓 단가 인상률, 엔비디아 최종 사양.</p>
+  <h4>주요 출처</h4>
+  <p>신한투자증권 『반도체 중소형주, 타이밍이 됐다』(2026-08-11, 12개 픽 원장) · 한국IR협의회 기업분석(2026-02-19) · 하나증권 탐방노트(김민경, 2025-09-01) · 유안타증권(2026-01-23, P·Q 동시 개선) · 키움증권 『Memory Split 2027』(박유악, 2026-08-11) · 글로벌이코노믹(2026-08-11, 8단 후퇴 검토) · DART 교환사채 발행결정(2026-01-08) · 분기보고서(2025-11-14) · marcap KRX 아카이브(2026-08-07).</p>
+  <h4>자료 한계</h4>
+  <p>이 리포트의 핵심 논지(스택 수 +50%)는 <b>엔비디아 최종 사양이 미확정</b>인 상태에서 8단을 가정하고 세운 것이다. 사양이 16단으로 회귀하면 논지의 절반이 무효화된다(SEC 07 리스크 ①). 또한 제품별 매출이 공시되지 않아 <b>소켓 +50%와 콜렛 −33%의 순효과를 정량화할 수 없다</b> — 이것이 이 리포트의 가장 큰 공백이며 SEC 08의 IR 질문이 겨냥하는 지점이다. Not Rated 종목이라 컨센서스 기반 검증이 불가능하고, 2026F 추정치가 출처별로 1,405억 vs 1,486억(OP 207 vs 275억)으로 갈리므로 어느 쪽을 쓰는지 항상 명시할 것.</p>
+  <h4>자매 리포트 (시리즈)</h4>
+  <p><span class="mono">티에스이 · 한솔아이원스 · 원익QnC · 티씨케이 · 하나머티리얼즈 · 하나마이크론 · 미코 · 코미코 · 솔브레인 · 동진쎄미켐 · 한솔케미칼 · 이엔에프 · 파두 · 주성엔지니어링 · 원익IPS · 브이엠 · 이오테크닉스 · 케이씨텍 · 네오티스 · 코오롱인더 · 퍼스텍 · STX엔진 · HD건설기계 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 한국카본</span> — 특히 <b>티에스이</b>(같은 스택 단위·정반대 가격), <b>주성엔지니어링</b>(BEP 임계 레버리지 아키타입·증분율 검사), <b>원익머트리얼즈 분석 노트</b>(증분 OPM 8% 대조군)와 직접 연결.</p>
+  <p style="margin-top:14px;border-top:1px solid #3a1a3d;padding-top:12px;color:#a878ad">본 리포트는 정보 제공 목적이며 투자 판단과 그 결과는 투자자 본인 책임입니다. 액센트 컬러: 딥 플럼 <span class="mono">#701A75</span> (오킨스전자 고유 — 기존 팔레트와 중복 없음).</p>
+</footer>
+
+</div>
+</body>
+</html>
