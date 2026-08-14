@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코오롱인더 (120110) 기업분석 리포트</title>
+<style>
+  :root{
+    --bg:#F4F6F7; --paper:#FFFFFF; --ink:#17242F; --muted:#5B6B78;
+    --line:#DBE2E8; --accent:#0284C7; --accent-soft:#E3F2FB; --accent-deep:#075985;
+    --up:#1B7F5C; --up-soft:#E4F3EC; --warn:#B3701A; --warn-soft:#F8EFDD;
+    --down:#B3403A; --down-soft:#F7E7E5;
+    --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 18px 80px}
+  .mono{font-family:var(--mono)}
+
+  /* ── 표지 ── */
+  .cover{background:var(--ink);color:#EAF2F6;border-radius:14px;padding:38px 34px 30px;position:relative;overflow:hidden}
+  .cover::after{content:"";position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;
+    border:34px solid rgba(2,132,199,.35)}
+  .cover .tag{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:#93CBEA;margin-bottom:14px}
+  .cover h1{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .cover h1 .ticker{font-family:var(--mono);font-size:19px;font-weight:500;color:#9DB4C0;margin-left:10px}
+  .cover .sub{margin-top:10px;font-size:15px;color:#B9CAD4;max-width:640px}
+  .cover .meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)}
+  .cover .meta div{font-size:12.5px;color:#8FA5B1}
+  .cover .meta b{display:block;font-size:15px;color:#EAF2F6;font-weight:600;margin-top:2px}
+
+  /* ── 원라인 요약 ── */
+  .thesis{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;
+    padding:18px 22px;margin:26px 0 8px;font-size:15.5px}
+  .thesis b{color:var(--accent-deep)}
+
+  /* ── 섹션 공통 ── */
+  section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:30px 30px 26px;margin-top:22px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:var(--accent);font-weight:600}
+  section h2{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:4px 0 6px}
+  section .lead{color:var(--muted);font-size:14px;margin-bottom:18px}
+  h3{font-size:16px;font-weight:700;margin:24px 0 10px;padding-left:10px;border-left:3px solid var(--accent)}
+  p{margin-bottom:12px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .figures{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  /* ── 표 ── */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th{background:#EFF3F5;text-align:left;padding:9px 10px;font-weight:700;border:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border:1px solid var(--line);vertical-align:top}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.hl td{background:var(--accent-soft)}
+  .scrollx{overflow-x:auto}
+
+  /* ── 배지/신호 ── */
+  .pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .pill.up{background:var(--up-soft);color:var(--up)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.down{background:var(--down-soft);color:var(--down)}
+  .pill.neutral{background:#EDF1F4;color:var(--muted)}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+  .dot.g{background:var(--up)} .dot.y{background:var(--warn)} .dot.r{background:var(--down)}
+
+  /* ── 매출 구성 스택바 ── */
+  .stackbar{display:flex;height:44px;border-radius:9px;overflow:hidden;margin:14px 0 8px;font-size:12.5px;color:#fff;font-weight:700}
+  .stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+  /* ── 제품 카드 ── */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);border-radius:11px;padding:16px 16px 14px;background:#FBFCFD}
+  .card .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .card h4{font-size:15.5px;font-weight:800;margin:4px 0 8px}
+  .card ul{list-style:none;font-size:13px;color:#37434E}
+  .card li{padding:3px 0;border-top:1px dashed var(--line)}
+  .card li:first-child{border-top:none}
+  .card li b{color:var(--ink)}
+
+  /* ── 인과 사슬 ── */
+  .chain{margin:14px 0 4px}
+  .chain .step{display:flex;gap:14px;align-items:stretch}
+  .chain .n{flex:0 0 34px;display:flex;flex-direction:column;align-items:center}
+  .chain .n i{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700}
+  .chain .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0 0}
+  .chain .step:last-child .n::after{display:none}
+  .chain .body{padding:2px 0 20px;font-size:14px}
+  .chain .body b{color:var(--accent-deep)}
+  .chain .step.final .n i{background:var(--ink)}
+
+  /* ── 밸류체인 타임라인 ── */
+  .flow{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:16px 0 6px}
+  .flow .node{flex:1 1 150px;min-width:140px;border:1.5px solid var(--line);border-radius:10px;background:#FBFCFD;
+    padding:12px 12px 10px;position:relative;margin-right:26px;margin-bottom:14px}
+  .flow .node:last-child{margin-right:0}
+  .flow .node::after{content:"▶";position:absolute;right:-21px;top:50%;transform:translateY(-50%);color:#9FB1BC;font-size:12px}
+  .flow .node:last-child::after{display:none}
+  .flow .node .t{font-size:13.5px;font-weight:800}
+  .flow .node .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .flow .node .lag{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;font-weight:700}
+  .flow .node.hot{border-color:var(--accent);background:var(--accent-soft)}
+
+  /* ── 공식 박스 ── */
+  .formula{background:#0F2430;color:#DCEDF3;border-radius:11px;padding:18px 22px;margin:14px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.9;overflow-x:auto;white-space:pre}
+  .formula b{color:#A5D5F0;font-weight:700}
+
+  /* ── 가로 바 미니차트 ── */
+  .hbar{margin:8px 0 14px}
+  .hbar .row{display:flex;align-items:center;gap:10px;margin:7px 0}
+  .hbar .lb{flex:0 0 150px;font-size:13px;text-align:right;color:#37434E}
+  .hbar .tr{flex:1;background:#EEF2F4;border-radius:6px;height:24px;position:relative;overflow:visible}
+  .hbar .fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;
+    padding-right:8px;color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;min-width:36px}
+  .hbar .fill.neg{background:var(--down)} .hbar .fill.pos{background:var(--accent)} .hbar .fill.strong{background:var(--up)}
+  .hbar .ext{position:absolute;left:calc(100% + 8px);top:0;height:24px;display:flex;align-items:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+  /* ── 리듬 다이어그램 ── */
+  .rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .rhythm .box{border-radius:11px;padding:14px 16px}
+  .rhythm .box.w{background:var(--accent-soft)} .rhythm .box.m{background:#EDF1F4} .rhythm .box.q{background:#F8EFDD}
+  .rhythm .freq{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;font-weight:800;margin-bottom:6px}
+  .rhythm .box.w .freq{color:var(--accent-deep)} .rhythm .box.m .freq{color:#4A5A66} .rhythm .box.q .freq{color:var(--warn)}
+  .rhythm ul{list-style:none;font-size:13px}
+  .rhythm li{padding:3px 0 3px 14px;position:relative}
+  .rhythm li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
+
+  /* ── 밸류 밴드 ── */
+  .band{margin:18px 4px 6px}
+  .band .rail{position:relative;height:12px;border-radius:8px;
+    background:linear-gradient(90deg,var(--up) 0%,var(--up) 26%,#D8B24A 26%,#D8B24A 46%,#C4CDD4 46%,#C4CDD4 66%,var(--down) 66%);opacity:.9}
+  .band .marks{position:relative;height:118px}
+  .band .mk{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:120px}
+  .band .mk .tick{width:2px;height:14px;background:var(--ink);margin:0 auto}
+  .band .mk .price{font-family:var(--mono);font-size:12.5px;font-weight:800;margin-top:3px}
+  .band .mk .lbl{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px}
+
+  /* ── 2x2 포지셔닝 맵 ── */
+  .map-note{font-size:12px;color:var(--muted);text-align:center;margin-top:4px}
+
+  /* ── 리스크 카드 ── */
+  .risk{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:16px 18px;margin:12px 0;background:#FBFCFD}
+  .risk.r1{border-left-color:var(--down)} .risk.r2{border-left-color:var(--warn)} .risk.r3{border-left-color:#7A8A96}
+  .risk h4{font-size:15px;font-weight:800;margin-bottom:6px}
+  .risk .impact{float:right;font-family:var(--mono);font-size:12px;font-weight:800}
+  .risk .r1i{color:var(--down)} .risk .r2i{color:var(--warn)} .risk .r3i{color:#5B6B78}
+  .risk p{font-size:13.5px;margin-bottom:8px}
+  .risk .alarm{font-size:12.5px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:8px 12px;color:#37434E}
+  .risk .alarm b{color:var(--accent-deep)}
+
+  /* ── 결론 질문 ── */
+  .qbox{background:var(--ink);color:#E6EEF3;border-radius:12px;padding:22px 24px;margin:14px 0}
+  .qbox .q{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:#93CBEA;font-weight:700}
+  .qbox h4{font-size:17px;font-weight:800;margin:6px 0 10px;color:#fff}
+  .qbox p{font-size:13.5px;color:#C4D3DC;margin-bottom:8px}
+
+  footer{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.8;padding:0 6px}
+  @media (max-width:640px){
+    section{padding:22px 16px}
+    .cover{padding:28px 20px}
+    .cover h1{font-size:26px}
+    .hbar .lb{flex-basis:104px;font-size:12px}
+  }
+
+  /* ── 화면 자동맞춤 보강 (모바일·폴드 대응) ── */
+  html{-webkit-text-size-adjust:100%}
+  img,svg{max-width:100%;height:auto}
+  .scrollx{-webkit-overflow-scrolling:touch}
+  .scrollx table{min-width:540px}
+  @media (max-width:760px){
+    body{font-size:14px}
+    .wrap{padding:14px 10px 60px}
+    section{padding:20px 14px 18px;border-radius:12px}
+    section h2{font-size:19px}
+    section .lead{font-size:13px}
+    h3{font-size:15px}
+    table{font-size:12px}
+    th,td{padding:7px 7px}
+    th{white-space:normal}
+    .cover{padding:24px 18px 22px}
+    .cover h1{font-size:23px}
+    .cover h1 .ticker{display:block;margin:6px 0 0;font-size:13.5px}
+    .cover .sub{font-size:13.5px}
+    .cover .meta{gap:12px 20px;margin-top:20px;padding-top:16px}
+    .thesis{font-size:14px;padding:14px 16px}
+    .formula{font-size:11.5px;padding:13px 13px;line-height:1.75}
+    .stackbar{height:38px;font-size:11px}
+    .cards{grid-template-columns:1fr}
+    .rhythm{grid-template-columns:1fr}
+    .hbar .lb{flex-basis:92px;font-size:11.5px}
+    .hbar .fill{font-size:10.5px;padding-right:5px}
+    .hbar .ext{font-size:10.5px}
+    .flow{flex-direction:column}
+    .flow .node{margin-right:0;margin-bottom:26px;flex-basis:auto;min-width:0}
+    .flow .node:last-child{margin-bottom:0}
+    .flow .node::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}
+    .chain .body{font-size:13px;padding-bottom:16px}
+    .band .mk{width:82px}
+    .band .mk .price{font-size:10.5px}
+    .band .mk .lbl{font-size:9.5px}
+    .band .marks{height:138px}
+    .qbox{padding:16px 15px}
+    .qbox h4{font-size:15.5px}
+    .qbox p{font-size:13px}
+    .risk{padding:13px 13px}
+    .risk .impact{float:none;display:block;margin-bottom:4px}
+    .risk h4{font-size:14px}
+    footer{font-size:11px}
+  }
+  @media (max-width:400px){
+    body{font-size:13.5px}
+    .cover h1{font-size:20px}
+    table{font-size:11px}
+    th,td{padding:6px 5px}
+    .band .mk{width:68px}
+    .hbar .lb{flex-basis:78px;font-size:10.5px}
+  }
+
+  /* ── PC 가독성 확대 (761px 이상) ── */
+  @media (min-width:761px){
+    body{font-size:16.5px;line-height:1.75}
+    .wrap{max-width:1020px}
+    .cover h1{font-size:38px}
+    .cover h1 .ticker{font-size:21px}
+    .cover .sub{font-size:16.5px}
+    .cover .tag{font-size:13px}
+    .cover .meta div{font-size:13.5px}
+    .cover .meta b{font-size:16.5px}
+    .thesis{font-size:17px}
+    .eyebrow{font-size:13px}
+    section h2{font-size:25px}
+    section .lead{font-size:15.5px}
+    h3{font-size:18px}
+    table{font-size:15px}
+    th,td{padding:10px 12px}
+    .note{font-size:13.5px}
+    .pill{font-size:13px}
+    .card h4{font-size:17px}
+    .card ul{font-size:14.5px}
+    .card .k{font-size:12.5px}
+    .chain .body{font-size:15.5px}
+    .flow .node .t{font-size:15px}
+    .flow .node .d{font-size:13.5px}
+    .flow .node .lag{font-size:12px}
+    .formula{font-size:15px}
+    .legend{font-size:13.5px}
+    .stackbar{font-size:13.5px;height:48px}
+    .hbar .lb{font-size:14.5px;flex-basis:170px}
+    .hbar .fill{font-size:13px}
+    .hbar .ext{font-size:13px}
+    .rhythm ul{font-size:14.5px}
+    .rhythm .freq{font-size:12.5px}
+    .band .mk .price{font-size:14px}
+    .band .mk .lbl{font-size:12px}
+    .band .mk{width:140px}
+    .risk h4{font-size:16.5px}
+    .risk p{font-size:15px}
+    .risk .alarm{font-size:13.5px}
+    .qbox h4{font-size:18.5px}
+    .qbox p{font-size:15px}
+    .qbox .q{font-size:13px}
+    footer{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 표지 ═══════════ -->
+<div class="cover">
+  <div class="tag">EQUITY RESEARCH · 화학·소재 복합기업 · 시리즈 17 [개정 2판] — 부문 발라내기와 SOTP</div>
+  <h1>코오롱인더 <span class="ticker">KOSPI 120110</span></h1>
+  <div class="sub">2Q26 어닝 비트(987억, 컨센 +26%) 확정 — 이제 질문은 「얼마나 버나」가 아니라
+  「어느 부문이 버나」다: 기존산업·아라미드·CPI·mPPO 4계층 분해와 부문별 멀티플 목표주가</div>
+  <div class="meta">
+    <div>기준일<b>2026. 08. 14</b></div>
+    <div>주가 (08/12)<b class="figures">55,900원</b></div>
+    <div>시가총액<b class="figures">1조 6,740억</b></div>
+    <div>52주 밴드<b class="figures">33,750 ~ 104,900원</b></div>
+    <div>상장주식수<b class="figures">29,946,032주</b></div>
+  </div>
+</div>
+
+<div class="thesis">
+  <b>핵심 명제</b> — 이 종목의 밸류에이션 문제는 「전사 이익 × 배율 하나」로는 풀리지 않는다. 한 지붕 아래
+  <b>이익의 질이 전혀 다른 4개의 계층</b>이 살기 때문이다: ① 시황 연동의 <b>기존산업</b>(석유수지·타이어코드·에어백·패션),
+  ② 기존산업이되 턴어라운드 옵션이 붙은 <b>아라미드</b>(풀가동 진입·BEP 직전), ③ 2Q26 <b>8년 만의 첫 분기 흑자</b>를 낸
+  <b>CPI</b>(9월 폴더블 아이폰 옵션), ④ AI 서버 CCL 레진으로 <b>연 60%대 성장 중인 mPPO</b>. 본 개정판은 이 4계층의
+  '25~'28E 이익을 발라내고, 부문별 목표 PER(기존 6배 · CPI 10배 · mPPO 15배)로 <b>'27E 기준 63,800원 ·
+  '28E 기준 74,700원</b>의 목표주가를 도출한다. 결론을 미리 말하면 — <b>현재가 55,900원은 성장부문 프리미엄을
+  사실상 0으로 놓은 가격</b>이고, 4월 고점 104,900원은 '28E 낙관 시나리오조차 넘어선 가격이었다.
+</div>
+
+<!-- ═══════════ SECTION 01 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 01 · 2Q26 확정</div>
+  <h2>2Q26 실적 — 컨센 +26% 비트의 출처 분해</h2>
+  <div class="lead">전사 숫자 먼저, 그 다음 「누가 벌었나」. 복합기업 제1원칙 그대로.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>구분</th><th>2Q26 확정</th><th>YoY</th><th>QoQ</th><th>컨센서스</th><th>괴리</th></tr>
+    <tr class="hl"><td><b>매출액</b></td><td class="num"><b>1조 3,565억</b></td><td class="num">+7.8%</td><td class="num">+9.6%</td><td class="num">1조 3,514억</td><td class="num">+0.4%</td></tr>
+    <tr class="hl"><td><b>영업이익</b></td><td class="num"><b>987억 (OPM 7.3%)</b></td><td class="num" style="color:var(--up)"><b>+118%</b></td><td class="num">+59.5%</td><td class="num">726~784억</td><td class="num" style="color:var(--up)"><b>+26~36%</b></td></tr>
+    <tr><td>순이익</td><td class="num">660억</td><td class="num">+126.9%</td><td class="num">−17.2%</td><td colspan="2">1Q 순이익(≈797억)에 금융자산 평가익 등 일회성 포함 — QoQ 감소는 함정 아님</td></tr>
+  </table></div>
+
+  <h3>부문별 배분 — 확정치 미공시 구간의 자체 추정</h3>
+  <p>회사는 잠정공시에서 부문별 영업이익을 분리 공시하지 않았다. 아래는 <b>1Q26 확정 부문실적(유안타 인용)을 앵커로,
+  2Q 프리뷰 대비 비트 +196억의 출처를 컨콜·보도 코멘트로 역산한 자체 추정</b>이다. 3분기 사업보고서에서 확정치로 교체 예정.</p>
+  <div class="scrollx"><table>
+    <tr><th>부문 (억원)</th><th>1Q26 확정</th><th>2Q26 프리뷰(유안타)</th><th>2Q26 자체 추정</th><th>비트의 출처</th></tr>
+    <tr><td><b>화학</b> (석유수지+mPPO+CPI)</td><td class="num">439</td><td class="num">435</td><td class="num"><b>~490</b></td><td>석유수지 원료 래깅 마진 + <b>CPI 첫 흑자</b> + mPPO</td></tr>
+    <tr class="hl"><td><b>산업자재</b> (타이어코드·아라미드·에어백)</td><td class="num">195</td><td class="num">268</td><td class="num"><b>~340</b></td><td><b>아라미드 적자 축소폭이 예상 초과</b>(풀가동) + 타이어코드 OPM 5~6% + 에어백 고정비 희석</td></tr>
+    <tr><td><b>패션</b></td><td class="num">33</td><td class="num">82</td><td class="num"><b>~130</b></td><td>준성수기 + 소비심리 회복 + 조직통합 효율화</td></tr>
+    <tr><td>기타·조정</td><td class="num">−48</td><td class="num">6</td><td class="num">~27</td><td>—</td></tr>
+    <tr><td><b>합계</b></td><td class="num">619 (확정)</td><td class="num">791</td><td class="num"><b>987 (확정)</b></td><td>비트 +196억의 ~2/3가 산업자재</td></tr>
+  </table></div>
+  <p class="note"><b>판독</b> — 비트의 절반 이상이 「아라미드가 예상보다 덜 잃은 것」이다. 2Q에도 아라미드는
+  전쟁발 원가 상승으로 <b>BEP를 넘지 못했다</b>(회사·언론 공통) — 즉 이번 비트는 이미 흑자인 사업의 초과이익이 아니라
+  적자 사업의 적자 축소가 만든 비트이고, 다음 검증 지표는 여전히 「아라미드 분기 흑자전환 시점」이다.</p>
+</section>
+
+<!-- ═══════════ SECTION 02 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 02 · 발라내기</div>
+  <h2>부문 발라내기 — 이익의 질이 다른 4개의 계층</h2>
+  <div class="lead">사용자 프레임 그대로: 기존산업(아라미드 별도 구분) vs 성장산업(CPI · mPPO). 정보 등급을 층마다 명시한다.</div>
+
+  <div class="cards">
+    <div class="card"><div class="k">계층 1 · 기존산업 (아라미드 外)</div><h4>석유수지·타이어코드·에어백·패션·기타</h4>
+      <ul><li>성격 <b>시황 연동 + 계절성</b> — 석유수지는 원료 래깅, 패션은 4Q 성수기</li>
+      <li>'26 상태 <b>석유수지 타이트 수급 + 타이어코드 하이브리드 믹스로 상단권</b></li>
+      <li>전망 원칙 <b>「유지」 — 래깅 마진은 유가 안정 시 소멸되는 이익이므로 성장 미가정</b></li></ul></div>
+    <div class="card"><div class="k">계층 2 · 아라미드 (기존이되 별도)</div><h4>헤라크론 — capa 15,310톤</h4>
+      <ul><li>'23말 증설 7,500→15,310톤 → 중국발 공급과잉·판가 하락으로 <b>증설이 곧 적자</b></li>
+      <li>'26 상태 <b>풀가동 진입(확정) · 적자 축소 · BEP 미달(확정)</b> — 북미 광케이블·방탄 수요</li>
+      <li>전망 원칙 <b>「조금 나아짐」 — 물량 회복만 반영, 판가 회복은 미가정</b></li></ul></div>
+    <div class="card"><div class="k">계층 3 · 성장 CPI</div><h4>투명 폴리이미드 필름 — capa 100만㎡</h4>
+      <ul><li>2018 설비 구축 후 <b>8년 저가동 적자(저위 가동 시 연 −200억)</b></li>
+      <li>'26 상태 <b>해외 신규 고객사向 판매로 2Q26 첫 분기 흑자전환</b> (증권가 추정)</li>
+      <li>옵션 <b>9월 폴더블 아이폰 보호필름</b> — 회사 공식 입장은 "샘플 공급 단계"</li></ul></div>
+    <div class="card"><div class="k">계층 4 · 성장 mPPO</div><h4>AI 서버 CCL 저유전 레진</h4>
+      <ul><li>에폭시 대비 전기차단 3~5배 — <b>AI 가속기 기판의 저유전 필수재</b></li>
+      <li>'26 상태 <b>김천2 (+2,000톤) 2Q 기계적 준공 → 7월 대만 CCL 3사 양산 개시</b></li>
+      <li>로드맵 <b>4Q말 국내 고객 테스트 완료 예정 + 추가 증설(매출 2,000억 목표) 기발표</b></li></ul></div>
+  </div>
+
+  <h3>'25~'26E 이익 발라내기 (영업이익, 억원)</h3>
+  <div class="scrollx"><table>
+    <tr><th>계층</th><th>2025 (확정 전사 내 배분)</th><th>2026E</th><th>근거·정보등급</th></tr>
+    <tr><td>기존산업 (아라미드 外)</td><td class="num">+1,629</td><td class="num">+2,750</td><td>잔여 역산 — <b>자체 추정</b>. '26 증분은 석유수지 래깅+타이어코드 믹스+패션 회복</td></tr>
+    <tr class="hl"><td><b>아라미드</b></td><td class="num" style="color:var(--down)">−500</td><td class="num" style="color:var(--down)">−150</td><td>적자 규모는 <b>자체 추정</b> · 풀가동/BEP 미달은 <b>확정</b>. 1H −120 → 2H −30 경로</td></tr>
+    <tr class="hl"><td><b>CPI</b></td><td class="num" style="color:var(--down)">−200</td><td class="num" style="color:var(--up)">+30</td><td>저위가동 적자 −200억은 <b>보도 기반</b> · 2Q 흑전은 <b>시장 추정</b> · 연간 +30은 자체</td></tr>
+    <tr class="hl"><td><b>mPPO</b></td><td class="num" style="color:var(--up)">+160</td><td class="num" style="color:var(--up)">+270</td><td>매출 800→1,300억은 <b>시장 전망</b> · OPM 20.8%는 <b>자체 추정</b>(증권가 "20%대" 준용)</td></tr>
+    <tr><td><b>전사</b></td><td class="num"><b>1,089 (확정)</b></td><td class="num"><b>2,900</b></td><td>'26E는 1H 확정 1,606 + 2H 자체 1,294 — 컨센 2,853억 대비 +1.6%</td></tr>
+  </table></div>
+  <p class="note"><b>전제 교정 하나</b> — 초판에서 인용한 '25년 OP 1,151억(하나 추정)은 확정치 <b>1,089억</b>으로 교체
+  (분기: 269/453/269/98). 4Q25는 패션 성수기에도 순이익 −103억 — 구조조정 마무리 비용의 분기였다.</p>
+  <p><b>이 표의 함의</b>: '25→'26 증익 +1,811억을 분해하면 <b>기존산업 +1,121억(62%) / 아라미드 +350억(19%) /
+  CPI +230억(13%) / mPPO +110억(6%)</b>. 즉 '26년 증익의 주력은 아직 기존산업의 시황이고, 성장부문은 이제
+  이익 기여를 시작한 단계다. 성장 스토리로 '26년 숫자를 정당화하면 안 되는 이유가 여기 있다 — <b>성장부문이
+  전사 이익에서 두 자릿수 비중이 되는 것은 '26년(10.3%)부터, 유의미해지는 것은 '28년(18.7%)부터다.</b></p>
+</section>
+
+<!-- ═══════════ SECTION 03 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 03 · 성장축 ① CPI</div>
+  <h2>CPI — 8년 만의 첫 흑자, 그리고 애플이라는 옵션의 단위경제</h2>
+  <div class="lead">2018년에 지은 공장이 2026년에 처음 돈을 벌기 시작했다. 옵션 가치는 크지만, 옵션을 확정 이익처럼 세지 않는다.</div>
+
+  <h3>사실관계의 4단 분류</h3>
+  <div class="scrollx"><table>
+    <tr><th>등급</th><th>내용</th></tr>
+    <tr><td><span class="pill up">확정 팩트</span></td><td>2Q26 CPI 가동률 상승·화학부문 이익 기여(회사 공시 코멘트) · 애플 첫 폴더블폰 9월 아이폰18 프로와 동시 공개 확실시(~$2,000) · 코오롱은 CPI 국내 특허 ~80% 보유 · capa 100만㎡/년(8인치 환산 ~3,000만대분)</td></tr>
+    <tr><td><span class="pill warn">회사 가이던스</span></td><td>"글로벌 기업들에 테스트용 샘플을 공급하는 단계"(2월) — <b>회사는 애플 공급을 확인한 적이 없다</b></td></tr>
+    <tr><td><span class="pill warn">시장 추정</span></td><td>2Q26 설비 구축 후 첫 분기 흑자전환(증권가 공통) · UTG 위 보호필름으로 PET 대체 검토(UTG+CPI가 내구성·내스크래치 우위, 주름 개선) · 판매가능물량 '27년 700~800만대 → '28년 2,000~3,000만대(유안타)</td></tr>
+    <tr><td><span class="pill neutral">자체 추정</span></td><td>아래 3개년 손익 경로 전체</td></tr>
+  </table></div>
+
+  <h3>단위경제 — 유안타 프레임 준용 + 자체 경로</h3>
+  <pre class="mono" style="background:#F7FAFB;border:1px solid var(--line);border-radius:9px;padding:14px 16px;font-size:12.5px;line-height:1.9">
+풀가동 매출  = 1,500억 (100만㎡ = 폴더블 3,000만대분)   ← 유안타 가정
+풀가동 OPM   = 15% → OP 225억
+저위가동 적자 = 연 −200억                                 ← '25년까지의 현실
+폴더블향 매출 = 1,500억 × (판매대수 / 3,000만대) + 기존용도(PCB·태양전지 등)</pre>
+  <div class="scrollx"><table>
+    <tr><th>CPI (억원)</th><th>2025</th><th>2026E</th><th>2027E</th><th>2028E</th></tr>
+    <tr><td>매출 (자체)</td><td class="num">~300</td><td class="num">~500</td><td class="num">~900</td><td class="num">~1,400</td></tr>
+    <tr class="hl"><td><b>영업이익</b></td><td class="num" style="color:var(--down)">−200</td><td class="num">+30</td><td class="num"><b>+100</b></td><td class="num"><b>+210</b></td></tr>
+    <tr><td>가정</td><td>저위가동</td><td>2Q 흑전 후 하반기 가동률↑</td><td>폴더블 ~750만대분(375억) + 기존용도. OPM 11%</td><td>폴더블 ~2,500만대분(1,250억) — 풀가동 근접. OPM 15%</td></tr>
+  </table></div>
+  <p><b>냉정하게 짚을 것 두 가지.</b> 첫째, '27E +100억은 <b>애플(추정 고객) 채택이 유지·확대된다는 조건부</b>다. 채택
+  실패 시 CPI는 2Q26 이전의 저가동 상태로 회귀하며 '27E는 0 이하로 돌아간다. 둘째, 흑자의 크기보다 중요한 것은
+  <b>스윙의 크기</b>다 — CPI는 '25 −200억에서 '28E +210억까지 전사 기준 <b>+410억짜리 스윙</b>이고, 이는 아라미드
+  스윙(+750억)에 이어 두 번째로 크다. 즉 CPI는 "작은 성장사업"이 아니라 "적자 자산의 자산화"라는 턴어라운드와
+  성장이 겹친 계층이다.</p>
+</section>
+
+<!-- ═══════════ SECTION 04 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 04 · 성장축 ② mPPO</div>
+  <h2>mPPO — AI 기판 사슬의 레진 탑승자, 증설이 곧 매출인 구간</h2>
+  <div class="lead">이 시리즈의 이비덴 사슬(덕산하이메탈·이오테크닉스)과 같은 전방을 화학의 몸으로 탄다.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>이벤트</th><th>상태</th><th>내용</th></tr>
+    <tr><td>김천2 증설 (+2,000톤, 340억)</td><td><span class="pill up">확정</span></td><td>2Q26 기계적 준공 완료 → 램프업 → <b>7월부터 대만 CCL 업체 양산 공급 개시</b> — capa 기존 대비 2배 이상</td></tr>
+    <tr><td>국내 고객 확장</td><td><span class="pill warn">가이던스</span></td><td>4Q26 말 국내 거래처 테스트 완료 예정 — 현재 고객은 대만 CCL 3사 중심(보도)</td></tr>
+    <tr><td>추가 증설</td><td><span class="pill up">확정(발표)</span></td><td>'25.12월 추가 증설 발표 — <b>mPPO 매출 2,000억 목표</b> 공표</td></tr>
+    <tr><td>시장 규모</td><td><span class="pill warn">시장 추정</span></td><td>글로벌 mPPO 수요 '25년 ~4,600톤 → 2030년 9,700톤 (회사 인용 전망)</td></tr>
+  </table></div>
+
+  <div class="scrollx"><table>
+    <tr><th>mPPO (억원)</th><th>2025</th><th>2026E</th><th>2027E</th><th>2028E</th></tr>
+    <tr><td>매출</td><td class="num">800 (확정 수준)</td><td class="num">1,300 <span class="pill warn">시장</span></td><td class="num">1,800 <span class="pill warn">시장</span></td><td class="num">~2,300 <span class="pill neutral">자체</span></td></tr>
+    <tr class="hl"><td><b>영업이익 (OPM ~21% 자체)</b></td><td class="num">+160</td><td class="num">+270</td><td class="num"><b>+380</b></td><td class="num"><b>+480</b></td></tr>
+  </table></div>
+  <p><b>구조 판독</b> — mPPO의 '26~'27 성장은 수요 예측이 아니라 <b>증설 캘린더가 만드는 성장</b>이다(김천2 램프업
+  '26 하반기 → 연간 온기 '27 → 추가 증설분 '28). 검증도 수요 지표가 아니라 실행 지표로 한다: ① 대만 3사 → 국내
+  고객 확장 여부(4Q26), ② 추가 증설 착공·완공 일정, ③ 분기 컨콜의 mPPO 매출 언급. 유일한 구조 리스크는 CCL
+  단에서의 소재 대체(PPE 계열 경쟁·저유전 에폭시 개량)인데, AI 가속기 세대교체가 빠를수록 저유전 요구는
+  강해지므로 <b>수요 방향 자체는 이 시리즈에서 가장 논쟁이 적은 축</b>이다. 단, OPM 21%는 증권가 "20%대 추산"을
+  준용한 자체 가정으로 <b>회사가 부문 마진을 공시한 적이 없다</b> — 컨콜에서 하향 코멘트가 나오면 즉시 교체한다.</p>
+</section>
+
+<!-- ═══════════ SECTION 05 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 05 · 3개년 추정</div>
+  <h2>2026~2028E — 부문별 이익 경로와 「성장부문 비중」의 이동</h2>
+  <div class="lead">전망 원칙: 기존산업 유지 · 아라미드 조금 나아짐(물량만, 판가 미가정) · CPI/mPPO는 위 단위경제 그대로.</div>
+
+  <div class="scrollx"><table>
+    <tr><th>영업이익 (억원)</th><th>2025 확정</th><th>2026E</th><th>2027E</th><th>2028E</th><th>가정 요지</th></tr>
+    <tr><td>기존산업 (아라미드 外)</td><td class="num">1,629</td><td class="num">2,750</td><td class="num">2,750</td><td class="num">2,750</td><td><b>동결</b> — 석유수지 래깅 마진은 지속 이익으로 안 세되, '26 수준의 시황은 유지 가정</td></tr>
+    <tr><td><b>아라미드</b></td><td class="num" style="color:var(--down)">−500</td><td class="num" style="color:var(--down)">−150</td><td class="num" style="color:var(--up)">+100</td><td class="num" style="color:var(--up)">+250</td><td>'27 흑자전환 — 풀가동 유지 + 원가 정상화. <b>판가 회복 미가정</b>(중국 capa 상존)</td></tr>
+    <tr><td><b>CPI</b></td><td class="num" style="color:var(--down)">−200</td><td class="num">+30</td><td class="num" style="color:var(--up)">+100</td><td class="num" style="color:var(--up)">+210</td><td>폴더블 채택 유지 조건부 — §3</td></tr>
+    <tr><td><b>mPPO</b></td><td class="num">+160</td><td class="num">+270</td><td class="num" style="color:var(--up)">+380</td><td class="num" style="color:var(--up)">+480</td><td>증설 캘린더 — §4</td></tr>
+    <tr class="hl"><td><b>전사 영업이익</b></td><td class="num"><b>1,089</b></td><td class="num"><b>2,900</b></td><td class="num"><b>3,330</b></td><td class="num"><b>3,690</b></td><td>컨센 '26E 2,853 / '27E 3,078 대비 +2% / +8%</td></tr>
+    <tr><td>성장부문(CPI+mPPO) 이익</td><td class="num" style="color:var(--down)">−40</td><td class="num">+300</td><td class="num">+480</td><td class="num">+690</td><td rowspan="2" style="vertical-align:middle"><b>비중이 매년 +4%p씩 이동</b> — 밸류에이션 리레이팅의 물리적 근거</td></tr>
+    <tr class="hl"><td><b>성장부문 이익 비중</b></td><td class="num">적자 (−3.7%)</td><td class="num"><b>10.3%</b></td><td class="num"><b>14.4%</b></td><td class="num"><b>18.7%</b></td></tr>
+  </table></div>
+
+  <h3>순이익 환산 — OP×환산율이 아니라 직접 계산 (이 회사의 함정)</h3>
+  <p>코오롱인더는 영업외 라인이 큰 회사다: <b>코오롱스포츠차이나 지분법이익</b>(25% 지분 — '24년 178억 → '25년
+  423억 → '26E 600억, 유안타)이 더해지고, <b>순금융비용 연 ~700억(자체 추정)</b>이 빠진다. 시리즈 원칙대로 OP 환산율
+  방식은 쓰지 않는다.</p>
+  <div class="scrollx"><table>
+    <tr><th>순이익 브리지 (억원)</th><th>2026E</th><th>2027E</th><th>2028E</th></tr>
+    <tr><td>영업이익</td><td class="num">2,900</td><td class="num">3,330</td><td class="num">3,690</td></tr>
+    <tr><td>− 순금융비용 (자체 ~700)</td><td class="num">−700</td><td class="num">−700</td><td class="num">−700</td></tr>
+    <tr><td>× (1 − 세율 24%)</td><td class="num">1,672</td><td class="num">1,999</td><td class="num">2,272</td></tr>
+    <tr><td>+ 지분법 (코오롱스포츠차이나 등)</td><td class="num">+600</td><td class="num">+700</td><td class="num">+800</td></tr>
+    <tr class="hl"><td><b>순이익 (지배 근사) / EPS</b></td><td class="num"><b>~2,270 / 7,580원</b></td><td class="num"><b>~2,700 / 9,010원</b></td><td class="num"><b>~3,070 / 10,260원</b></td></tr>
+    <tr><td>현재가 55,900원의 PER</td><td class="num">7.4배</td><td class="num"><b>6.2배</b></td><td class="num">5.4배</td></tr>
+  </table></div>
+  <p class="note">1H26 실제 순이익 1,457억(1Q ~797 + 2Q 660)에는 금융자산 평가익 등 변동 항목이 섞여 있어 연간
+  단순 연장은 하지 않는다. 소수지분은 미미 가정(자체) — 사업보고서에서 재확인 필요.</p>
+</section>
+
+<!-- ═══════════ SECTION 06 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 06 · 밸류에이션</div>
+  <h2>SOTP 목표주가 — 기존 6배 · CPI 10배 · mPPO 15배</h2>
+  <div class="lead">부문 PER은 세후 이익에 곱해야 한다. OP에 바로 곱하는 단순법은 참고로만 병기한다 — 차이가 30%다.</div>
+
+  <h3>방법론 선언</h3>
+  <p>부문별 <b>세후영업이익(OP × 0.76)</b>에 목표 PER을 적용한다. 이자와 지분법은 부문에 붙일 수 없으므로
+  <b>전액 기존산업 묶음에 귀속</b>시킨다 — 아라미드·CPI 설비 투자가 만든 차입이므로 이자는 여기가 정위치이고,
+  지분법(패션 중국법인)도 기존산업의 연장이다. 결과적으로 성장부문 가치는 이자 부담 없이 깨끗하게 계산되고,
+  기존산업 가치는 이자를 문 만큼 보수적으로 계산된다.</p>
+
+  <h3>'27E 기준 — 목표주가 63,800원 (+14%)</h3>
+  <div class="scrollx"><table>
+    <tr><th>계층</th><th>OP</th><th>조정</th><th>세후이익</th><th>PER</th><th>가치 (억원)</th></tr>
+    <tr><td>기존산업 (아라미드 外)</td><td class="num">2,750</td><td class="num">−이자 700 → ×0.76 → +지분법 700</td><td class="num">2,258</td><td class="num">6배</td><td class="num">13,548</td></tr>
+    <tr><td>아라미드</td><td class="num">100</td><td class="num">×0.76</td><td class="num">76</td><td class="num">6배</td><td class="num">456</td></tr>
+    <tr><td>CPI</td><td class="num">100</td><td class="num">×0.76</td><td class="num">76</td><td class="num">10배</td><td class="num">760</td></tr>
+    <tr><td>mPPO</td><td class="num">380</td><td class="num">×0.76</td><td class="num">289</td><td class="num">15배</td><td class="num">4,331</td></tr>
+    <tr class="hl"><td colspan="4"><b>적정 시가총액 → ÷ 29,946,032주</b></td><td class="num"><b>19,095</b></td><td class="num"><b>63,800원</b></td></tr>
+  </table></div>
+
+  <h3>'28E 기준 — 목표주가 74,700원 (+34%)</h3>
+  <div class="scrollx"><table>
+    <tr><th>계층</th><th>OP</th><th>세후이익</th><th>PER</th><th>가치 (억원)</th></tr>
+    <tr><td>기존산업 (아라미드 外, 이자·지분법 +800 반영)</td><td class="num">2,750</td><td class="num">2,358</td><td class="num">6배</td><td class="num">14,148</td></tr>
+    <tr><td>아라미드</td><td class="num">250</td><td class="num">190</td><td class="num">6배</td><td class="num">1,140</td></tr>
+    <tr><td>CPI</td><td class="num">210</td><td class="num">160</td><td class="num">10배</td><td class="num">1,596</td></tr>
+    <tr><td>mPPO</td><td class="num">480</td><td class="num">365</td><td class="num">15배</td><td class="num">5,472</td></tr>
+    <tr class="hl"><td colspan="3"><b>적정 시가총액 → ÷ 주식수</b></td><td class="num"><b>22,356</b></td><td class="num"><b>74,700원</b></td></tr>
+  </table></div>
+
+  <h3>단순법 병기 — 그리고 왜 쓰지 않는가</h3>
+  <div class="scrollx"><table>
+    <tr><th>방식</th><th>'27E 목표가</th><th>'28E 목표가</th><th>평가</th></tr>
+    <tr><td>정공법 (세후 + 이자·지분법 귀속)</td><td class="num"><b>63,800</b></td><td class="num"><b>74,700</b></td><td>본 리포트 채택</td></tr>
+    <tr><td>단순법 (OP × PER 그대로)</td><td class="num">79,500</td><td class="num">91,200</td><td><b>세금 −24%와 이자 −700억을 무시해 ~25% 과대</b> — 지분법 +700이 일부만 상쇄. 증권가 SOTP가 높게 나오는 기술적 이유 중 하나</td></tr>
+  </table></div>
+
+  <h3>민감도 — 어느 가정이 목표가를 얼마나 움직이나 ('27E 기준)</h3>
+  <div class="scrollx"><table>
+    <tr><th>시나리오</th><th>가치 변화</th><th>목표가 변화</th></tr>
+    <tr><td>mPPO 배수 15배 → 10배 (AI 기판 멀티플 압축)</td><td class="num">−1,444억</td><td class="num" style="color:var(--down)">−4,800원</td></tr>
+    <tr><td>기존산업 이익 −10% (석유수지 래깅 마진 소멸)</td><td class="num">−1,254억</td><td class="num" style="color:var(--down)">−4,200원</td></tr>
+    <tr><td>아라미드 '27 흑전 실패 (−100억 지속)</td><td class="num">−912억</td><td class="num" style="color:var(--down)">−3,000원</td></tr>
+    <tr><td>CPI 애플 채택 실패 ('27 이익 0)</td><td class="num">−760억</td><td class="num" style="color:var(--down)">−2,500원</td></tr>
+    <tr class="hl"><td><b>전부 동시 발생 (약세 시나리오)</b></td><td class="num">−4,370억</td><td class="num" style="color:var(--down)"><b>→ ~49,200원</b></td></tr>
+  </table></div>
+  <p><b>민감도의 교훈</b> — 목표가를 가장 크게 움직이는 변수는 성장 스토리(CPI)가 아니라 <b>① mPPO에 몇 배를 주느냐,
+  ② 기존산업 시황이 유지되느냐</b>다. CPI는 서사의 중심이지만 '27E 가치 기여는 전체의 4%(760억/19,095억)에 불과하다.
+  <b>서사의 크기와 가치의 크기를 혼동하지 말 것</b> — 초기 7종 감사에서 반복 확인한 패턴이다.</p>
+
+  <h3>현재가·고점·증권가 목표가의 좌표</h3>
+  <div class="scrollx"><table>
+    <tr><th>가격</th><th>의미</th></tr>
+    <tr class="hl"><td class="num"><b>55,900 (현재)</b></td><td>'27E PER 6.2배 = <b>기존산업 배수로 전사 일괄 평가</b> — mPPO 15배·CPI 10배 프리미엄이 가격에 없다</td></tr>
+    <tr><td class="num">63,800 / 74,700 (본 리포트)</td><td>'27E / '28E SOTP — 성장부문 프리미엄을 「이익 비중만큼만」 반영한 가격</td></tr>
+    <tr><td class="num">96,000~118,000 (증권가)</td><td>유안타 9.6만(7/6 발행, 당시 주가 57,500 · 괴리 +67%) · 신한 10만(8/11, 56,600 · +77%) · KB 11.8만(5/11, 91,900 · +28%) — <b>KB는 고점권 추격형, 유안타·신한은 조정 후 미조정 앵커</b>. 공통 전제는 아라미드 판가 회복·CPI 정식 채택으로 본 리포트보다 낙관적</td></tr>
+    <tr><td class="num">104,900 (4/28 고점)</td><td><b>본 리포트 '28E 단순법(91,200)마저 넘어선 가격</b> — 4월 고점은 '28년 낙관 시나리오의 선반영 초과였고, −47% 조정은 그 청산이다</td></tr>
+  </table></div>
+</section>
+
+<!-- ═══════════ SECTION 07 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 07 · 리스크</div>
+  <h2>훼손 시나리오 — 5필드 형식</h2>
+  <div class="scrollx"><table>
+    <tr><th>시나리오</th><th>트리거</th><th>손익 영향</th><th>조기 경보</th><th>대응</th></tr>
+    <tr><td><b>① CPI 채택 불발/축소</b></td><td>9월 애플 이벤트에서 소재 확인 실패, 3Q 가동률 재하락</td><td>'27E CPI 0~−100억 회귀 (−2,500원+)</td><td>3Q 컨콜 CPI 가동률·고객 코멘트, 폴더블 아이폰 분해 리포트</td><td>CPI 가치 제거한 61,300원을 유효 목표로 유지 — 채택은 옵션, 기본가정 아님</td></tr>
+    <tr><td><b>② 석유수지 래깅 마진 소멸</b></td><td>유가·나프타 안정화로 원료 래깅 이익 반납</td><td>기존산업 −200~−300억 (−4,000원 내외)</td><td>분기 화학부문 OPM이 8%대→6%대로 복귀</td><td>기존산업 '27~'28 동결 가정이 이미 일부 흡수 — 추가 훼손 시 하향</td></tr>
+    <tr><td><b>③ 아라미드 판가 재하락</b></td><td>중국 증설 물량 재출회, 광케이블 수요 둔화</td><td>'27 흑전 실패 (−3,000원)</td><td>컨콜 가동률·판가 코멘트, 효성첨단 아라미드 실적 교차 검증</td><td>흑전 시점을 '28로 이연 — 물량 가정만 쓴 덕에 하향 폭 제한</td></tr>
+    <tr><td><b>④ mPPO 멀티플 압축</b></td><td>AI 기판 사슬 전반 디레이팅(이비덴·CCL 밸류 하락 동조)</td><td>이익 불변에도 −4,800원</td><td>TUC·EMC 등 대만 CCL 주가, 시리즈 내 덕산·이오테크 배수</td><td>15배는 성장 지속 조건부 — 사슬 디레이팅 시 10배로 기계적 교체</td></tr>
+    <tr><td><b>⑤ 4Q 패션 성수기 미달</b></td><td>소비 위축으로 계절성 진폭 축소</td><td>4Q26E −100억 내외</td><td>3Q 패션 적자 폭(전년 −165억 대비)</td><td>연간 추정 −3% 내 — 단기 노이즈로 분류</td></tr>
+  </table></div>
+  <p class="note">주식수 리스크 별도: '26.4.16 주식수 +243만주(+8.8%) 증가 이력 — 전환·교환 물량 여부와 잔여 희석
+  가능성은 사업보고서 확인 필요(미확인). 추가 희석 5%면 목표가는 기계적으로 −5%.</p>
+</section>
+
+<!-- ═══════════ SECTION 08 ═══════════ -->
+<section>
+  <div class="eyebrow">SECTION 08 · 종합</div>
+  <h2>종합 — 3문항 좌표와 결론</h2>
+  <div class="scrollx"><table>
+    <tr><th>문항</th><th>판정</th><th>근거</th></tr>
+    <tr><td>① 업사이클 강도</td><td><span class="pill up">중~강</span></td><td>'25 1,089 → '28E 3,690억 (3.4배). 단, 증분의 절반은 턴어라운드(아라미드·CPI 적자 소멸)이고 순수 성장은 mPPO 하나</td></tr>
+    <tr><td>② 가격 반영과 남은 여지</td><td><span class="pill up">프리미엄 소멸 상태</span></td><td>고점 −47% 조정으로 '27E PER 6.2배 — <b>성장부문을 기존산업 배수로 사는 가격</b>. 4월엔 반대로 '28 낙관까지 선반영했었다</td></tr>
+    <tr><td>③ 경로 변수의 수</td><td><span class="pill warn">4개 — 많다</span></td><td>아라미드 수급(외생) · 석유수지 래깅(외생) · CPI 채택(외생, 고객 결정) · mPPO 실행(내생). 변수는 많으나 <b>복합기업 내장 분산으로 상관은 낮다</b> — 동시 훼손 시나리오에서도 49,200원</td></tr>
+  </table></div>
+
+  <h3>이번 개정의 3대 발견</h3>
+  <div class="cards">
+    <div class="card"><div class="k">FINDING 1</div><h4>성장부문 비중은 매년 +4%p씩 이동한다</h4>
+      <ul><li>CPI+mPPO 이익 비중: '25 적자 → '26 10% → '27 14% → '28 19%</li><li>리레이팅은 서사가 아니라 <b>이 비중의 물리적 이동</b>을 따라온다 — '27년까지는 완만, '28년부터 유의미</li></ul></div>
+    <div class="card"><div class="k">FINDING 2</div><h4>현재가는 성장 옵션 무가치 평가</h4>
+      <ul><li>55,900원 = '27E 6.2배 — mPPO 15배는커녕 전 부문 6배 일괄</li><li>반면 4월 104,900원은 '28E 단순법도 초과 — <b>같은 종목이 4개월 만에 양극단을 오갔다</b>: 좌표만 알면 진입·이탈이 기계적으로 나온다</li></ul></div>
+    <div class="card"><div class="k">FINDING 3</div><h4>목표가의 최대 변수는 CPI가 아니다</h4>
+      <ul><li>'27E 가치 기여: mPPO 23% vs CPI 4% — 뉴스 노출량과 정반대</li><li>추적 우선순위: <b>mPPO 국내 고객 확장(4Q26) &gt; 석유수지 마진 유지 &gt; 아라미드 흑전 &gt; CPI 채택</b></li></ul></div>
+  </div>
+
+  <p><b>결론</b> — 부문별 멀티플로 계산한 목표주가는 <b>'27E 기준 63,800원(+14%), '28E 기준 74,700원(+34%)</b>.
+  현재가는 약세 시나리오 하단(49,200원)과 '27E 목표가 사이의 하단 1/3 지점이다. 이 종목의 '26년은 컨센을 두 분기
+  연속 크게 이겼고, 성장부문의 이익 기여는 이제 막 두 자릿수에 진입했다. 다만 증권가 목표가(9.6만~11.8만)에
+  도달하려면 본 리포트가 가정하지 않은 것들 — 아라미드 판가 회복, CPI 정식 채택 공표, mPPO 추가 증설 조기화 —
+  이 모두 실현되어야 한다. <b>확인되지 않은 옵션에 밸류에이션 가중치를 먼저 주지 않는다</b>는 감사 원칙 그대로,
+  옵션이 확정으로 승급될 때마다 목표가를 계단식으로 올리는 것이 이 종목의 올바른 추적 방식이다.</p>
+</section>
+
+<footer>
+  <b>자료 성격 및 한계 [개정 2판]</b> — 본 리포트는 공시(2Q26 잠정실적 8/7)·증권사 리포트(유안타 7/6 · 신한 8/11 ·
+  KB 8/10 · 삼성 3/24)·언론 보도(시사저널e 8/11, 머니투데이·이데일리·매일일보 8/7 등) 기반의 정리 자료이며 투자
+  권유가 아닙니다. 2Q26 전사 실적·아라미드 풀가동/BEP 미달·mPPO 김천2 준공·폴더블 아이폰 9월 출시는 확정/공시·보도
+  기준. <b>2Q26 부문별 배분, 아라미드·CPI·mPPO 부문 손익 발라내기 전체, 순금융비용 700억, '27~'28E 전망, SOTP는
+  자체 추정</b>입니다. CPI 2Q 흑자전환·판매가능물량·풀가동 단위경제는 유안타 추정, mPPO 매출 경로는 시장 전망 인용.
+  소수지분·희석 가능 물량·순차입금 확정치는 미확인 — 사업보고서 재확인 필수. 초판(7/10)의 '25년 OP 1,151억은 확정
+  1,089억으로, 부문 구성 서술은 CPI의 화학부문 귀속으로 각각 교정. 다음 갱신 트리거: <b>9월 애플 이벤트(CPI 소재
+  확인)</b> · 3Q26 컨콜(아라미드 흑전 시점 · mPPO 국내 고객) · 4Q26 mPPO 추가 증설 일정. 기준일: 2026년 8월 14일.
+  자매 리포트: 솔브레인 · 이엔에프 · 동진쎄미켐 · 한솔케미칼 · 원익QnC · 티씨케이 · 한솔아이원스 · 파두 ·
+  덕산하이메탈 · 한국카본 · 한화엔진 · HD현대마린솔루션 · HD현대마린엔진 · 이오테크닉스 · 원익IPS · 브이엠.
+</footer>
+
+</div>
+</body>
+</html>
