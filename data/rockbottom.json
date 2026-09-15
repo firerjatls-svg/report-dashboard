@@ -1,72 +1,132 @@
 {
- "asof": "2026-09-10",
+ "asof": "2026-09-11",
  "params_asof": "2026-07-28",
- "generated": "2026-09-13T23:43:28.728697Z",
+ "generated": "2026-09-15T00:02:57.641296Z",
  "rows": [
   {
    "code": "074600",
    "name": "원익QnC",
-   "close": 26900,
+   "close": 26200,
    "grade": "A",
    "floor_per": 7,
    "b_src": "컨센OP·27유안타",
    "a": {
     "f12m": 825,
-    "per_now": 8.6,
+    "per_now": 8.3,
     "floor": 21968,
-    "gap_pct": -18.3
+    "gap_pct": -16.2
    },
    "b": {
     "f12m": 1000,
-    "per_now": 7.1,
+    "per_now": 6.9,
     "floor": 26639,
-    "gap_pct": -1.0
-   }
-  },
-  {
-   "code": "071970",
-   "name": "HD현대마린엔진",
-   "close": 51500,
-   "grade": "A",
-   "floor_per": 12,
-   "b_src": "컨센OP·27E명시",
-   "a": {
-    "f12m": 1383,
-    "per_now": 12.6,
-    "floor": 48936,
-    "gap_pct": -5.0
-   },
-   "b": {
-    "f12m": 1320,
-    "per_now": 13.2,
-    "floor": 46678,
-    "gap_pct": -9.4
+    "gap_pct": 1.7
    }
   },
   {
    "code": "388210",
    "name": "씨엠티엑스",
-   "close": 76900,
+   "close": 72300,
    "grade": "B",
    "floor_per": 9,
    "b_src": "단일(유진)",
    "a": {
     "f12m": 699,
-    "per_now": 10.6,
+    "per_now": 10.0,
     "floor": 65146,
-    "gap_pct": -15.3
+    "gap_pct": -9.9
    },
    "b": {
     "f12m": 690,
-    "per_now": 10.8,
+    "per_now": 10.1,
     "floor": 64369,
-    "gap_pct": -16.3
+    "gap_pct": -11.0
+   }
+  },
+  {
+   "code": "071970",
+   "name": "HD현대마린엔진",
+   "close": 52500,
+   "grade": "A",
+   "floor_per": 12,
+   "b_src": "컨센OP·27E명시",
+   "a": {
+    "f12m": 1383,
+    "per_now": 12.9,
+    "floor": 48936,
+    "gap_pct": -6.8
+   },
+   "b": {
+    "f12m": 1320,
+    "per_now": 13.5,
+    "floor": 46678,
+    "gap_pct": -11.1
+   }
+  },
+  {
+   "code": "102710",
+   "name": "이엔에프테크놀로지",
+   "close": 41350,
+   "grade": "A",
+   "floor_per": 6,
+   "b_src": "컨센OP·27E명시",
+   "a": {
+    "f12m": 784,
+    "per_now": 7.5,
+    "floor": 32930,
+    "gap_pct": -20.4
+   },
+   "b": {
+    "f12m": 871,
+    "per_now": 6.8,
+    "floor": 36566,
+    "gap_pct": -11.6
+   }
+  },
+  {
+   "code": "281820",
+   "name": "케이씨텍",
+   "close": 67900,
+   "grade": "C",
+   "floor_per": 8,
+   "b_src": "단일(DB)",
+   "a": {
+    "f12m": 1478,
+    "per_now": 9.1,
+    "floor": 59707,
+    "gap_pct": -12.1
+   },
+   "b": {
+    "f12m": 1453,
+    "per_now": 9.3,
+    "floor": 58697,
+    "gap_pct": -13.6
+   }
+  },
+  {
+   "code": "014680",
+   "name": "한솔케미칼",
+   "close": 200000,
+   "grade": "A",
+   "floor_per": 10,
+   "b_src": "컨센OP환산·27무",
+   "a": {
+    "f12m": 1896,
+    "per_now": 11.4,
+    "floor": 175637,
+    "gap_pct": -12.2
+   },
+   "b": {
+    "f12m": 1791,
+    "per_now": 12.1,
+    "floor": 165924,
+    "gap_pct": -17.0
    }
   },
   {
    "code": "064350",
    "name": "현대로템",
-   "close": 123900,
+   "close": 124100,
    "grade": "A",
    "floor_per": 12,
    "b_src": "컨센OP환산·27무",
@@ -74,129 +134,49 @@
     "f12m": 9667,
     "per_now": 14.0,
     "floor": 106283,
-    "gap_pct": -14.2
+    "gap_pct": -14.4
    },
    "b": {
     "f12m": 9360,
-    "per_now": 14.4,
+    "per_now": 14.5,
     "floor": 102911,
-    "gap_pct": -16.9
-   }
-  },
-  {
-   "code": "102710",
-   "name": "이엔에프테크놀로지",
-   "close": 44050,
-   "grade": "A",
-   "floor_per": 6,
-   "b_src": "컨센OP·27E명시",
-   "a": {
-    "f12m": 784,
-    "per_now": 8.0,
-    "floor": 32930,
-    "gap_pct": -25.2
-   },
-   "b": {
-    "f12m": 871,
-    "per_now": 7.2,
-    "floor": 36566,
-    "gap_pct": -17.0
-   }
-  },
-  {
-   "code": "014680",
-   "name": "한솔케미칼",
-   "close": 202000,
-   "grade": "A",
-   "floor_per": 10,
-   "b_src": "컨센OP환산·27무",
-   "a": {
-    "f12m": 1896,
-    "per_now": 11.5,
-    "floor": 175637,
-    "gap_pct": -13.1
-   },
-   "b": {
-    "f12m": 1791,
-    "per_now": 12.2,
-    "floor": 165924,
-    "gap_pct": -17.9
+    "gap_pct": -17.1
    }
   },
   {
    "code": "017960",
    "name": "한국카본",
-   "close": 22000,
+   "close": 21700,
    "grade": "A",
    "floor_per": 7,
    "b_src": "컨센OP환산·27무",
    "a": {
     "f12m": 1496,
-    "per_now": 7.6,
+    "per_now": 7.5,
     "floor": 20262,
-    "gap_pct": -7.9
+    "gap_pct": -6.6
    },
    "b": {
     "f12m": 1324,
-    "per_now": 8.6,
+    "per_now": 8.5,
     "floor": 17934,
-    "gap_pct": -18.5
-   }
-  },
-  {
-   "code": "281820",
-   "name": "케이씨텍",
-   "close": 72100,
-   "grade": "C",
-   "floor_per": 8,
-   "b_src": "단일(DB)",
-   "a": {
-    "f12m": 1478,
-    "per_now": 9.7,
-    "floor": 59707,
-    "gap_pct": -17.2
-   },
-   "b": {
-    "f12m": 1453,
-    "per_now": 9.8,
-    "floor": 58697,
-    "gap_pct": -18.6
+    "gap_pct": -17.4
    }
   },
   {
    "code": "085910",
    "name": "네오티스",
-   "close": 13690,
+   "close": 13240,
    "grade": "C",
    "floor_per": 9,
    "b_src": "26E미확인·단일(메리츠)",
    "a": {
     "f12m": 167,
-    "per_now": 11.3,
+    "per_now": 11.0,
     "floor": 10873,
-    "gap_pct": -20.6
+    "gap_pct": -17.9
    },
    "b": null
-  },
-  {
-   "code": "120110",
-   "name": "코오롱인더",
-   "close": 54800,
-   "grade": "B",
-   "floor_per": 9,
-   "b_src": "단일(유안타)·환산0.55",
-   "a": {
-    "f12m": 1333,
-    "per_now": 12.3,
-    "floor": 40072,
-    "gap_pct": -26.9
-   },
-   "b": {
-    "f12m": 1232,
-    "per_now": 13.3,
-    "floor": 37031,
-    "gap_pct": -32.4
-   }
   },
   {
    "code": "010820",
@@ -214,348 +194,368 @@
    "b": null
   },
   {
-   "code": "114810",
-   "name": "한솔아이원스",
-   "close": 12650,
-   "grade": "A",
-   "floor_per": 6,
-   "b_src": "단일(DS)",
-   "a": {
-    "f12m": 442,
-    "per_now": 8.0,
-    "floor": 9433,
-    "gap_pct": -25.4
-   },
-   "b": {
-    "f12m": 392,
-    "per_now": 9.1,
-    "floor": 8357,
-    "gap_pct": -33.9
-   }
-  },
-  {
    "code": "005290",
    "name": "동진쎄미켐",
-   "close": 42450,
+   "close": 40800,
    "grade": "C",
    "floor_per": 8,
    "b_src": "컨센부재",
    "a": {
     "f12m": 1717,
-    "per_now": 12.6,
+    "per_now": 12.1,
     "floor": 26943,
-    "gap_pct": -36.5
+    "gap_pct": -34.0
    },
    "b": null
   },
   {
-   "code": "012450",
-   "name": "한화에어로스페이스",
-   "close": 1067000,
+   "code": "114810",
+   "name": "한솔아이원스",
+   "close": 12890,
    "grade": "A",
-   "floor_per": 14,
-   "b_src": "추정PER역산",
+   "floor_per": 6,
+   "b_src": "단일(DS)",
    "a": {
-    "f12m": 26917,
-    "per_now": 20.4,
-    "floor": 730815,
-    "gap_pct": -31.5
+    "f12m": 442,
+    "per_now": 8.2,
+    "floor": 9433,
+    "gap_pct": -26.8
    },
    "b": {
-    "f12m": 23600,
-    "per_now": 23.3,
-    "floor": 640764,
-    "gap_pct": -39.9
+    "f12m": 392,
+    "per_now": 9.3,
+    "floor": 8357,
+    "gap_pct": -35.2
    }
   },
   {
-   "code": "082740",
-   "name": "한화엔진",
-   "close": 48350,
-   "grade": "A",
-   "floor_per": 13,
-   "b_src": "컨센OP환산·27무",
+   "code": "120110",
+   "name": "코오롱인더",
+   "close": 57400,
+   "grade": "B",
+   "floor_per": 9,
+   "b_src": "단일(유안타)·환산0.55",
    "a": {
-    "f12m": 2133,
-    "per_now": 18.9,
-    "floor": 33234,
-    "gap_pct": -31.3
+    "f12m": 1333,
+    "per_now": 12.9,
+    "floor": 40072,
+    "gap_pct": -30.2
    },
    "b": {
-    "f12m": 1840,
-    "per_now": 21.9,
-    "floor": 28664,
-    "gap_pct": -40.7
-   }
-  },
-  {
-   "code": "443060",
-   "name": "HD현대마린솔루션",
-   "close": 229500,
-   "grade": "A",
-   "floor_per": 18,
-   "b_src": "fPER28역산",
-   "a": {
-    "f12m": 3671,
-    "per_now": 28.0,
-    "floor": 147378,
-    "gap_pct": -35.8
-   },
-   "b": {
-    "f12m": 3350,
-    "per_now": 30.7,
-    "floor": 134497,
-    "gap_pct": -41.4
+    "f12m": 1232,
+    "per_now": 14.0,
+    "floor": 37031,
+    "gap_pct": -35.5
    }
   },
   {
    "code": "166090",
    "name": "하나머티리얼즈",
-   "close": 55000,
+   "close": 52200,
    "grade": "A",
    "floor_per": 10,
    "b_src": "컨센OP환산·27무",
    "a": {
     "f12m": 745,
-    "per_now": 14.6,
+    "per_now": 13.9,
     "floor": 37668,
-    "gap_pct": -31.5
+    "gap_pct": -27.8
    },
    "b": {
     "f12m": 636,
-    "per_now": 17.1,
+    "per_now": 16.2,
     "floor": 32157,
-    "gap_pct": -41.5
+    "gap_pct": -38.4
+   }
+  },
+  {
+   "code": "012450",
+   "name": "한화에어로스페이스",
+   "close": 1081000,
+   "grade": "A",
+   "floor_per": 14,
+   "b_src": "추정PER역산",
+   "a": {
+    "f12m": 26917,
+    "per_now": 20.7,
+    "floor": 730815,
+    "gap_pct": -32.4
+   },
+   "b": {
+    "f12m": 23600,
+    "per_now": 23.6,
+    "floor": 640764,
+    "gap_pct": -40.7
+   }
+  },
+  {
+   "code": "082740",
+   "name": "한화엔진",
+   "close": 50300,
+   "grade": "A",
+   "floor_per": 13,
+   "b_src": "컨센OP환산·27무",
+   "a": {
+    "f12m": 2133,
+    "per_now": 19.7,
+    "floor": 33234,
+    "gap_pct": -33.9
+   },
+   "b": {
+    "f12m": 1840,
+    "per_now": 22.8,
+    "floor": 28664,
+    "gap_pct": -43.0
    }
   },
   {
    "code": "079550",
    "name": "LIG디펜스앤에어로스페이스",
-   "close": 680000,
+   "close": 678000,
    "grade": "B",
    "floor_per": 18,
    "b_src": "메리츠·한화실측",
    "a": {
     "f12m": 2983,
-    "per_now": 50.1,
+    "per_now": 50.0,
     "floor": 244090,
-    "gap_pct": -64.1
+    "gap_pct": -64.0
    },
    "b": {
     "f12m": 4725,
-    "per_now": 31.7,
+    "per_now": 31.6,
     "floor": 386590,
-    "gap_pct": -43.1
+    "gap_pct": -43.0
    }
   },
   {
    "code": "067310",
    "name": "하나마이크론",
-   "close": 36000,
+   "close": 34400,
    "grade": "C",
    "floor_per": 10,
    "b_src": "컨센NP미확인·래깅주의",
    "a": {
     "f12m": 1275,
-    "per_now": 18.8,
+    "per_now": 17.9,
     "floor": 19175,
-    "gap_pct": -46.7
+    "gap_pct": -44.3
    },
    "b": null
   },
   {
    "code": "357780",
    "name": "솔브레인",
-   "close": 342000,
+   "close": 330000,
    "grade": "A",
    "floor_per": 9,
    "b_src": "컨센OP환산·27무",
    "a": {
     "f12m": 1733,
-    "per_now": 15.3,
+    "per_now": 14.8,
     "floor": 200551,
-    "gap_pct": -41.4
+    "gap_pct": -39.2
    },
    "b": {
     "f12m": 1560,
-    "per_now": 17.1,
+    "per_now": 16.5,
     "floor": 180495,
-    "gap_pct": -47.2
+    "gap_pct": -45.3
+   }
+  },
+  {
+   "code": "443060",
+   "name": "HD현대마린솔루션",
+   "close": 247000,
+   "grade": "A",
+   "floor_per": 18,
+   "b_src": "fPER28역산",
+   "a": {
+    "f12m": 3671,
+    "per_now": 30.2,
+    "floor": 147378,
+    "gap_pct": -40.3
+   },
+   "b": {
+    "f12m": 3350,
+    "per_now": 33.1,
+    "floor": 134497,
+    "gap_pct": -45.5
    }
   },
   {
    "code": "183300",
    "name": "코미코",
-   "close": 28950,
+   "close": 27300,
    "grade": "C",
    "floor_per": 11,
    "b_src": "컨센미확인",
    "a": {
     "f12m": 658,
-    "per_now": 22.6,
+    "per_now": 21.3,
     "floor": 14098,
-    "gap_pct": -51.3
+    "gap_pct": -48.4
    },
    "b": null
   },
   {
-   "code": "039030",
-   "name": "이오테크닉스",
-   "close": 455000,
-   "grade": "B",
-   "floor_per": 22,
-   "b_src": "컨센OP환산·27무",
-   "a": {
-    "f12m": 1275,
-    "per_now": 44.0,
-    "floor": 227686,
-    "gap_pct": -50.0
-   },
-   "b": {
-    "f12m": 1038,
-    "per_now": 54.0,
-    "floor": 185363,
-    "gap_pct": -59.3
-   }
-  },
-  {
    "code": "077360",
    "name": "덕산하이메탈",
-   "close": 10390,
+   "close": 10030,
    "grade": "B",
    "floor_per": 9,
    "b_src": "단일(다올)",
    "a": {
     "f12m": 265,
-    "per_now": 17.8,
+    "per_now": 17.2,
     "floor": 5249,
-    "gap_pct": -49.5
+    "gap_pct": -47.7
    },
    "b": {
     "f12m": 211,
-    "per_now": 22.4,
+    "per_now": 21.6,
     "floor": 4179,
-    "gap_pct": -59.8
+    "gap_pct": -58.3
+   }
+  },
+  {
+   "code": "039030",
+   "name": "이오테크닉스",
+   "close": 445500,
+   "grade": "B",
+   "floor_per": 22,
+   "b_src": "컨센OP환산·27무",
+   "a": {
+    "f12m": 1275,
+    "per_now": 43.0,
+    "floor": 227686,
+    "gap_pct": -48.9
+   },
+   "b": {
+    "f12m": 1038,
+    "per_now": 52.9,
+    "floor": 185363,
+    "gap_pct": -58.4
    }
   },
   {
    "code": "240810",
    "name": "원익IPS",
-   "close": 118800,
+   "close": 110300,
    "grade": "B",
    "floor_per": 15,
    "b_src": "SK컨센실측",
    "a": {
     "f12m": 1946,
-    "per_now": 30.0,
+    "per_now": 27.8,
     "floor": 59464,
-    "gap_pct": -49.9
+    "gap_pct": -46.1
    },
    "b": {
     "f12m": 1384,
-    "per_now": 42.1,
+    "per_now": 39.1,
     "floor": 42300,
-    "gap_pct": -64.4
+    "gap_pct": -61.7
    }
   },
   {
    "code": "089970",
    "name": "브이엠",
-   "close": 50600,
+   "close": 48650,
    "grade": "C",
    "floor_per": 12,
    "b_src": "FnGuide실측 26/06/10",
    "a": {
     "f12m": 500,
-    "per_now": 26.6,
+    "per_now": 25.6,
     "floor": 22790,
-    "gap_pct": -55.0
+    "gap_pct": -53.2
    },
    "b": {
     "f12m": 375,
-    "per_now": 35.5,
+    "per_now": 34.2,
     "floor": 17092,
-    "gap_pct": -66.2
+    "gap_pct": -64.9
    }
   },
   {
    "code": "064760",
    "name": "티씨케이",
-   "close": 271500,
+   "close": 258000,
    "grade": "B",
    "floor_per": 12,
    "b_src": "컨센OP환산·27무",
    "a": {
     "f12m": 967,
-    "per_now": 31.4,
+    "per_now": 29.8,
     "floor": 103762,
-    "gap_pct": -61.8
+    "gap_pct": -59.8
    },
    "b": {
     "f12m": 819,
-    "per_now": 37.1,
+    "per_now": 35.2,
     "floor": 87911,
-    "gap_pct": -67.6
+    "gap_pct": -65.9
    }
   },
   {
    "code": "440110",
    "name": "파두",
-   "close": 79300,
+   "close": 68500,
    "grade": "C",
    "floor_per": 25,
    "b_src": "단일(CGS)",
    "a": {
     "f12m": 662,
-    "per_now": 60.0,
+    "per_now": 51.8,
     "floor": 33051,
-    "gap_pct": -58.3
+    "gap_pct": -51.7
    },
    "b": {
     "f12m": 397,
-    "per_now": 100.1,
+    "per_now": 86.5,
     "floor": 19806,
-    "gap_pct": -75.0
+    "gap_pct": -71.1
    }
   },
   {
    "code": "131290",
    "name": "티에스이",
-   "close": 306500,
+   "close": 260500,
    "grade": "B",
    "floor_per": 11,
    "b_src": "컨센OP환산·27무",
    "a": {
     "f12m": 771,
-    "per_now": 44.0,
+    "per_now": 37.4,
     "floor": 76655,
-    "gap_pct": -75.0
+    "gap_pct": -70.6
    },
    "b": {
     "f12m": 651,
-    "per_now": 52.1,
+    "per_now": 44.3,
     "floor": 64738,
-    "gap_pct": -78.9
+    "gap_pct": -75.1
    }
   },
   {
    "code": "036930",
    "name": "주성엔지니어링",
-   "close": 221000,
+   "close": 209000,
    "grade": "B",
    "floor_per": 17,
    "b_src": "FnGuide실측 26/06/11",
    "a": {
     "f12m": 1242,
-    "per_now": 82.7,
+    "per_now": 78.2,
     "floor": 45412,
-    "gap_pct": -79.5
+    "gap_pct": -78.3
    },
    "b": {
     "f12m": 1052,
-    "per_now": 97.7,
+    "per_now": 92.4,
     "floor": 38469,
-    "gap_pct": -82.6
+    "gap_pct": -81.6
    }
   }
  ]
